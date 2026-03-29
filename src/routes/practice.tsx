@@ -86,6 +86,10 @@ function SyllogismCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) =
         </div>
       </div>
 
+      <div className="mt-4">
+        <LogicalSequence syllogism={syllogism} />
+      </div>
+
       <div className="mt-4 pt-4 border-t border-[var(--line)]">
         <div className="grid grid-cols-3 gap-2 text-sm">
           <div className="text-center">
@@ -570,9 +574,7 @@ function PracticeQuiz() {
                   </div>
                 )}
 
-                {(validationResult.isCorrect || showAnswer) && (
-                  <LogicalSequence syllogism={currentSyllogism} />
-                )}
+
 
                 <div className="flex gap-3 mt-4">
                   {!validationResult.isCorrect && (

@@ -13,6 +13,7 @@ import { AudioEngine } from '../lib/audio'
 import Confetti from '../components/Confetti'
 import { HelpModal } from '../components/HelpModal'
 import { CopyCode } from '../components/CopyCode'
+import { LogicalSequence } from '../components/LogicalSequence'
 
 export const Route = createFileRoute('/campaign')({ component: CampaignRoute })
 
@@ -59,6 +60,9 @@ function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: 
         <div className="p-3 border-2 border-[var(--lagoon)] rounded-lg text-center font-black text-xl text-[var(--lagoon-deep)] bg-[var(--hero-a)]/30">
           ∴ {formatProposition(syllogism.conclusion)}
         </div>
+      </div>
+      <div className="mt-4">
+        <LogicalSequence syllogism={syllogism} />
       </div>
     </div>
   )
