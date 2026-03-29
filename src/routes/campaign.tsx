@@ -13,7 +13,7 @@ import { AudioEngine } from '../lib/audio'
 import Confetti from '../components/Confetti'
 import { HelpModal } from '../components/HelpModal'
 import { CopyCode } from '../components/CopyCode'
-import { LogicalSequence } from '../components/LogicalSequence'
+import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 
 export const Route = createFileRoute('/campaign')({ component: CampaignRoute })
 
@@ -52,17 +52,29 @@ function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: 
       </div>
       <div className="space-y-4 pt-4">
         <div className="p-3 bg-[var(--foam)] rounded-lg text-center font-bold text-lg text-[var(--sea-ink)] shadow-sm">
-          {formatProposition(syllogism.premises.major)}
+          <div className="flex flex-col items-center justify-center gap-2">
+            <p>{formatProposition(syllogism.premises.major)}</p>
+            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm overflow-hidden scale-90 -mb-2">
+              <PropositionLogicSequence prop={syllogism.premises.major} syllogism={syllogism} />
+            </div>
+          </div>
         </div>
         <div className="p-3 bg-[var(--foam)] rounded-lg text-center font-bold text-lg text-[var(--sea-ink)] shadow-sm">
-          {formatProposition(syllogism.premises.minor)}
+          <div className="flex flex-col items-center justify-center gap-2">
+            <p>{formatProposition(syllogism.premises.minor)}</p>
+            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm overflow-hidden scale-90 -mb-2">
+              <PropositionLogicSequence prop={syllogism.premises.minor} syllogism={syllogism} />
+            </div>
+          </div>
         </div>
         <div className="p-3 border-2 border-[var(--lagoon)] rounded-lg text-center font-black text-xl text-[var(--lagoon-deep)] bg-[var(--hero-a)]/30">
-          ∴ {formatProposition(syllogism.conclusion)}
+          <div className="flex flex-col items-center justify-center gap-2">
+            <p>∴ {formatProposition(syllogism.conclusion)}</p>
+            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--palm)] shadow-sm overflow-hidden scale-90 -mb-2">
+              <PropositionLogicSequence prop={syllogism.conclusion} syllogism={syllogism} />
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="mt-4">
-        <LogicalSequence syllogism={syllogism} />
       </div>
     </div>
   )

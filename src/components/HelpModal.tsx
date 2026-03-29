@@ -97,6 +97,33 @@ export function HelpModal({ onClose, onApplyRule }: HelpModalProps) {
 
           <hr className="border-[var(--line)] mb-8" />
 
+          {/* Logical Symbols Section */}
+          <div className="mb-8">
+            <h3 className="text-xl font-black text-[var(--lagoon)] uppercase mb-4 flex items-center gap-2">
+              <span className="bg-[var(--palm)] text-white w-6 h-6 flex items-center justify-center rounded-full text-sm font-serif">∩</span>
+              {t('quiz.help_symbols_title' as any)}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {[
+                { symbol: '⊆', desc: t('quiz.help_symbol_subset' as any), color: 'text-[var(--palm)]' },
+                { symbol: '∩', desc: t('quiz.help_symbol_intersection' as any), color: 'text-[var(--palm)]' },
+                { symbol: '≠ ∅', desc: t('quiz.help_symbol_not_empty' as any), color: 'text-[var(--sea-ink)]' },
+                { symbol: "'", desc: t('quiz.help_symbol_complement' as any), color: 'text-[var(--term-x)]' },
+              ].map((item, idx) => (
+                <div key={idx} className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--line)] flex items-center gap-4">
+                  <div className={`text-2xl font-black font-serif w-8 text-center ${item.color}`}>
+                    {item.symbol}
+                  </div>
+                  <div className="text-sm text-[var(--sea-ink-soft)] font-medium leading-tight">
+                    {item.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <hr className="border-[var(--line)] mb-8" />
+
           {/* Visual Guide Section */}
           <div>
             <h3 className="text-xl font-black text-[var(--lagoon)] uppercase mb-6 flex items-center gap-2">

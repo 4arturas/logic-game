@@ -11,7 +11,7 @@ import {
 } from '../../logic'
 import { HelpModal } from '../components/HelpModal'
 import { CopyCode } from '../components/CopyCode'
-import { LogicalSequence } from '../components/LogicalSequence'
+import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
 
@@ -32,6 +32,8 @@ interface Terms {
 // ----------------------------------------------------------------------------
 // HELPER COMPONENTS
 // ----------------------------------------------------------------------------
+
+
 
 function SyllogismCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) => string }) {
 
@@ -74,20 +76,31 @@ function SyllogismCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) =
       <div className="space-y-3">
         <div className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
           <span className="text-xs text-[var(--lagoon)] font-semibold uppercase tracking-wide">{t('quiz.major_premise')}</span>
-          <p className="text-lg text-[var(--sea-ink)] mt-1">{formatProposition(syllogism.premises.major)}</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(syllogism.premises.major)}</p>
+            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm">
+              <PropositionLogicSequence prop={syllogism.premises.major} syllogism={syllogism} />
+            </div>
+          </div>
         </div>
         <div className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
           <span className="text-xs text-[var(--lagoon)] font-semibold uppercase tracking-wide">{t('quiz.minor_premise')}</span>
-          <p className="text-lg text-[var(--sea-ink)] mt-1">{formatProposition(syllogism.premises.minor)}</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(syllogism.premises.minor)}</p>
+            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm">
+              <PropositionLogicSequence prop={syllogism.premises.minor} syllogism={syllogism} />
+            </div>
+          </div>
         </div>
         <div className="bg-[var(--hero-a)]/30 p-3 rounded-lg border border-[var(--lagoon)]">
           <span className="text-xs text-[var(--palm)] font-semibold uppercase tracking-wide">{t('quiz.conclusion')}</span>
-          <p className="text-lg text-[var(--sea-ink)] mt-1">{formatProposition(syllogism.conclusion)}</p>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(syllogism.conclusion)}</p>
+            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--palm)] shadow-sm">
+              <PropositionLogicSequence prop={syllogism.conclusion} syllogism={syllogism} />
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="mt-4">
-        <LogicalSequence syllogism={syllogism} />
       </div>
 
       <div className="mt-4 pt-4 border-t border-[var(--line)]">

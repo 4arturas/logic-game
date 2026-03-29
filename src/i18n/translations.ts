@@ -69,6 +69,11 @@ export type TranslationKey =
   | 'quiz.help_visual_guide'
   | 'quiz.help_large_desc'
   | 'quiz.help_small_desc'
+  | 'quiz.help_symbols_title'
+  | 'quiz.help_symbol_subset'
+  | 'quiz.help_symbol_intersection'
+  | 'quiz.help_symbol_not_empty'
+  | 'quiz.help_symbol_complement'
   | 'quiz.help_col1'
   | 'quiz.help_col2'
   | 'quiz.help_col3'
@@ -220,6 +225,11 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'quiz.help_visual_guide': 'Visual Guide',
     'quiz.help_large_desc': 'Large Diagram (Premises) - 16 cells in total, but we focus on 9-16 for premises. Cells 1-8 are within x or y respectively.',
     'quiz.help_small_desc': 'Small Diagram (Conclusions) - 8 cells in total, but we focus on 5-8 for conclusions. Cells 1-4 are within x or y respectively.',
+    'quiz.help_symbols_title': 'Logical Symbols',
+    'quiz.help_symbol_subset': '⊆ : Is a subset of (All A are B)',
+    'quiz.help_symbol_intersection': '∩ : Intersection (A AND B overlap)',
+    'quiz.help_symbol_not_empty': '≠ ∅ : Is not empty (Some exist)',
+    'quiz.help_symbol_complement': '\' : Complement (NOT the term, e.g. x\')',
     'quiz.help_col1': 'Proposition',
     'quiz.help_col2': 'Rule',
     'quiz.help_col3': 'Action',
@@ -371,6 +381,11 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'quiz.help_visual_guide': 'Vizualus Gidas',
     'quiz.help_large_desc': 'Didžioji Diagrama (Prielaidos) - iš viso 16 langelių, bet prielaidoms fokusuojamės į 9-16. Langeliai 1-8 yra atitinkamai x arba y viduje.',
     'quiz.help_small_desc': 'Mažoji Diagrama (Išvados) - iš viso 8 langeliai, bet išvadoms fokusuojamės į 5-8. Langeliai 1-4 yra atitinkamai x arba y viduje.',
+    'quiz.help_symbols_title': 'Logikos simboliai',
+    'quiz.help_symbol_subset': '⊆ : Yra poaibys (Visi A yra B)',
+    'quiz.help_symbol_intersection': '∩ : Sankirta (A IR B persidengia)',
+    'quiz.help_symbol_not_empty': '≠ ∅ : Nėra tuščia aibė (Egzistuoja)',
+    'quiz.help_symbol_complement': '\' : Papildinys (NE terminas, pvz. x\')',
     'quiz.help_col1': 'Teiginys',
     'quiz.help_col2': 'Taisyklė',
     'quiz.help_col3': 'Veiksmas',
