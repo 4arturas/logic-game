@@ -31,24 +31,24 @@ export function LogicalSequence({ syllogism }: LogicalSequenceProps) {
     }
 
     return (
-      <span className="inline-flex items-center gap-1">
-        <i className="font-serif font-bold" style={{ color: termColor }}>{term}</i>
+      <div className="flex flex-col items-center justify-center">
+        <span className="font-serif font-bold text-2xl" style={{ color: termColor }}>{term}</span>
         <span className="text-gray-600 text-xs">({termName})</span>
-      </span>
+      </div>
     )
   }
 
   return (
     <div className="mt-4 p-4 bg-white/50 rounded-lg border border-dashed border-[var(--lagoon)] animate-fade-in">
-      <p className="text-sm font-semibold text-[var(--sea-ink-soft)] mb-3">
+      <p className="text-sm font-semibold text-[var(--sea-ink-soft)] mb-3 text-center">
         {t('quiz.logical_sequence_prelude')}
       </p>
-      <div className="flex flex-wrap items-center gap-2 text-lg">
+      <div className="flex justify-center items-center gap-4 text-lg">
         {sequence.terms.map((term, idx) => (
-          <div key={idx} className="flex items-center gap-2">
+          <div key={idx} className="flex items-center gap-4">
             {renderTerm(term)}
             {idx < sequence.terms.length - 1 && (
-              <span className="text-[var(--palm)] font-black">⊆</span>
+              <div className="text-[var(--palm)] font-black text-2xl pb-4">⊆</div>
             )}
           </div>
         ))}
