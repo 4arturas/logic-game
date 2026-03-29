@@ -207,9 +207,7 @@ function PracticeQuiz() {
     }
   }, [currentSyllogism])
 
-  const updateLabels = useCallback((field: keyof Terms, value: string) => {
-    setTerms(prev => ({ ...prev, [field]: value }))
-  }, [])
+
 
   const correctEncoding = useMemo(() => {
     if (!currentSyllogism) return null
@@ -435,7 +433,7 @@ function PracticeQuiz() {
       <div className="max-w-[90vw] mx-auto">
         {/* Set Selection and Term Input Fields */}
         <div className="bg-[var(--surface)] p-6 rounded-lg shadow-md border-b-4 border-[var(--lagoon)] mb-8">
-          <div className="flex flex-wrap justify-between items-center gap-4 mb-6 pb-6 border-b border-[var(--line)]">
+          <div className="flex flex-wrap justify-between items-center gap-4">
             <div className="flex flex-col">
               <label htmlFor="set-select" className="text-[var(--sea-ink-soft)] text-xs font-bold uppercase tracking-wider mb-2">
                 {t('quiz.practice_title')}
@@ -449,39 +447,6 @@ function PracticeQuiz() {
                 <option value="standard">Standard Carroll Set (24)</option>
                 <option value="custom">Color / Taste / Apple Set (24)</option>
               </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex flex-col items-center">
-              <label className="text-[var(--lagoon)] font-bold mb-1 text-sm uppercase">{t('home.input.x')}</label>
-              <input
-                type="text"
-                id="input-x"
-                value={terms.x}
-                onChange={e => updateLabels('x', e.target.value)}
-                className="w-full max-w-xs text-lg italic border-b-2 border-[var(--line)] bg-transparent outline-none text-center transition-colors focus:border-[var(--lagoon)] text-[var(--sea-ink)]"
-              />
-            </div>
-            <div className="flex flex-col items-center">
-              <label className="text-[var(--palm)] font-bold mb-1 text-sm uppercase">{t('home.input.y')}</label>
-              <input
-                type="text"
-                id="input-y"
-                value={terms.y}
-                onChange={e => updateLabels('y', e.target.value)}
-                className="w-full max-w-xs text-lg italic border-b-2 border-[var(--line)] bg-transparent outline-none text-center transition-colors focus:border-[var(--palm)] text-[var(--sea-ink)]"
-              />
-            </div>
-            <div className="flex flex-col items-center">
-              <label className="text-[var(--sea-ink)] font-bold mb-1 text-sm uppercase">{t('home.input.m')}</label>
-              <input
-                type="text"
-                id="input-m"
-                value={terms.m}
-                onChange={e => updateLabels('m', e.target.value)}
-                className="w-full max-w-xs text-lg italic border-b-2 border-[var(--line)] bg-transparent outline-none text-center transition-colors focus:border-[var(--sea-ink)] text-[var(--sea-ink)]"
-              />
             </div>
           </div>
         </div>

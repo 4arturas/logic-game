@@ -677,23 +677,7 @@ function Game() {
               </div>
             </div>
 
-            {/* Term Display */}
-            <div className="bg-[var(--foam)] p-4 rounded-xl shadow-md border border-[var(--chip-line)]">
-              <div className="grid grid-cols-3 gap-2 text-center text-sm">
-                <div>
-                  <div className="text-xs text-[var(--sea-ink-soft)]">Minor (x)</div>
-                  <div className="font-semibold underline" style={{ color: 'var(--term-x)' }}>{t(terms.x as any)}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--sea-ink-soft)]">Major (y)</div>
-                  <div className="font-semibold underline" style={{ color: 'var(--term-y)' }}>{t(terms.y as any)}</div>
-                </div>
-                <div>
-                  <div className="text-xs text-[var(--sea-ink-soft)]">Middle (m)</div>
-                  <div className="font-semibold underline" style={{ color: 'var(--term-m)' }}>{t(terms.m as any)}</div>
-                </div>
-              </div>
-            </div>
+
 
             {/* Action Buttons */}
             <div className="flex gap-2">
