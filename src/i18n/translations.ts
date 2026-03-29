@@ -382,7 +382,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'quiz.help_large_desc': 'Didžioji Diagrama (Prielaidos) - iš viso 16 langelių, bet prielaidoms fokusuojamės į 9-16. Langeliai 1-8 yra atitinkamai x arba y viduje.',
     'quiz.help_small_desc': 'Mažoji Diagrama (Išvados) - iš viso 8 langeliai, bet išvadoms fokusuojamės į 5-8. Langeliai 1-4 yra atitinkamai x arba y viduje.',
     'quiz.help_symbols_title': 'Logikos simboliai',
-    'quiz.help_symbol_subset': '⊆ : Yra poaibys (Visi A yra B)',
+    'quiz.help_symbol_subset': '⊆ : Yra poaibis (Visi A yra B)',
     'quiz.help_symbol_intersection': '∩ : Sankirta (A IR B persidengia)',
     'quiz.help_symbol_not_empty': '≠ ∅ : Nėra tuščia aibė (Egzistuoja)',
     'quiz.help_symbol_complement': '\' : Papildinys (NE terminas, pvz. x\')',

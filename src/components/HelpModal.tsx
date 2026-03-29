@@ -111,7 +111,7 @@ export function HelpModal({ onClose, onApplyRule }: HelpModalProps) {
                 { symbol: "'", desc: t('quiz.help_symbol_complement' as any), color: 'text-[var(--term-x)]' },
               ].map((item, idx) => (
                 <div key={idx} className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--line)] flex items-center gap-4">
-                  <div className={`text-2xl font-black font-serif w-8 text-center ${item.color}`}>
+                  <div className={`text-2xl font-black w-8 text-center ${item.color}`} style={{ fontFamily: '"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", sans-serif' }}>
                     {item.symbol}
                   </div>
                   <div className="text-sm text-[var(--sea-ink-soft)] font-medium leading-tight">

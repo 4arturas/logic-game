@@ -32,7 +32,7 @@ export function LogicalSequence({ syllogism }: LogicalSequenceProps) {
 
     return (
       <div className="flex flex-col items-center justify-center">
-        <span className="font-serif font-bold text-2xl" style={{ color: termColor }}>{term}</span>
+        <span className="font-bold text-2xl" style={{ color: termColor, fontFamily: '"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif' }}>{term}</span>
         <span className="text-gray-600 text-xs">({termName})</span>
       </div>
     )
@@ -48,7 +48,7 @@ export function LogicalSequence({ syllogism }: LogicalSequenceProps) {
           <div key={idx} className="flex items-center gap-4">
             {renderTerm(term)}
             {idx < sequence.terms.length - 1 && (
-              <div className="text-[var(--palm)] font-black text-2xl pb-4">⊆</div>
+              <div className="text-[var(--palm)] font-black text-2xl pb-4" style={{ fontFamily: '"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", sans-serif' }}>⊆</div>
             )}
           </div>
         ))}

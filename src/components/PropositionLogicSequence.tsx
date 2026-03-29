@@ -10,10 +10,10 @@ export function PropositionLogicSequence({ prop, syllogism }: PropositionLogicSe
   const getVariable = (term: string) => {
     const isComplement = term.endsWith("'")
     const baseTerm = isComplement ? term.slice(0, -1) : term
-    
+
     let variable = ''
     let termColor = 'inherit'
-    
+
     if (baseTerm === 'x' || baseTerm === syllogism.terms.minorTerm) {
       variable = 'x'
       termColor = 'var(--term-x)'
@@ -31,15 +31,15 @@ export function PropositionLogicSequence({ prop, syllogism }: PropositionLogicSe
     }
   }
 
-  let relationSign = '⊆'
+  let relationSign = '\u2286'
   let rightTermStr = prop.predicate
 
   if (prop.quantifier === 'E') {
     rightTermStr = prop.predicate + "'"
   } else if (prop.quantifier === 'I') {
-    relationSign = '∩'
+    relationSign = '\u2229'
   } else if (prop.quantifier === 'O') {
-    relationSign = '∩'
+    relationSign = '\u2229'
     rightTermStr = prop.predicate + "'"
   }
 
@@ -47,12 +47,12 @@ export function PropositionLogicSequence({ prop, syllogism }: PropositionLogicSe
   const rightVar = getVariable(rightTermStr)
 
   return (
-    <div className="flex justify-center items-center gap-2 font-serif font-bold text-xl leading-none">
+    <div className="flex justify-center items-center gap-2 font-bold text-xl leading-none" style={{ fontFamily: '"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif' }}>
       <span style={{ color: leftVar.color }}>{leftVar.text}</span>
       <span className="text-[var(--palm)]">{relationSign}</span>
       <span style={{ color: rightVar.color }}>{rightVar.text}</span>
       {(prop.quantifier === 'I' || prop.quantifier === 'O') && (
-        <span className="text-[var(--sea-ink)] whitespace-nowrap">≠ ∅</span>
+        <span className="text-[var(--sea-ink)] whitespace-nowrap">\u2260 \u2205</span>
       )}
     </div>
   )
