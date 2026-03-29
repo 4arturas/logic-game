@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useTranslation } from '../i18n/I18nContext'
 import {
   createSyllogism,
@@ -32,6 +32,295 @@ interface Terms {
 // ----------------------------------------------------------------------------
 // HELPER COMPONENTS
 // ----------------------------------------------------------------------------
+
+const FIGURE_NAMES: Record<number, string> = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' }
+const FIGURE_PATTERNS: Record<number, string> = { 1: 'M–P / S–M', 2: 'P–M / S–M', 3: 'M–P / M–S', 4: 'P–M / M–S' }
+const FIGURE_COLORS: Record<number, string> = {
+  1: 'var(--lagoon)',
+  2: 'var(--palm)',
+  3: '#7c3aed',
+  4: '#b45309',
+}
+
+function SyllogismSelectModal({
+  allSyllogisms,
+  currentSyllogism,
+  onSelectSyllogism,
+  onClose,
+}: {
+  allSyllogisms: Syllogism[]
+  currentSyllogism: Syllogism | null
+  onSelectSyllogism: (s: Syllogism) => void
+  onClose: () => void
+}) {
+  const overlayRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState<number | null>(null)
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onClose])
+
+  const visibleSyllogisms = activeTab === null
+    ? allSyllogisms
+    : allSyllogisms.filter(s => s.figure === activeTab)
+
+  const isActive = (s: Syllogism) =>
+    currentSyllogism !== null &&
+    s.figure === currentSyllogism.figure &&
+    s.mood === currentSyllogism.mood
+
+  return (
+    <div
+      ref={overlayRef}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backdropFilter: 'blur(6px)', background: 'rgba(0,0,0,0.6)' }}
+      onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
+    >
+      <style>{`
+        @keyframes sylModalIn {
+          from { opacity: 0; transform: translateY(28px) scale(0.97); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+      <div
+        className="relative bg-[var(--surface)] rounded-2xl shadow-2xl border border-[var(--chip-line)] flex flex-col w-full mx-auto"
+        style={{ animation: 'sylModalIn 0.22s cubic-bezier(.22,1,.36,1) both', maxHeight: '95vh', maxWidth: '80rem' }}
+      >
+        <SyllogismModalInner
+          allSyllogisms={allSyllogisms}
+          visibleSyllogisms={visibleSyllogisms}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isActive={isActive}
+          onSelectSyllogism={onSelectSyllogism}
+          onClose={onClose}
+        />
+      </div>
+    </div>
+  )
+}
+
+// Inner separated so useTranslation() re-renders on every language-change
+function SyllogismModalInner({
+  allSyllogisms,
+  visibleSyllogisms,
+  activeTab,
+  setActiveTab,
+  isActive,
+  onSelectSyllogism,
+  onClose,
+}: {
+  allSyllogisms: Syllogism[]
+  visibleSyllogisms: Syllogism[]
+  activeTab: number | null
+  setActiveTab: (v: number | null) => void
+  isActive: (s: Syllogism) => boolean
+  onSelectSyllogism: (s: Syllogism) => void
+  onClose: () => void
+}) {
+  const { t } = useTranslation()
+
+  const formatProp = (
+    prop: { quantifier: string; subject: string; predicate: string },
+    syl: Syllogism,
+  ) => {
+    const sText = t(prop.subject as any)
+    const pText = t(prop.predicate as any)
+    const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w))
+      ? t('quiz.have') : t('quiz.are')
+    const getColor = (key: string) => {
+      if (key === syl.terms.minorTerm)  return 'var(--term-x)'
+      if (key === syl.terms.majorTerm)  return 'var(--term-y)'
+      if (key === syl.terms.middleTerm) return 'var(--term-m)'
+      return 'inherit'
+    }
+    const sEl = <span style={{ color: getColor(prop.subject),    fontWeight: 600 }}>{sText}</span>
+    const pEl = <span style={{ color: getColor(prop.predicate),  fontWeight: 600 }}>{pText}</span>
+    if (prop.quantifier === 'E') return <>{t('quiz.no_word')} {sEl} {verb} {pEl}.</>
+    if (prop.quantifier === 'O') return <>{t('quiz.some_word')} {sEl} {verb} {t('quiz.not_word')} {pEl}.</>
+    if (prop.quantifier === 'A') return <>{t('quiz.all_word')} {sEl} {verb} {pEl}.</>
+    return <>{t('quiz.some_word')} {sEl} {verb} {pEl}.</>
+  }
+
+  const getLogic = (
+    prop: { quantifier: string; subject: string; predicate: string },
+    syl: Syllogism,
+  ) => {
+    const getVar = (term: string) => {
+      const isComp = term.endsWith("'")
+      const base   = isComp ? term.slice(0, -1) : term
+      let v = '?'; let c = 'inherit'
+      if (base === syl.terms.minorTerm)  { v = 'x'; c = 'var(--term-x)' }
+      else if (base === syl.terms.majorTerm)  { v = 'y'; c = 'var(--term-y)' }
+      else if (base === syl.terms.middleTerm) { v = 'm'; c = 'var(--term-m)' }
+      return { text: v + (isComp ? "'" : ''), color: c }
+    }
+    let rel = '\u2286'
+    let rightStr = prop.predicate
+    let notEmpty = false
+    if (prop.quantifier === 'E') { rightStr = prop.predicate + "'" }
+    else if (prop.quantifier === 'I') { rel = '\u2229'; notEmpty = true }
+    else if (prop.quantifier === 'O') { rel = '\u2229'; rightStr = prop.predicate + "'"; notEmpty = true }
+    const left  = getVar(prop.subject)
+    const right = getVar(rightStr)
+    return (
+      <span className="inline-flex items-center font-mono text-[11px] font-bold gap-0.5">
+        <span style={{ color: left.color }}>{left.text}</span>
+        <span className="text-[var(--palm)] mx-0.5">{rel}</span>
+        <span style={{ color: right.color }}>{right.text}</span>
+        {notEmpty && <span className="text-[var(--sea-ink-soft)] ml-0.5">\u2260 \u2205</span>}
+      </span>
+    )
+  }
+
+  return (
+    <>
+      {/* Header */}
+      <div className="flex items-center justify-between px-7 pt-5 pb-4 border-b border-[var(--line)] flex-shrink-0">
+        <div>
+          <h2 className="text-xl font-bold text-[var(--sea-ink)]">Choose a Syllogism</h2>
+          <p className="text-xs text-[var(--sea-ink-soft)] mt-0.5">
+            Click any syllogism to start solving it
+          </p>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-8 h-8 flex items-center justify-center rounded-full bg-[var(--foam)] hover:bg-[var(--sand)] transition-colors text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)] text-lg font-bold"
+          aria-label="Close"
+        >
+          &times;
+        </button>
+      </div>
+
+      {/* Figure tabs */}
+      <div className="flex gap-2 px-7 pt-3 pb-3 border-b border-[var(--line)] flex-shrink-0 flex-wrap">
+        <button
+          onClick={() => setActiveTab(null)}
+          className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+            activeTab === null
+              ? 'bg-[var(--sea-ink)] text-white border-[var(--sea-ink)]'
+              : 'bg-[var(--foam)] text-[var(--sea-ink-soft)] border-[var(--chip-line)] hover:border-[var(--sea-ink)] hover:text-[var(--sea-ink)]'
+          }`}
+        >
+          All ({allSyllogisms.length})
+        </button>
+        {([1, 2, 3, 4] as const).map(fig => (
+          <button
+            key={fig}
+            onClick={() => setActiveTab(fig)}
+            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all border ${
+              activeTab === fig
+                ? 'text-white border-transparent'
+                : 'bg-[var(--foam)] text-[var(--sea-ink-soft)] border-[var(--chip-line)] hover:text-[var(--sea-ink)] hover:border-[var(--sea-ink)]'
+            }`}
+            style={activeTab === fig ? { background: FIGURE_COLORS[fig] } : {}}
+          >
+            Figure {FIGURE_NAMES[fig]}&nbsp;&middot;&nbsp;{FIGURE_PATTERNS[fig]}&nbsp;
+            ({allSyllogisms.filter(s => s.figure === fig).length})
+          </button>
+        ))}
+      </div>
+
+      {/* Scrollable grid */}
+      <div className="overflow-y-auto flex-1 px-6 py-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          {visibleSyllogisms.map((syl, idx) => {
+            const active = isActive(syl)
+            const figColor = FIGURE_COLORS[syl.figure]
+            const rows = [
+              { key: 'major', label: 'P1', prop: syl.premises.major, accent: 'var(--lagoon)', bg: 'transparent' },
+              { key: 'minor', label: 'P2', prop: syl.premises.minor, accent: 'var(--lagoon)', bg: 'transparent' },
+              { key: 'concl', label: '\u2234',  prop: syl.conclusion,      accent: 'var(--palm)',   bg: 'var(--hero-a)' },
+            ] as const
+            return (
+              <button
+                key={`${syl.figure}-${syl.mood}-${idx}`}
+                onClick={() => { onSelectSyllogism(syl); onClose() }}
+                className={`text-left rounded-xl border-2 p-4 transition-all hover:shadow-lg w-full ${
+                  active ? 'shadow-md' : 'border-[var(--chip-line)] bg-[var(--foam)] hover:border-[var(--lagoon)]/50 hover:bg-[var(--hero-a)]/20'
+                }`}
+                style={active ? { borderColor: figColor, background: `${figColor}13` } : {}}
+              >
+                {/* Badge row */}
+                <div className="flex items-center gap-2 mb-3 flex-wrap">
+                  <span
+                    className="text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+                    style={{ background: figColor }}
+                  >
+                    Fig.&nbsp;{FIGURE_NAMES[syl.figure]}
+                  </span>
+                  <span
+                    className="font-mono font-bold text-sm px-2 py-0.5 rounded-md border flex-shrink-0"
+                    style={active
+                      ? { color: figColor, borderColor: figColor }
+                      : { color: 'var(--sea-ink)', borderColor: 'var(--chip-line)' }
+                    }
+                  >
+                    {syl.mood}
+                  </span>
+                  {syl.mnemonic && (
+                    <span className="text-[11px] italic text-[var(--sea-ink-soft)] truncate min-w-0">
+                      {syl.mnemonic}
+                    </span>
+                  )}
+                  {active && (
+                    <span className="text-[11px] font-bold ml-auto flex-shrink-0" style={{ color: figColor }}>
+                      ✓ Now
+                    </span>
+                  )}
+                </div>
+
+                {/* Proposition rows */}
+                <div className="space-y-1.5">
+                  {rows.map(({ key, label, prop, accent, bg }) => (
+                    <div
+                      key={key}
+                      className="flex items-stretch rounded-lg overflow-hidden"
+                      style={{ border: `1px solid ${accent}44` }}
+                    >
+                      <div
+                        className="flex items-center justify-center w-7 flex-shrink-0 text-[10px] font-bold text-white"
+                        style={{ background: accent }}
+                      >
+                        {label}
+                      </div>
+                      <div
+                        className="flex-1 min-w-0 px-2.5 py-1.5"
+                        style={{ background: bg === 'transparent' ? 'var(--surface)' : `${bg}88` }}
+                      >
+                        <div className="text-[11px] leading-snug text-[var(--sea-ink)]">
+                          {formatProp(prop, syl)}
+                        </div>
+                        <div className="mt-0.5 opacity-80">
+                          {getLogic(prop, syl)}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="px-7 py-3 border-t border-[var(--line)] flex-shrink-0 flex items-center justify-between">
+        <span className="text-xs text-[var(--sea-ink-soft)]">
+          Showing {visibleSyllogisms.length} of {allSyllogisms.length} syllogisms
+        </span>
+        <button
+          onClick={onClose}
+          className="text-xs text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)] font-semibold transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </>
+  )
+}
 
 
 
@@ -172,13 +461,16 @@ function PracticeQuiz() {
     return 'standard'
   })
   const [shuffledSyllogisms, setShuffledSyllogisms] = useState<Syllogism[]>([])
+  const [allSyllogisms, setAllSyllogisms] = useState<Syllogism[]>([])
   const [showHelp, setShowHelp] = useState(false)
+  const [showFigureModal, setShowFigureModal] = useState(false)
 
   const loadSyllogisms = useCallback((set: 'standard' | 'custom') => {
     const data = set === 'standard' ? standardSyllogisms : customSyllogisms
-    const syllogisms = data.map(d => 
+    const syllogisms = data.map(d =>
       createSyllogism(d.figure as Figure, d.mood as Mood, d.terms)
     )
+    setAllSyllogisms(syllogisms)
     const shuffled = [...syllogisms].sort(() => Math.random() - 0.5)
     setShuffledSyllogisms(shuffled)
     setCurrentIndex(0)
@@ -191,6 +483,20 @@ function PracticeQuiz() {
   useEffect(() => {
     loadSyllogisms(selectedSet)
   }, [selectedSet, loadSyllogisms])
+
+  // Direct pick: put selected syllogism first, shuffle the rest behind it
+  const handleDirectSyllogismSelect = useCallback((syl: Syllogism) => {
+    const rest = allSyllogisms.filter(
+      s => !(s.figure === syl.figure && s.mood === syl.mood)
+    )
+    const shuffledRest = [...rest].sort(() => Math.random() - 0.5)
+    setShuffledSyllogisms([syl, ...shuffledRest])
+    setCurrentIndex(0)
+    setLargeState({})
+    setSmallState({})
+    setValidationResult(null)
+    setShowAnswer(false)
+  }, [allSyllogisms])
 
   const handleSetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newSet = e.target.value as 'standard' | 'custom'
@@ -438,8 +744,38 @@ function PracticeQuiz() {
   return (
     <main className="page-wrap px-4 pb-8 pt-14">
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showFigureModal && (
+        <SyllogismSelectModal
+          allSyllogisms={allSyllogisms}
+          currentSyllogism={currentSyllogism}
+          onSelectSyllogism={handleDirectSyllogismSelect}
+          onClose={() => setShowFigureModal(false)}
+        />
+      )}
       <div className="max-w-[90vw] mx-auto">
 
+        {/* Toolbar */}
+        <div className="flex items-center gap-3 mb-6 flex-wrap">
+          <button
+            id="select-figure-btn"
+            onClick={() => setShowFigureModal(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-[var(--lagoon)] bg-[var(--hero-a)] text-[var(--palm)] font-bold text-sm hover:bg-[var(--lagoon)] hover:text-white transition-all shadow-sm"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+            </svg>
+            Choose Syllogism
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </button>
+          {currentSyllogism && (
+            <span className="text-xs text-[var(--sea-ink-soft)]">
+              Now: <span className="font-mono font-bold text-[var(--sea-ink)]">Fig.&nbsp;{FIGURE_NAMES[currentSyllogism.figure]} · {currentSyllogism.mood}</span>
+            </span>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Left: Controls and Syllogism */}
