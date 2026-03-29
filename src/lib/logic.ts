@@ -2,8 +2,8 @@
 // LEWIS CARROLL SYLLOGISM DIAGRAM ENGINE
 // Compact, algorithmic approach with explicit logical expressions
 // ============================================================================
-import standardSyllogisms from './src/data/syllogisms_standard.json';
-import validAnswers from './src/data/syllogism_answers.json';
+import standardSyllogisms from '../data/syllogisms_standard.json';
+import validAnswers from '../data/syllogism_answers.json';
 
 // ----------------------------------------------------------------------------
 // TYPE DEFINITIONS

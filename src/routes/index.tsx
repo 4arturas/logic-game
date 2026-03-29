@@ -4,6 +4,9 @@ import { useTranslation } from '../i18n/I18nContext'
 import { type DiagramState, type Terms } from '../contexts/DiagramContext'
 import { CopyCode } from '../components/CopyCode'
 import { HelpModal } from '../components/HelpModal'
+import { LargeDiagram } from '../components/LargeDiagram'
+import { SmallDiagram } from '../components/SmallDiagram'
+import { type CounterState } from '../lib/types'
 
 export const Route = createFileRoute('/')({
   component: App,
@@ -18,7 +21,6 @@ export const Route = createFileRoute('/')({
   },
 })
 
-type CounterState = 'red' | 'grey' | null
 
 interface SearchParams {
   x?: string
@@ -134,76 +136,7 @@ function App() {
     setLargeState({})
   }
 
-  const smallCells = [
-    { id: 'c5', x: 5, y: 5, w: 120, h: 120, cx: 65, cy: 65 },
-    { id: 'c6', x: 125, y: 5, w: 120, h: 120, cx: 185, cy: 65 },
-    { id: 'c7', x: 5, y: 125, w: 120, h: 120, cx: 65, cy: 185 },
-    { id: 'c8', x: 125, y: 125, w: 120, h: 120, cx: 185, cy: 185 },
-  ]
 
-  interface CellInfo {
-    id: string
-    x: number
-    y: number
-    w: number
-    h: number
-    cx: number
-    cy: number
-  }
-
-  const largeCells: CellInfo[] = []
-  for (let row = 0; row < 4; row++) {
-    for (let col = 0; col < 4; col++) {
-      let cellId = ''
-      if (row >= 1 && row <= 2 && col >= 1 && col <= 2) {
-        if (row === 1) cellId = col === 1 ? 'lg_11' : 'lg_12'
-        else cellId = col === 1 ? 'lg_13' : 'lg_14'
-      } else {
-        if (row < 2) cellId = col < 2 ? 'lg_9' : 'lg_10'
-        else cellId = col < 2 ? 'lg_15' : 'lg_16'
-      }
-      largeCells.push({
-        id: cellId,
-        x: 10 + col * 95,
-        y: 10 + row * 95,
-        w: 95,
-        h: 95,
-        cx: 57 + col * 95,
-        cy: 57 + row * 95,
-      })
-    }
-  }
-
-  const renderCounters = (state: DiagramState, type: 'small' | 'large') => {
-    return Object.entries(state).map(([id, counterState]) => {
-      const cell = type === 'small' ? smallCells.find(c => c.id === id) : largeCells.find(c => c.id === id)
-      if (!cell) return null
-
-      const radius = type === 'large' ? 12 : 16
-      const fill = counterState === 'red' ? '#dc2626' : '#6b7280'
-      const text = counterState === 'red' ? '1' : '0'
-
-      return (
-        <g
-          key={id}
-          className="counter transition-transform duration-100 ease-in-out pointer-events-none select-none"
-          style={{ transformOrigin: 'center' }}
-        >
-          <circle cx={cell.cx} cy={cell.cy} r={radius} fill={fill} stroke="rgba(0,0,0,0.5)" strokeWidth="2" />
-          <text
-            x={cell.cx}
-            y={cell.cy + radius / 3}
-            textAnchor="middle"
-            fill="white"
-            className="font-bold"
-            style={{ fontSize: type === 'large' ? '10px' : '12px', fontFamily: 'Arial, sans-serif' }}
-          >
-            {text}
-          </text>
-        </g>
-      )
-    })
-  }
 
   return (
     <main className="page-wrap px-4 pb-8 pt-14">
@@ -296,249 +229,22 @@ function App() {
           </div>
 
           <div className="lg:col-span-2 space-y-8 flex flex-col items-center">
-            <div className="bg-[#ede9df] p-6 border-2 border-gray-700 shadow-xl" style={{ boxShadow: '5px 5px 15px rgba(0,0,0,0.1)' }}>
-              <h3 className="text-center text-gray-500 mb-2 uppercase text-xs tracking-widest font-bold">
-                {t('home.large_diagram')}
-              </h3>
-              <svg id="large-diagram" width="440" height="440" viewBox="0 0 400 400" className="select-none">
-                <rect x="10" y="10" width="380" height="380" fill="none" stroke="black" strokeWidth="2" />
-                <rect x="105" y="105" width="190" height="190" fill="none" stroke="black" strokeWidth="1.5" />
-                <line x1="10" y1="200" x2="390" y2="200" stroke="black" strokeWidth="1.5" />
-                <line x1="200" y1="10" x2="200" y2="390" stroke="black" strokeWidth="1.5" />
+            <LargeDiagram
+              state={largeState}
+              onCellClick={(id) => cycleCounter('large', id)}
+              minorTerm={terms.x}
+              majorTerm={terms.y}
+              middleTerm={terms.m}
+              t={(s) => s}
+            />
 
-                <text x="13" y="21" className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none" style={{ fontFamily: '"Courier New", Courier, monospace' }}>
-                  9
-                </text>
-                <text
-                  x="387"
-                  y="21"
-                  textAnchor="end"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  10
-                </text>
-                <text
-                  x="108"
-                  y="117"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  11
-                </text>
-                <text
-                  x="292"
-                  y="117"
-                  textAnchor="end"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  12
-                </text>
-                <text
-                  x="108"
-                  y="292"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  13
-                </text>
-                <text
-                  x="292"
-                  y="292"
-                  textAnchor="end"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  14
-                </text>
-                <text
-                  x="13"
-                  y="387"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  15
-                </text>
-                <text
-                  x="387"
-                  y="387"
-                  textAnchor="end"
-                  className="num-text text-[11px] fill-[var(--sea-ink-soft)] font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  16
-                </text>
-
-                <text
-                  x="200"
-                  y="85"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-x)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.x}
-                </text>
-                <text
-                  x="200"
-                  y="330"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-x)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.x}'
-                </text>
-                <text
-                  x="60"
-                  y="208"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-y)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.y}
-                </text>
-                <text
-                  x="340"
-                  y="208"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-y)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.y}'
-                </text>
-                <text
-                  x="200"
-                  y="208"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-m)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.m}
-                </text>
-
-                {largeCells.map(cell => (
-                  <rect
-                    key={cell.id}
-                    x={cell.x}
-                    y={cell.y}
-                    width={cell.w}
-                    height={cell.h}
-                    fill="transparent"
-                    className="cursor-pointer hover:fill-black/5"
-                    onClick={() => cycleCounter('large', cell.id)}
-                  />
-                ))}
-
-                <g id="large-counters">{renderCounters(largeState, 'large')}</g>
-              </svg>
-            </div>
-
-            <div className="bg-[#ede9df] p-6 border-2 border-gray-700 shadow-xl" style={{ boxShadow: '5px 5px 15px rgba(0,0,0,0.1)' }}>
-              <h3 className="text-center text-gray-500 mb-2 uppercase text-xs tracking-widest font-bold">
-                {t('home.small_diagram')}
-              </h3>
-              <svg id="small-diagram" width="340" height="340" viewBox="0 0 250 250" className="select-none">
-                <rect x="5" y="5" width="240" height="240" fill="none" stroke="black" strokeWidth="3" />
-                <line x1="5" y1="125" x2="245" y2="125" stroke="black" strokeWidth="1.5" />
-                <line x1="125" y1="5" x2="125" y2="245" stroke="black" strokeWidth="1.5" />
-
-                <text
-                  x="8"
-                  y="17"
-                  className="num-text text-[11px] fill-gray-600 font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  5
-                </text>
-                <text
-                  x="242"
-                  y="17"
-                  textAnchor="end"
-                  className="num-text text-[11px] fill-gray-600 font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  6
-                </text>
-                <text
-                  x="8"
-                  y="243"
-                  className="num-text text-[11px] fill-gray-600 font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  7
-                </text>
-                <text
-                  x="242"
-                  y="243"
-                  textAnchor="end"
-                  className="num-text text-[11px] fill-gray-600 font-bold select-none"
-                  style={{ fontFamily: '"Courier New", Courier, monospace' }}
-                >
-                  8
-                </text>
-
-                <text
-                  x="125"
-                  y="55"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-x)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.x}
-                </text>
-                <text
-                  x="125"
-                  y="205"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-x)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.x}'
-                </text>
-                <text
-                  x="40"
-                  y="133"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-y)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.y}
-                </text>
-                <text
-                  x="210"
-                  y="133"
-                  textAnchor="middle"
-                  className="label-text italic text-xl select-none font-bold pointer-events-none"
-                  fill="var(--term-y)"
-                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
-                >
-                  {terms.y}'
-                </text>
-
-                {smallCells.map(cell => (
-                  <rect
-                    key={cell.id}
-                    x={cell.x}
-                    y={cell.y}
-                    width={cell.w}
-                    height={cell.h}
-                    fill="transparent"
-                    className="cursor-pointer hover:fill-black/5"
-                    onClick={() => cycleCounter('small', cell.id)}
-                  />
-                ))}
-
-                <g id="small-counters">{renderCounters(smallState, 'small')}</g>
-              </svg>
-            </div>
+            <SmallDiagram
+              state={smallState}
+              onCellClick={(id) => cycleCounter('small', id)}
+              minorTerm={terms.x}
+              majorTerm={terms.y}
+              t={(s) => s}
+            />
           </div>
         </div>
       </div>

@@ -6,18 +6,16 @@ import {
   type Syllogism,
   generateDiagram,
   validateUserDiagram,
-} from '../../logic'
+} from '../lib/logic'
 import { HelpModal } from '../components/HelpModal'
 import { CopyCode } from '../components/CopyCode'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
+import { LargeDiagram } from '../components/LargeDiagram'
+import { SmallDiagram } from '../components/SmallDiagram'
+import { type CellState, type CounterState } from '../lib/types'
 
 export const Route = createFileRoute('/game')({ component: Game })
 
-type CounterState = 'red' | 'grey' | null
-
-interface CellState {
-  [id: string]: CounterState
-}
 
 interface Terms {
   x: string
@@ -520,42 +518,6 @@ function Game() {
     return `${m}\n${n}\n∴ ${c}`
   }, [currentSyllogism, t])
 
-  const largeCells = [
-    { id: 'lg_9',  x: 10,  y: 10,  w: 95, h: 95, cx: 57,  cy: 57 },
-    { id: 'lg_10', x: 295, y: 10,  w: 95, h: 95, cx: 343, cy: 57 },
-    { id: 'lg_11', x: 105, y: 105, w: 95, h: 95, cx: 152, cy: 152 },
-    { id: 'lg_12', x: 200, y: 105, w: 95, h: 95, cx: 247, cy: 152 },
-    { id: 'lg_13', x: 105, y: 200, w: 95, h: 95, cx: 152, cy: 247 },
-    { id: 'lg_14', x: 200, y: 200, w: 95, h: 95, cx: 247, cy: 247 },
-    { id: 'lg_15', x: 10,  y: 295, w: 95, h: 95, cx: 57,  cy: 343 },
-    { id: 'lg_16', x: 295, y: 295, w: 95, h: 95, cx: 343, cy: 343 },
-  ]
-
-  const smallCells = [
-    { id: 'c5', x: 5, y: 5, w: 120, h: 120, cx: 65, cy: 65 },
-    { id: 'c6', x: 125, y: 5, w: 120, h: 120, cx: 185, cy: 65 },
-    { id: 'c7', x: 5, y: 125, w: 120, h: 120, cx: 65, cy: 185 },
-    { id: 'c8', x: 125, y: 125, w: 120, h: 120, cx: 185, cy: 185 },
-  ]
-
-  const renderCounters = (state: CellState, type: 'small' | 'large') => {
-    const cells = type === 'large' ? largeCells : smallCells
-    return Object.entries(state).map(([id, counterState]) => {
-      const cell = cells.find(c => c.id === id)
-      if (!cell || !counterState) return null
-      const radius = type === 'large' ? 12 : 16
-      const fill = counterState === 'red' ? '#dc2626' : '#6b7280'
-      const text = counterState === 'red' ? '1' : '0'
-      return (
-        <g key={id} className="pointer-events-none select-none">
-          <circle cx={cell.cx} cy={cell.cy} r={radius} fill={fill} stroke="rgba(0,0,0,0.5)" strokeWidth="2" />
-          <text x={cell.cx} y={cell.cy + radius / 3} textAnchor="middle" fill="white" className="font-bold" style={{ fontSize: type === 'large' ? '10px' : '12px', fontFamily: 'Arial, sans-serif' }}>
-            {text}
-          </text>
-        </g>
-      )
-    })
-  }
 
   if (!currentSyllogism) {
     return (
@@ -736,61 +698,24 @@ function Game() {
 
           {/* Right: Diagrams */}
           <div className="lg:col-span-2 space-y-4">
-            {/* Large Diagram */}
-            <div className="bg-[var(--sand)] p-6 rounded-2xl border-2 border-[var(--sea-ink)] shadow-xl">
-              <h3 className="text-center text-[var(--sea-ink-soft)] mb-3 uppercase text-xs tracking-widest font-bold">
-                Large Diagram (DD)
-              </h3>
-              <svg width="440" height="440" viewBox="0 0 400 400" className="select-none mx-auto">
-                <rect x="10" y="10" width="380" height="380" fill="none" stroke="black" strokeWidth="2" />
-                <rect x="105" y="105" width="190" height="190" fill="none" stroke="black" strokeWidth="1.5" />
-                <line x1="10" y1="200" x2="390" y2="200" stroke="black" strokeWidth="1.5" />
-                <line x1="200" y1="10" x2="200" y2="390" stroke="black" strokeWidth="1.5" />
-                {/* Cell numbers */}
-                <text x="13" y="21" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>9</text>
-                <text x="387" y="21" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>10</text>
-                <text x="108" y="117" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>11</text>
-                <text x="292" y="117" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>12</text>
-                <text x="108" y="292" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>13</text>
-                <text x="292" y="292" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>14</text>
-                <text x="13" y="387" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>15</text>
-                <text x="387" y="387" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>16</text>
-                <text x="200" y="85" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-x)" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{t(terms.x as any)}</text>
-                <text x="200" y="330" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-x)" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{t(terms.x as any)}'</text>
-                <text x="60" y="208" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-y)" style={{ fontFamily: "'Times New Roman', Times, serif", writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', transformOrigin: '60px 208px' }}>{t(terms.y as any)}</text>
-                <text x="340" y="208" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-y)" style={{ fontFamily: "'Times New Roman', Times, serif", writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', transformOrigin: '340px 208px' }}>{t(terms.y as any)}'</text>
-                <text x="200" y="208" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-m)" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{t(terms.m as any)}</text>
-                {!isComplete && largeCells.map(cell => (
-                  <rect key={cell.id} x={cell.x} y={cell.y} width={cell.w} height={cell.h} fill="transparent" className="cursor-pointer hover:fill-black/5" onClick={() => cycleCounter('large', cell.id)} />
-                ))}
-                <g>{renderCounters(largeState, 'large')}</g>
-              </svg>
-            </div>
+            <LargeDiagram
+              state={largeState}
+              onCellClick={(id) => cycleCounter('large', id)}
+              minorTerm={currentSyllogism.terms.minorTerm}
+              majorTerm={currentSyllogism.terms.majorTerm}
+              middleTerm={currentSyllogism.terms.middleTerm}
+              t={t}
+              isReadOnly={isComplete}
+            />
 
-            {/* Small Diagram */}
-            <div className="bg-[var(--sand)] p-6 rounded-2xl border-2 border-[var(--sea-ink)] shadow-xl">
-              <h3 className="text-center text-[var(--sea-ink-soft)] mb-3 uppercase text-xs tracking-widest font-bold">
-                Small Diagram (MD)
-              </h3>
-              <svg width="340" height="340" viewBox="0 0 250 250" className="select-none mx-auto">
-                <rect x="5" y="5" width="240" height="240" fill="none" stroke="black" strokeWidth="2" />
-                <line x1="5" y1="125" x2="245" y2="125" stroke="black" strokeWidth="1.5" />
-                <line x1="125" y1="5" x2="125" y2="245" stroke="black" strokeWidth="1.5" />
-                {/* Cell numbers */}
-                <text x="8" y="17" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>5</text>
-                <text x="242" y="17" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>6</text>
-                <text x="8" y="243" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>7</text>
-                <text x="242" y="243" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>8</text>
-                <text x="125" y="55" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-x)" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{t(terms.x as any)}</text>
-                <text x="125" y="205" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-x)" style={{ fontFamily: "'Times New Roman', Times, serif" }}>{t(terms.x as any)}'</text>
-                <text x="40" y="133" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-y)" style={{ fontFamily: "'Times New Roman', Times, serif", writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', transformOrigin: '40px 133px' }}>{t(terms.y as any)}</text>
-                <text x="210" y="133" textAnchor="middle" className="italic text-xl select-none font-bold pointer-events-none" fill="var(--term-y)" style={{ fontFamily: "'Times New Roman', Times, serif", writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)', transformOrigin: '210px 133px' }}>{t(terms.y as any)}'</text>
-                {!isComplete && smallCells.map(cell => (
-                  <rect key={cell.id} x={cell.x} y={cell.y} width={cell.w} height={cell.h} fill="transparent" className="cursor-pointer hover:fill-black/5" onClick={() => cycleCounter('small', cell.id)} />
-                ))}
-                <g>{renderCounters(smallState, 'small')}</g>
-              </svg>
-            </div>
+            <SmallDiagram
+              state={smallState}
+              onCellClick={(id) => cycleCounter('small', id)}
+              minorTerm={currentSyllogism.terms.minorTerm}
+              majorTerm={currentSyllogism.terms.majorTerm}
+              t={t}
+              isReadOnly={isComplete}
+            />
           </div>
         </div>
       </div>

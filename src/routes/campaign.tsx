@@ -7,18 +7,19 @@ import {
   type Syllogism,
   generateDiagram,
   validateUserDiagram,
-} from '../../logic'
+} from '../lib/logic'
 import { Gamification, type GameState, MAX_HEARTS } from '../lib/gamification'
 import { AudioEngine } from '../lib/audio'
 import Confetti from '../components/Confetti'
 import { HelpModal } from '../components/HelpModal'
 import { CopyCode } from '../components/CopyCode'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
+import { LargeDiagram } from '../components/LargeDiagram'
+import { SmallDiagram } from '../components/SmallDiagram'
+import { type CellState, type CounterState } from '../lib/types'
 
 export const Route = createFileRoute('/campaign')({ component: CampaignRoute })
 
-type CounterState = 'red' | 'grey' | null
-interface CellState { [id: string]: CounterState }
 
 function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) => string }) {
   const formatProposition = (prop: { quantifier: string; subject: string; predicate: string }) => {
@@ -230,33 +231,6 @@ function CampaignRoute() {
     }
   }
 
-  const renderCounters = (state: CellState, type: 'small' | 'large') => {
-    const largeCells = [
-      { id: 'lg_9',  cx: 57,  cy: 57 }, { id: 'lg_10', cx: 343, cy: 57 },
-      { id: 'lg_11', cx: 152, cy: 152 }, { id: 'lg_12', cx: 247, cy: 152 },
-      { id: 'lg_13', cx: 152, cy: 247 }, { id: 'lg_14', cx: 247, cy: 247 },
-      { id: 'lg_15', cx: 57,  cy: 343 }, { id: 'lg_16', cx: 343, cy: 343 },
-    ]
-    const smallCells = [
-      { id: 'c5', cx: 65, cy: 65 }, { id: 'c6', cx: 185, cy: 65 },
-      { id: 'c7', cx: 65, cy: 185 }, { id: 'c8', cx: 185, cy: 185 },
-    ]
-    const cells = type === 'large' ? largeCells : smallCells
-    return Object.entries(state).map(([id, st]) => {
-      const cell = cells.find(c => c.id === id)
-      if (!cell || !st) return null
-      const radius = type === 'large' ? 12 : 16
-      const fill = st === 'red' ? '#dc2626' : '#6b7280'
-      return (
-        <g key={id} className="pointer-events-none select-none">
-          <circle cx={cell.cx} cy={cell.cy} r={radius} fill={fill} stroke="rgba(0,0,0,0.5)" strokeWidth="2" />
-          <text x={cell.cx} y={cell.cy + radius / 3} textAnchor="middle" fill="white" className="font-bold" style={{ fontSize: type === 'large' ? '10px' : '12px' }}>
-            {st === 'red' ? '1' : '0'}
-          </text>
-        </g>
-      )
-    })
-  }
 
   if (!currentSyllogism) return <div className="text-center pt-20">Loading...</div>
 
@@ -348,61 +322,24 @@ function CampaignRoute() {
 
         {/* Right: Boards */}
         <div className="flex flex-col items-center gap-6">
-          <div className="bg-[var(--surface)] p-6 rounded-2xl shadow-xl w-full flex flex-col items-center border border-[var(--chip-line)] overflow-hidden">
-             <svg width="320" height="320" viewBox="0 0 400 400" className="select-none mx-auto">
-                <rect x="10" y="10" width="380" height="380" fill="none" stroke="black" strokeWidth="2" />
-                <rect x="105" y="105" width="190" height="190" fill="none" stroke="black" strokeWidth="1.5" />
-                <line x1="10" y1="200" x2="390" y2="200" stroke="black" strokeWidth="1.5" />
-                <line x1="200" y1="10" x2="200" y2="390" stroke="black" strokeWidth="1.5" />
-                {/* Cell numbers */}
-                <text x="13" y="21" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>9</text>
-                <text x="387" y="21" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>10</text>
-                <text x="108" y="117" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>11</text>
-                <text x="292" y="117" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>12</text>
-                <text x="108" y="292" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>13</text>
-                <text x="292" y="292" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>14</text>
-                <text x="13" y="387" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>15</text>
-                <text x="387" y="387" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>16</text>
-                <text x="200" y="85" textAnchor="middle" className="italic text-3xl font-serif font-bold pointer-events-none" fill="var(--term-x)">{t(currentSyllogism.terms.minorTerm as any)}</text>
-                <text x="200" y="335" textAnchor="middle" className="italic text-3xl font-serif font-bold pointer-events-none" fill="var(--term-x)">{t(currentSyllogism.terms.minorTerm as any)}'</text>
-                <text x="50" y="210" textAnchor="middle" className="italic text-3xl font-serif font-bold pointer-events-none" fill="var(--term-y)" transform="rotate(-90 50 210)">{t(currentSyllogism.terms.majorTerm as any)}</text>
-                <text x="350" y="210" textAnchor="middle" className="italic text-3xl font-serif font-bold pointer-events-none" fill="var(--term-y)" transform="rotate(-90 350 210)">{t(currentSyllogism.terms.majorTerm as any)}'</text>
-                <text x="200" y="210" textAnchor="middle" className="italic text-2xl font-serif font-bold pointer-events-none" fill="var(--term-m)">{t(currentSyllogism.terms.middleTerm as any)}</text>
-                {[
-                  { id: 'lg_9',  x: 10, y: 10, w: 95, h: 95 }, { id: 'lg_10', x: 295, y: 10, w: 95, h: 95 },
-                  { id: 'lg_11', x: 105, y: 105, w: 95, h: 95 }, { id: 'lg_12', x: 200, y: 105, w: 95, h: 95 },
-                  { id: 'lg_13', x: 105, y: 200, w: 95, h: 95 }, { id: 'lg_14', x: 200, y: 200, w: 95, h: 95 },
-                  { id: 'lg_15', x: 10, y: 295, w: 95, h: 95 }, { id: 'lg_16', x: 295, y: 295, w: 95, h: 95 },
-                ].map(c => (
-                  <rect key={c.id} x={c.x} y={c.y} width={c.w} height={c.h} fill="transparent" className="cursor-pointer hover:fill-black/5" onClick={() => cycleCounter('large', c.id)} />
-                ))}
-                <g>{renderCounters(largeState, 'large')}</g>
-             </svg>
-          </div>
+          <LargeDiagram
+            state={largeState}
+            onCellClick={(id) => cycleCounter('large', id)}
+            minorTerm={currentSyllogism.terms.minorTerm}
+            majorTerm={currentSyllogism.terms.majorTerm}
+            middleTerm={currentSyllogism.terms.middleTerm}
+            t={t}
+            isReadOnly={validationResult?.isCorrect}
+          />
 
-          <div className="bg-[var(--surface)] p-6 rounded-2xl shadow-xl w-full flex flex-col items-center border border-[var(--chip-line)] overflow-hidden">
-             <svg width="280" height="280" viewBox="0 0 250 250" className="select-none mx-auto">
-                <rect x="5" y="5" width="240" height="240" fill="none" stroke="black" strokeWidth="2" />
-                <line x1="5" y1="125" x2="245" y2="125" stroke="black" strokeWidth="1.5" />
-                <line x1="125" y1="5" x2="125" y2="245" stroke="black" strokeWidth="1.5" />
-                {/* Cell numbers */}
-                <text x="8" y="17" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>5</text>
-                <text x="242" y="17" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>6</text>
-                <text x="8" y="243" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>7</text>
-                <text x="242" y="243" textAnchor="end" className="text-[11px] font-bold select-none pointer-events-none" fill="var(--sea-ink-soft)" style={{ fontFamily: '"Courier New", Courier, monospace' }}>8</text>
-                <text x="125" y="55" textAnchor="middle" className="italic text-2xl font-serif font-bold pointer-events-none" fill="var(--term-x)">{t(currentSyllogism.terms.minorTerm as any)}</text>
-                <text x="125" y="205" textAnchor="middle" className="italic text-2xl font-serif font-bold pointer-events-none" fill="var(--term-x)">{t(currentSyllogism.terms.minorTerm as any)}'</text>
-                <text x="35" y="135" textAnchor="middle" className="italic text-2xl font-serif font-bold pointer-events-none" fill="var(--term-y)" transform="rotate(-90 35 135)">{t(currentSyllogism.terms.majorTerm as any)}</text>
-                <text x="215" y="135" textAnchor="middle" className="italic text-2xl font-serif font-bold pointer-events-none" fill="var(--term-y)" transform="rotate(-90 215 135)">{t(currentSyllogism.terms.majorTerm as any)}'</text>
-                {[
-                  { id: 'c5', x: 5, y: 5, w: 120, h: 120 }, { id: 'c6', x: 125, y: 5, w: 120, h: 120 },
-                  { id: 'c7', x: 5, y: 125, w: 120, h: 120 }, { id: 'c8', x: 125, y: 125, w: 120, h: 120 },
-                ].map(c => (
-                   <rect key={c.id} x={c.x} y={c.y} width={c.w} height={c.h} fill="transparent" className="cursor-pointer hover:fill-black/5" onClick={() => cycleCounter('small', c.id)} />
-                ))}
-                <g>{renderCounters(smallState, 'small')}</g>
-             </svg>
-          </div>
+          <SmallDiagram
+            state={smallState}
+            onCellClick={(id) => cycleCounter('small', id)}
+            minorTerm={currentSyllogism.terms.minorTerm}
+            majorTerm={currentSyllogism.terms.majorTerm}
+            t={t}
+            isReadOnly={validationResult?.isCorrect}
+          />
         </div>
       </div>
 

@@ -52,7 +52,7 @@ export function PropositionLogicSequence({ prop, syllogism }: PropositionLogicSe
       <span className="text-[var(--palm)]">{relationSign}</span>
       <span style={{ color: rightVar.color }}>{rightVar.text}</span>
       {(prop.quantifier === 'I' || prop.quantifier === 'O') && (
-        <span className="text-[var(--sea-ink)] whitespace-nowrap">\u2260 \u2205</span>
+        <span className="text-[var(--sea-ink)] whitespace-nowrap">{String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}</span>
       )}
     </div>
   )
