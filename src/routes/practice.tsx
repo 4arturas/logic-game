@@ -35,7 +35,7 @@ interface Terms {
 
 
 
-function SyllogismCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) => string }) {
+function SyllogismCard({ syllogism, t, selectedSet, onSetChange }: { syllogism: Syllogism; t: (key: any) => string; selectedSet: string; onSetChange: (e: React.ChangeEvent<HTMLSelectElement>) => void }) {
 
   const formatProposition = (prop: { quantifier: string; subject: string; predicate: string }) => {
     const sKey = prop.subject
@@ -70,7 +70,15 @@ function SyllogismCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) =
         <span className="bg-[var(--foam)] text-[var(--palm)] px-3 py-1 rounded-full text-sm font-mono font-bold border border-[var(--chip-line)]">
           {syllogism.mood}
         </span>
-        <span className="text-[var(--sea-ink-soft)] font-semibold italic">{syllogism.mnemonic}</span>
+        <span className="text-[var(--sea-ink-soft)] font-semibold italic flex-1">{syllogism.mnemonic}</span>
+        <select
+          value={selectedSet}
+          onChange={onSetChange}
+          className="bg-[var(--foam)] border border-[var(--line)] rounded-lg px-2 py-1 text-xs font-bold text-[var(--sea-ink)] outline-none cursor-pointer hover:bg-[var(--hero-a)] transition-colors"
+        >
+          <option value="standard">Standard Carroll Set (24)</option>
+          <option value="custom">Color / Taste / Apple Set (24)</option>
+        </select>
       </div>
 
       <div className="space-y-3">
@@ -431,30 +439,12 @@ function PracticeQuiz() {
     <main className="page-wrap px-4 pb-8 pt-14">
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
       <div className="max-w-[90vw] mx-auto">
-        {/* Set Selection and Term Input Fields */}
-        <div className="bg-[var(--surface)] p-6 rounded-lg shadow-md border-b-4 border-[var(--lagoon)] mb-8">
-          <div className="flex flex-wrap justify-between items-center gap-4">
-            <div className="flex flex-col">
-              <label htmlFor="set-select" className="text-[var(--sea-ink-soft)] text-xs font-bold uppercase tracking-wider mb-2">
-                {t('quiz.practice_title')}
-              </label>
-              <select
-                id="set-select"
-                value={selectedSet}
-                onChange={handleSetChange}
-                className="bg-[var(--foam)] border-2 border-[var(--lagoon)] rounded-lg px-4 py-2 font-bold text-[var(--sea-ink)] outline-none cursor-pointer hover:bg-[var(--hero-a)] transition-colors"
-              >
-                <option value="standard">Standard Carroll Set (24)</option>
-                <option value="custom">Color / Taste / Apple Set (24)</option>
-              </select>
-            </div>
-          </div>
-        </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Left: Controls and Syllogism */}
           <div className="space-y-6">
-            <SyllogismCard syllogism={currentSyllogism} t={t} />
+            <SyllogismCard syllogism={currentSyllogism} t={t} selectedSet={selectedSet} onSetChange={handleSetChange} />
 
             {/* Score Board */}
             <ScoreBoard score={score} total={currentIndex + 1} streak={streak} t={t} />
