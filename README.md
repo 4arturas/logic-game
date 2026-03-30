@@ -1,4 +1,6 @@
-Welcome to your new TanStack Start app! 
+Trilateral (large) and bilateral (small) diagrams
+
+Welcome to your new TanStack Start app!
 
 # Getting Started
 

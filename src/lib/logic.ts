@@ -354,9 +354,10 @@ export function generateDiagram(syllogism: Syllogism): DiagramEncoding {
   // FORCE EXISTENTIAL IMPORT FOR ALL TERMS (S, P, M)
   // Lewis Carroll assumes all terms exist. If 3 cells in a term's region 
   // are empty (0), and the 4th is unknown (-), mark it as Exists (1).
-  // Note: we only force this for the minor term (S) to match user expectations.
   const termRegions = [
-    { name: 'S', ids: [9, 10, 11, 12] }
+    { name: 'S', ids: [9, 10, 11, 12] },
+    { name: 'P', ids: [9, 11, 13, 15] },
+    { name: 'M', ids: [11, 12, 13, 14] }
   ];
 
   termRegions.forEach(region => {
