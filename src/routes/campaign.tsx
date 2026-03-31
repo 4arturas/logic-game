@@ -16,12 +16,15 @@ import { CopyCode } from '../components/CopyCode'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 import { LargeDiagram } from '../components/LargeDiagram'
 import { SmallDiagram } from '../components/SmallDiagram'
+import { useSettings } from '../contexts/SettingsContext'
 import { type CellState, type CounterState } from '../lib/types'
 
 export const Route = createFileRoute('/campaign')({ component: CampaignRoute })
 
 
 function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: any) => string }) {
+  const { premiseOrder } = useSettings()
+  
   const formatProposition = (prop: { quantifier: string; subject: string; predicate: string }) => {
     const sKey = prop.subject
     const pKey = prop.predicate
@@ -52,22 +55,26 @@ function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: 
         Fig {syllogism.figure} • {syllogism.mood}
       </div>
       <div className="space-y-4 pt-4">
-        <div className="p-3 bg-[var(--foam)] rounded-lg text-center font-bold text-lg text-[var(--sea-ink)] shadow-sm">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <p>{formatProposition(syllogism.premises.major)}</p>
-            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm overflow-hidden scale-90 -mb-2">
-              <PropositionLogicSequence prop={syllogism.premises.major} syllogism={syllogism} />
+        {[
+          ...(premiseOrder === 'major-first'
+            ? [
+                { type: 'major', prop: syllogism.premises.major },
+                { type: 'minor', prop: syllogism.premises.minor }
+              ]
+            : [
+                { type: 'minor', prop: syllogism.premises.minor },
+                { type: 'major', prop: syllogism.premises.major }
+              ]),
+        ].map((item) => (
+          <div key={item.type} className="p-3 bg-[var(--foam)] rounded-lg text-center font-bold text-lg text-[var(--sea-ink)] shadow-sm">
+            <div className="flex flex-col items-center justify-center gap-2">
+              <p>{formatProposition(item.prop)}</p>
+              <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm overflow-hidden scale-90 -mb-2">
+                <PropositionLogicSequence prop={item.prop} syllogism={syllogism} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="p-3 bg-[var(--foam)] rounded-lg text-center font-bold text-lg text-[var(--sea-ink)] shadow-sm">
-          <div className="flex flex-col items-center justify-center gap-2">
-            <p>{formatProposition(syllogism.premises.minor)}</p>
-            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm overflow-hidden scale-90 -mb-2">
-              <PropositionLogicSequence prop={syllogism.premises.minor} syllogism={syllogism} />
-            </div>
-          </div>
-        </div>
+        ))}
         <div className="p-3 border-2 border-[var(--lagoon)] rounded-lg text-center font-black text-xl text-[var(--lagoon-deep)] bg-[var(--hero-a)]/30">
           <div className="flex flex-col items-center justify-center gap-2">
             <p>∴ {formatProposition(syllogism.conclusion)}</p>
@@ -83,6 +90,7 @@ function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: 
 
 function CampaignRoute() {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
   const [gameState, setGameState] = useState<GameState>(Gamification.defaultState())
   const [currentSyllogism, setCurrentSyllogism] = useState<Syllogism | null>(null)
   
@@ -144,8 +152,8 @@ function CampaignRoute() {
       return `${t('quiz.some_word')} ${s} ${verb} ${p}`
     }
 
-    const m = formatProp(currentSyllogism.premises.major)
-    const n = formatProp(currentSyllogism.premises.minor)
+    const m = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.major : currentSyllogism.premises.minor)
+    const n = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.minor : currentSyllogism.premises.major)
     const c = formatProp(currentSyllogism.conclusion)
 
     return `${m}\n${n}\n∴ ${c}`

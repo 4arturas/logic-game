@@ -14,6 +14,7 @@ import { CopyCode } from '../components/CopyCode'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 import { LargeDiagram } from '../components/LargeDiagram'
 import { SmallDiagram } from '../components/SmallDiagram'
+import { useSettings } from '../contexts/SettingsContext'
 import { type CellState, type CounterState } from '../lib/types'
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
@@ -119,6 +120,7 @@ function SyllogismModalInner({
   onClose: () => void
 }) {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
 
   const formatProp = (
     prop: { quantifier: string; subject: string; predicate: string },
@@ -227,14 +229,21 @@ function SyllogismModalInner({
           {visibleSyllogisms.map((syl, idx) => {
             const active = isActive(syl)
             const figColor = FIGURE_COLORS[syl.figure]
-            const rows = [
-              { key: 'major', label: 'P1', prop: syl.premises.major, accent: 'var(--lagoon)', bg: 'transparent' },
-              { key: 'minor', label: 'P2', prop: syl.premises.minor, accent: 'var(--lagoon)', bg: 'transparent' },
-              { key: 'concl', label: '\u2234',  prop: syl.conclusion,      accent: 'var(--palm)',   bg: 'var(--hero-a)' },
-            ] as const
+            const idxKey = `${syl.figure}-${syl.mood}-${idx}`
+            const rows = premiseOrder === 'major-first'
+              ? [
+                  { key: 'major', label: 'P1', prop: syl.premises.major, accent: 'var(--lagoon)', bg: 'transparent' },
+                  { key: 'minor', label: 'P2', prop: syl.premises.minor, accent: 'var(--lagoon)', bg: 'transparent' },
+                  { key: 'concl', label: '\u2234',  prop: syl.conclusion,      accent: 'var(--palm)',   bg: 'var(--hero-a)' },
+                ] as const
+              : [
+                  { key: 'minor', label: 'P1', prop: syl.premises.minor, accent: 'var(--lagoon)', bg: 'transparent' },
+                  { key: 'major', label: 'P2', prop: syl.premises.major, accent: 'var(--lagoon)', bg: 'transparent' },
+                  { key: 'concl', label: '\u2234',  prop: syl.conclusion,      accent: 'var(--palm)',   bg: 'var(--hero-a)' },
+                ] as const
             return (
               <button
-                key={`${syl.figure}-${syl.mood}-${idx}`}
+                key={idxKey}
                 onClick={() => { onSelectSyllogism(syl); onClose() }}
                 className={`text-left rounded-xl border-2 p-4 transition-all hover:shadow-lg w-full ${
                   active ? 'shadow-md' : 'border-[var(--chip-line)] bg-[var(--foam)] hover:border-[var(--lagoon)]/50 hover:bg-[var(--hero-a)]/20'
@@ -323,6 +332,7 @@ function SyllogismModalInner({
 
 
 function SyllogismCard({ syllogism, t, selectedSet, onSetChange }: { syllogism: Syllogism; t: (key: any) => string; selectedSet: string; onSetChange: (e: React.ChangeEvent<HTMLSelectElement>) => void }) {
+  const { premiseOrder } = useSettings()
 
   const formatProposition = (prop: { quantifier: string; subject: string; predicate: string }) => {
     const sKey = prop.subject
@@ -369,24 +379,27 @@ function SyllogismCard({ syllogism, t, selectedSet, onSetChange }: { syllogism: 
       </div>
 
       <div className="space-y-3">
-        <div className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
-          <span className="text-xs text-[var(--lagoon)] font-semibold uppercase tracking-wide">{t('quiz.major_premise')}</span>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(syllogism.premises.major)}</p>
-            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm">
-              <PropositionLogicSequence prop={syllogism.premises.major} syllogism={syllogism} />
+        {[
+          ...(premiseOrder === 'major-first'
+            ? [
+                { type: 'major', prop: syllogism.premises.major, label: t('quiz.major_premise') },
+                { type: 'minor', prop: syllogism.premises.minor, label: t('quiz.minor_premise') }
+              ]
+            : [
+                { type: 'minor', prop: syllogism.premises.minor, label: t('quiz.minor_premise') },
+                { type: 'major', prop: syllogism.premises.major, label: t('quiz.major_premise') }
+              ]),
+        ].map(item => (
+          <div key={item.type} className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
+            <span className="text-xs text-[var(--lagoon)] font-semibold uppercase tracking-wide">{item.label}</span>
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(item.prop)}</p>
+              <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm">
+                <PropositionLogicSequence prop={item.prop} syllogism={syllogism} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
-          <span className="text-xs text-[var(--lagoon)] font-semibold uppercase tracking-wide">{t('quiz.minor_premise')}</span>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(syllogism.premises.minor)}</p>
-            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm">
-              <PropositionLogicSequence prop={syllogism.premises.minor} syllogism={syllogism} />
-            </div>
-          </div>
-        </div>
+        ))}
         <div className="bg-[var(--hero-a)]/30 p-3 rounded-lg border border-[var(--lagoon)]">
           <span className="text-xs text-[var(--palm)] font-semibold uppercase tracking-wide">{t('quiz.conclusion')}</span>
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -439,6 +452,7 @@ function ScoreBoard({ score, total, streak, t }: { score: number; total: number;
 
 function PracticeQuiz() {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [terms, setTerms] = useState<Terms>({ x: '', y: '', m: '' })
   const [largeState, setLargeState] = useState<CellState>({})
@@ -649,8 +663,8 @@ function PracticeQuiz() {
       return `${t('quiz.some_word')} ${s} ${verb} ${p}`
     }
 
-    const m = formatProp(currentSyllogism.premises.major)
-    const n = formatProp(currentSyllogism.premises.minor)
+    const m = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.major : currentSyllogism.premises.minor)
+    const n = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.minor : currentSyllogism.premises.major)
     const c = formatProp(currentSyllogism.conclusion)
 
     return `${m}\n${n}\n∴ ${c}`

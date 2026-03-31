@@ -12,6 +12,7 @@ import { CopyCode } from '../components/CopyCode'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 import { LargeDiagram } from '../components/LargeDiagram'
 import { SmallDiagram } from '../components/SmallDiagram'
+import { useSettings } from '../contexts/SettingsContext'
 import { type CellState, type CounterState } from '../lib/types'
 
 export const Route = createFileRoute('/game')({ component: Game })
@@ -301,6 +302,7 @@ function Confetti() {
 
 function Game() {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
   const [gameState, setGameState] = useState<GameState>(getInitialState)
   const [currentSyllogism, setCurrentSyllogism] = useState<Syllogism | null>(null)
   const [terms, setTerms] = useState<Terms>({ x: '', y: '', m: '' })
@@ -511,8 +513,8 @@ function Game() {
       return `${t('quiz.some_word')} ${s} ${verb} ${p}`
     }
 
-    const m = formatProp(currentSyllogism.premises.major)
-    const n = formatProp(currentSyllogism.premises.minor)
+    const m = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.major : currentSyllogism.premises.minor)
+    const n = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.minor : currentSyllogism.premises.major)
     const c = formatProp(currentSyllogism.conclusion)
 
     return `${m}\n${n}\n∴ ${c}`
@@ -603,28 +605,29 @@ function Game() {
                 </span>
               </div>
               <div className="space-y-4 text-sm mt-4">
-                <div className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
-                  <span className="text-xs text-[var(--lagoon)] font-semibold">Major Premise:</span>
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-1">
-                    <p className="text-[var(--sea-ink)] text-center md:text-left">
-                      <span style={{ color: 'var(--term-m)', fontWeight: 'bold', textDecoration: 'underline' }}>{t(currentSyllogism.premises.major.subject as any)}</span> - <span style={{ color: 'var(--term-y)', fontWeight: 'bold', textDecoration: 'underline' }}>{t(currentSyllogism.premises.major.predicate as any)}</span>
-                    </p>
-                    <div className="bg-white/60 px-3 rounded text-sm border border-dashed border-[var(--lagoon)] shadow-sm scale-90 origin-right">
-                      <PropositionLogicSequence prop={currentSyllogism.premises.major} syllogism={currentSyllogism} />
+                {[
+                  ...(premiseOrder === 'major-first'
+                    ? [
+                        { type: 'major', prop: currentSyllogism.premises.major, label: 'Major Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-y)' },
+                        { type: 'minor', prop: currentSyllogism.premises.minor, label: 'Minor Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-x)' }
+                      ]
+                    : [
+                        { type: 'minor', prop: currentSyllogism.premises.minor, label: 'Minor Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-x)' },
+                        { type: 'major', prop: currentSyllogism.premises.major, label: 'Major Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-y)' }
+                      ]),
+                ].map((item) => (
+                  <div key={item.type} className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
+                    <span className="text-xs text-[var(--lagoon)] font-semibold">{item.label}</span>
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-1">
+                      <p className="text-[var(--sea-ink)] text-center md:text-left">
+                        <span style={{ color: item.t_s, fontWeight: 'bold', textDecoration: 'underline' }}>{t(item.prop.subject as any)}</span> - <span style={{ color: item.t_p, fontWeight: 'bold', textDecoration: 'underline' }}>{t(item.prop.predicate as any)}</span>
+                      </p>
+                      <div className="bg-white/60 px-3 rounded text-sm border border-dashed border-[var(--lagoon)] shadow-sm scale-90 origin-right">
+                        <PropositionLogicSequence prop={item.prop} syllogism={currentSyllogism} />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
-                  <span className="text-xs text-[var(--lagoon)] font-semibold">Minor Premise:</span>
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-1">
-                    <p className="text-[var(--sea-ink)] text-center md:text-left">
-                      <span style={{ color: 'var(--term-m)', fontWeight: 'bold', textDecoration: 'underline' }}>{t(currentSyllogism.premises.minor.subject as any)}</span> - <span style={{ color: 'var(--term-x)', fontWeight: 'bold', textDecoration: 'underline' }}>{t(currentSyllogism.premises.minor.predicate as any)}</span>
-                    </p>
-                    <div className="bg-white/60 px-3 rounded text-sm border border-dashed border-[var(--lagoon)] shadow-sm scale-90 origin-right">
-                      <PropositionLogicSequence prop={currentSyllogism.premises.minor} syllogism={currentSyllogism} />
-                    </div>
-                  </div>
-                </div>
+                ))}
                 <div className="bg-[var(--hero-a)]/30 p-3 rounded-lg border border-[var(--lagoon)]">
                   <span className="text-xs text-[var(--palm)] font-semibold">Conclusion:</span>
                   <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-1">

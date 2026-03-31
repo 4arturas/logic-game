@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import ThemeToggle from './ThemeToggle'
 import LanguageToggle from './LanguageToggle'
+import PremiseOrderToggle from './PremiseOrderToggle'
 import { useTranslation } from '../i18n/I18nContext'
 
 export default function Header() {
@@ -44,9 +45,10 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Theme and Language toggles - far right */}
+        {/* Theme, Premise Order, and Language toggles - far right */}
         <div className="flex flex-shrink-0 items-center gap-1.5 sm:w-1/3 sm:justify-end">
           <ThemeToggle />
+          <PremiseOrderToggle />
           <LanguageToggle />
         </div>
       </nav>

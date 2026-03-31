@@ -4,6 +4,7 @@ import { TanStackDevtools } from '@tanstack/react-devtools'
 import { I18nProvider } from '../i18n/I18nContext'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import { SettingsProvider } from '../contexts/SettingsContext'
 
 import appCss from '../styles.css?url'
 
@@ -42,9 +43,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]" suppressHydrationWarning>
         <I18nProvider>
-          <Header />
-          {children}
-          <Footer />
+          <SettingsProvider>
+            <Header />
+            {children}
+            <Footer />
+          </SettingsProvider>
         </I18nProvider>
         <TanStackDevtools
           config={{
