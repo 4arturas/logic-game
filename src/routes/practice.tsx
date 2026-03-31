@@ -720,14 +720,38 @@ function PracticeQuiz() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* Left: Controls and Syllogism */}
-          <div className="space-y-6">
+        {/* Three-column layout: left = syllogism + score, middle = diagrams, right = controls + status + validation */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-start">
+
+          {/* ── LEFT: Syllogism card + Score ── */}
+          <div className="space-y-5">
             <SyllogismCard syllogism={currentSyllogism} t={t} selectedSet={selectedSet} onSetChange={handleSetChange} />
-
-            {/* Score Board */}
             <ScoreBoard score={score} total={currentIndex + 1} streak={streak} t={t} />
+          </div>
 
+          {/* ── MIDDLE: Diagrams ── */}
+          <div className="flex flex-col items-center gap-8">
+            <LargeDiagram
+              state={largeState}
+              onCellClick={(id) => cycleCounter('large', id)}
+              minorTerm={currentSyllogism.terms.minorTerm}
+              majorTerm={currentSyllogism.terms.majorTerm}
+              middleTerm={currentSyllogism.terms.middleTerm}
+              t={t}
+              isReadOnly={isComplete}
+            />
+            <SmallDiagram
+              state={smallState}
+              onCellClick={(id) => cycleCounter('small', id)}
+              minorTerm={currentSyllogism.terms.minorTerm}
+              majorTerm={currentSyllogism.terms.majorTerm}
+              t={t}
+              isReadOnly={isComplete}
+            />
+          </div>
+
+          {/* ── RIGHT: Controls + Status + Validation ── */}
+          <div className="space-y-5">
             {/* Controls */}
             <div className="bg-[var(--surface)] p-6 rounded-lg shadow-md border-t-4 border-[var(--sea-ink)]">
               <h2 className="text-xl font-bold mb-4 border-b pb-2 text-[var(--sea-ink)]">{t('home.controls')}</h2>
@@ -780,7 +804,7 @@ function PracticeQuiz() {
             </div>
 
             {/* Status Code */}
-             <CopyCode 
+            <CopyCode 
               dd={statusCodes.dd} 
               md={statusCodes.md} 
               terms={terms} 
@@ -809,19 +833,17 @@ function PracticeQuiz() {
 
                 {!validationResult.isCorrect && validationResult.errors.length > 0 && (
                   <div className="mb-4">
-                    <p className="text-sm text-[var(--lagoon-deep)] font-semibold mb-2">{t('quiz.differences')}</p>
-                    <ul className="text-sm text-[var(--sea-ink-soft)] space-y-1 max-h-32 overflow-y-auto">
-                      {validationResult.errors.slice(0, 5).map((error, idx) => (
-                        <li key={idx}>• {error}</li>
-                      ))}
-                      {validationResult.errors.length > 5 && (
-                        <li className="text-[var(--sea-ink-soft)] italic">...and {validationResult.errors.length - 5} more</li>
-                      )}
-                    </ul>
+                     <p className="text-sm text-[var(--lagoon-deep)] font-semibold mb-2">{t('quiz.differences')}</p>
+                     <ul className="text-sm text-[var(--sea-ink-soft)] space-y-1 max-h-32 overflow-y-auto">
+                       {validationResult.errors.slice(0, 5).map((error, idx) => (
+                         <li key={idx}>• {error}</li>
+                       ))}
+                       {validationResult.errors.length > 5 && (
+                         <li className="text-[var(--sea-ink-soft)] italic">...and {validationResult.errors.length - 5} more</li>
+                       )}
+                     </ul>
                   </div>
                 )}
-
-
 
                 <div className="flex gap-3 mt-4">
                   {!validationResult.isCorrect && (
@@ -846,7 +868,7 @@ function PracticeQuiz() {
               </div>
             )}
 
-            {showAnswer && (
+             {showAnswer && (
               <div className="bg-[var(--hero-a)] p-6 rounded-xl border-2 border-[var(--lagoon)]">
                 <h3 className="text-lg font-bold text-[var(--palm)] mb-4">{t('quiz.correct_answer')}</h3>
                 <div className="space-y-3 font-mono text-sm">
@@ -860,29 +882,7 @@ function PracticeQuiz() {
                   </div>
                 </div>
               </div>
-            )}
-          </div>
-
-          {/* Right: Diagrams */}
-          <div className="lg:col-span-2 space-y-8 flex flex-col items-center">
-            <LargeDiagram
-              state={largeState}
-              onCellClick={(id) => cycleCounter('large', id)}
-              minorTerm={currentSyllogism.terms.minorTerm}
-              majorTerm={currentSyllogism.terms.majorTerm}
-              middleTerm={currentSyllogism.terms.middleTerm}
-              t={t}
-              isReadOnly={isComplete}
-            />
-
-            <SmallDiagram
-              state={smallState}
-              onCellClick={(id) => cycleCounter('small', id)}
-              minorTerm={currentSyllogism.terms.minorTerm}
-              majorTerm={currentSyllogism.terms.majorTerm}
-              t={t}
-              isReadOnly={isComplete}
-            />
+             )}
           </div>
         </div>
       </div>
