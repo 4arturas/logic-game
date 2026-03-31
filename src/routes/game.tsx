@@ -329,7 +329,7 @@ function Game() {
               <LargeDiagram
                 state={largeState}
                 onCellClick={(id) => {
-                  if (isComplete) return; playSound('click')
+                  if (isComplete) return
                   setLargeState(prev => {
                     const key = id; const cur = prev[key] || null
                     const next = cur === null ? 'red' : cur === 'red' ? 'grey' : null
@@ -343,7 +343,7 @@ function Game() {
               <SmallDiagram
                 state={smallState}
                 onCellClick={(id) => {
-                  if (isComplete) return; playSound('click')
+                  if (isComplete) return
                   setSmallState(prev => {
                     const key = id; const cur = prev[key] || null
                     const next = cur === null ? 'red' : cur === 'red' ? 'grey' : null
