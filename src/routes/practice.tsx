@@ -339,7 +339,7 @@ function SyllogismCard({ syllogism, t, selectedSet, onSetChange }: { syllogism: 
     const pKey = prop.predicate
     const s = t(sKey as any)
     const p = t(pKey as any)
-    
+
     const getTermColor = (key: string) => {
       if (key === syllogism.terms.minorTerm) return 'var(--term-x)'
       if (key === syllogism.terms.majorTerm) return 'var(--term-y)'
@@ -347,84 +347,90 @@ function SyllogismCard({ syllogism, t, selectedSet, onSetChange }: { syllogism: 
       return 'inherit'
     }
 
-    const sSpan = <span style={{ color: getTermColor(sKey), fontWeight: 'bold', textDecoration: 'underline' }}>{s}</span>
-    const pSpan = <span style={{ color: getTermColor(pKey), fontWeight: 'bold', textDecoration: 'underline' }}>{p}</span>
-
+    const sSpan = <span style={{ color: getTermColor(sKey), fontWeight: 700 }}>{s}</span>
+    const pSpan = <span style={{ color: getTermColor(pKey), fontWeight: 700 }}>{p}</span>
     const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
-    
+
     if (prop.quantifier === 'E') return <>{t('quiz.no_word')} {sSpan} {verb} {pSpan}.</>
     if (prop.quantifier === 'O') return <>{t('quiz.some_word')} {sSpan} {verb} {t('quiz.not_word')} {pSpan}.</>
     if (prop.quantifier === 'A') return <>{t('quiz.all_word')} {sSpan} {verb} {pSpan}.</>
     return <>{t('quiz.some_word')} {sSpan} {verb} {pSpan}.</>
   }
 
+  const premises = premiseOrder === 'major-first'
+    ? [
+        { type: 'major', prop: syllogism.premises.major, label: t('quiz.major_premise') },
+        { type: 'minor', prop: syllogism.premises.minor, label: t('quiz.minor_premise') },
+      ]
+    : [
+        { type: 'minor', prop: syllogism.premises.minor, label: t('quiz.minor_premise') },
+        { type: 'major', prop: syllogism.premises.major, label: t('quiz.major_premise') },
+      ]
+
   return (
-    <div className="bg-[var(--surface)] p-6 rounded-xl shadow-md border border-[var(--chip-line)]">
-      <div className="flex items-center gap-3 mb-4">
-        <span className="bg-[var(--lagoon)] text-white px-3 py-1 rounded-full text-sm font-bold">
-          Figure {syllogism.figure}
-        </span>
-        <span className="bg-[var(--foam)] text-[var(--palm)] px-3 py-1 rounded-full text-sm font-mono font-bold border border-[var(--chip-line)]">
-          {syllogism.mood}
-        </span>
-        <span className="text-[var(--sea-ink-soft)] font-semibold italic flex-1">{syllogism.mnemonic}</span>
+    <div style={{ background: 'var(--surface-strong)', border: '1.5px solid var(--line)', borderRadius: '4px', overflow: 'hidden' }}>
+
+      {/* Header: figure + mood + mnemonic */}
+      <div style={{ background: 'var(--sand)', borderBottom: '1.5px solid var(--line)', padding: '10px 12px' }}>
+        <div className="flex items-center gap-2 flex-wrap mb-2">
+          <span className="text-white text-xs font-bold px-2.5 py-0.5" style={{ background: 'var(--sea-ink)', fontFamily: 'var(--font-mono)', borderRadius: '2px' }}>
+            Fig.&nbsp;{syllogism.figure}
+          </span>
+          <span className="text-xs font-bold px-2.5 py-0.5 border" style={{ color: 'var(--lagoon)', borderColor: 'var(--lagoon)', fontFamily: 'var(--font-mono)', background: 'var(--foam)', borderRadius: '2px' }}>
+            {syllogism.mood}
+          </span>
+          {syllogism.mnemonic && (
+            <span className="text-xs italic" style={{ color: 'var(--sea-ink-soft)' }}>{syllogism.mnemonic}</span>
+          )}
+        </div>
         <select
           value={selectedSet}
           onChange={onSetChange}
-          className="bg-[var(--foam)] border border-[var(--line)] rounded-lg px-2 py-1 text-xs font-bold text-[var(--sea-ink)] outline-none cursor-pointer hover:bg-[var(--hero-a)] transition-colors"
+          className="text-xs font-bold outline-none cursor-pointer border w-full"
+          style={{ fontFamily: 'var(--font-mono)', background: 'var(--foam)', color: 'var(--sea-ink)', borderColor: 'var(--line)', borderRadius: '2px', padding: '3px 6px' }}
         >
           <option value="standard">Standard Carroll Set (24)</option>
           <option value="custom">Color / Taste / Apple Set (24)</option>
         </select>
       </div>
 
-      <div className="space-y-3">
-        {[
-          ...(premiseOrder === 'major-first'
-            ? [
-                { type: 'major', prop: syllogism.premises.major, label: t('quiz.major_premise') },
-                { type: 'minor', prop: syllogism.premises.minor, label: t('quiz.minor_premise') }
-              ]
-            : [
-                { type: 'minor', prop: syllogism.premises.minor, label: t('quiz.minor_premise') },
-                { type: 'major', prop: syllogism.premises.major, label: t('quiz.major_premise') }
-              ]),
-        ].map(item => (
-          <div key={item.type} className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
-            <span className="text-xs text-[var(--lagoon)] font-semibold uppercase tracking-wide">{item.label}</span>
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(item.prop)}</p>
-              <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--lagoon)] shadow-sm">
-                <PropositionLogicSequence prop={item.prop} syllogism={syllogism} />
-              </div>
-            </div>
+      {/* Premise + Conclusion rows */}
+      <div style={{ padding: '10px 12px' }} className="space-y-2">
+        {premises.map(item => (
+          <div key={item.type} style={{ borderLeft: '3px solid var(--lagoon)', background: 'var(--foam)', border: '1px solid var(--line)', borderLeftWidth: '3px', borderLeftColor: 'var(--lagoon)', borderRadius: '2px', padding: '7px 10px' }}>
+            <div className="island-kicker mb-1" style={{ color: 'var(--lagoon)', fontSize: '0.62rem' }}>{item.label}</div>
+            <p className="text-sm leading-snug mb-1" style={{ color: 'var(--sea-ink)', margin: 0 }}>
+              {formatProposition(item.prop)}
+            </p>
+            <PropositionLogicSequence prop={item.prop} syllogism={syllogism} />
           </div>
         ))}
-        <div className="bg-[var(--hero-a)]/30 p-3 rounded-lg border border-[var(--lagoon)]">
-          <span className="text-xs text-[var(--palm)] font-semibold uppercase tracking-wide">{t('quiz.conclusion')}</span>
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-lg text-[var(--sea-ink)] mt-1 flex-1 text-center md:text-left">{formatProposition(syllogism.conclusion)}</p>
-            <div className="bg-white/60 px-4 rounded-lg border border-dashed border-[var(--palm)] shadow-sm">
-              <PropositionLogicSequence prop={syllogism.conclusion} syllogism={syllogism} />
-            </div>
+
+        {/* Conclusion */}
+        <div style={{ border: '1px solid var(--line)', borderLeftWidth: '3px', borderLeftColor: 'var(--palm)', background: 'var(--hero-a)', borderRadius: '2px', padding: '7px 10px' }}>
+          <div className="island-kicker mb-1" style={{ color: 'var(--palm)', fontSize: '0.62rem' }}>
+            {t('quiz.conclusion')}&nbsp;∴
           </div>
+          <p className="text-sm leading-snug mb-1" style={{ color: 'var(--sea-ink)', margin: 0 }}>
+            {formatProposition(syllogism.conclusion)}
+          </p>
+          <PropositionLogicSequence prop={syllogism.conclusion} syllogism={syllogism} />
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-[var(--line)]">
-        <div className="grid grid-cols-3 gap-2 text-sm">
-          <div className="text-center">
-            <span className="text-[var(--sea-ink-soft)] block text-xs">{t('quiz.minor_term')}</span>
-            <span className="font-semibold underline" style={{ color: 'var(--term-x)' }}>{t(syllogism.terms.minorTerm as any)}</span>
-          </div>
-          <div className="text-center">
-            <span className="text-[var(--sea-ink-soft)] block text-xs">{t('quiz.major_term')}</span>
-            <span className="font-semibold underline" style={{ color: 'var(--term-y)' }}>{t(syllogism.terms.majorTerm as any)}</span>
-          </div>
-          <div className="text-center">
-            <span className="text-[var(--sea-ink-soft)] block text-xs">{t('quiz.middle_term')}</span>
-            <span className="font-semibold underline" style={{ color: 'var(--term-m)' }}>{t(syllogism.terms.middleTerm as any)}</span>
-          </div>
+      {/* Terms footer */}
+      <div style={{ borderTop: '1.5px solid var(--line)', background: 'var(--sand)', padding: '7px 12px' }}>
+        <div className="grid grid-cols-3 gap-1 text-center">
+          {([
+            { label: t('quiz.minor_term'), term: syllogism.terms.minorTerm, color: 'var(--term-x)' },
+            { label: t('quiz.major_term'), term: syllogism.terms.majorTerm, color: 'var(--term-y)' },
+            { label: t('quiz.middle_term'), term: syllogism.terms.middleTerm, color: 'var(--term-m)' },
+          ] as const).map(({ label, term, color }) => (
+            <div key={label}>
+              <div style={{ color: 'var(--sea-ink-soft)', fontSize: '0.58rem', letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>{label}</div>
+              <div className="text-xs font-bold truncate" style={{ color, fontFamily: 'var(--font-mono)' }}>{t(term as any)}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

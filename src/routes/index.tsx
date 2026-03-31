@@ -143,54 +143,65 @@ function App() {
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} onApplyRule={handleApplyRule} />}
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-8">
-          <h1 className="text-3xl font-bold uppercase tracking-widest text-gray-800">{t('home.title')}</h1>
-          <p className="text-lg text-gray-600 italic">{t('home.subtitle')}</p>
+          <h1 className="display-title text-3xl font-bold tracking-tight" style={{ color: 'var(--sea-ink)' }}>{t('home.title')}</h1>
+          <p className="text-sm mt-1" style={{ color: 'var(--sea-ink-soft)', fontFamily: 'var(--font-mono)' }}>{t('home.subtitle')}</p>
         </header>
 
-        <div className="bg-white p-6 rounded-lg shadow-md border-b-4 border-blue-600 mb-8">
+        <div className="p-6 rounded mb-8 border" style={{ background: 'var(--surface-strong)', borderColor: 'var(--line)', borderLeftWidth: '3px', borderLeftColor: 'var(--lagoon)' }}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="flex flex-col items-center">
-              <label className="font-bold mb-1 text-sm uppercase underline" style={{ color: 'var(--term-x)' }}>{t('home.input.x')}</label>
+              <label className="island-kicker mb-2" style={{ color: 'var(--term-x)' }}>{t('home.input.x')}</label>
               <input
                 type="text"
                 id="input-x"
                 value={terms.x}
                 onChange={e => updateLabels('x', e.target.value)}
-                className="w-full max-w-xs text-lg italic border-b-2 border-gray-600 bg-transparent outline-none text-center transition-colors focus:border-[var(--term-x)]"
+                className="w-full max-w-xs text-base border-b-2 bg-transparent outline-none text-center transition-colors"
+                style={{ borderColor: 'var(--line)', color: 'var(--sea-ink)', fontFamily: 'var(--font-mono)' }}
+                onFocus={e => (e.target.style.borderColor = 'var(--term-x)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--line)')}
               />
             </div>
             <div className="flex flex-col items-center">
-              <label className="font-bold mb-1 text-sm uppercase underline" style={{ color: 'var(--term-y)' }}>{t('home.input.y')}</label>
+              <label className="island-kicker mb-2" style={{ color: 'var(--term-y)' }}>{t('home.input.y')}</label>
               <input
                 type="text"
                 id="input-y"
                 value={terms.y}
                 onChange={e => updateLabels('y', e.target.value)}
-                className="w-full max-w-xs text-lg italic border-b-2 border-gray-600 bg-transparent outline-none text-center transition-colors focus:border-[var(--term-y)]"
+                className="w-full max-w-xs text-base border-b-2 bg-transparent outline-none text-center transition-colors"
+                style={{ borderColor: 'var(--line)', color: 'var(--sea-ink)', fontFamily: 'var(--font-mono)' }}
+                onFocus={e => (e.target.style.borderColor = 'var(--term-y)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--line)')}
               />
             </div>
             <div className="flex flex-col items-center">
-              <label className="font-bold mb-1 text-sm uppercase underline" style={{ color: 'var(--term-m)' }}>{t('home.input.m')}</label>
+              <label className="island-kicker mb-2" style={{ color: 'var(--term-m)' }}>{t('home.input.m')}</label>
               <input
                 type="text"
                 id="input-m"
                 value={terms.m}
                 onChange={e => updateLabels('m', e.target.value)}
-                className="w-full max-w-xs text-lg italic border-b-2 border-gray-600 bg-transparent outline-none text-center transition-colors focus:border-[var(--term-m)]"
+                className="w-full max-w-xs text-base border-b-2 bg-transparent outline-none text-center transition-colors"
+                style={{ borderColor: 'var(--line)', color: 'var(--sea-ink)', fontFamily: 'var(--font-mono)' }}
+                onFocus={e => (e.target.style.borderColor = 'var(--term-m)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--line)')}
               />
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4 border-t" style={{ borderColor: 'var(--line)' }}>
             <button
               onClick={clearTerms}
-              className="px-6 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm font-bold uppercase border border-gray-300"
+              className="px-5 py-1.5 rounded text-xs font-bold uppercase border transition-colors"
+              style={{ background: 'var(--foam)', color: 'var(--sea-ink-soft)', borderColor: 'var(--line)', fontFamily: 'var(--font-mono)' }}
             >
               {t('home.clear_terms')}
             </button>
             <button
               onClick={clearBoard}
-              className="px-6 py-2 bg-red-50 text-red-700 rounded hover:bg-red-100 transition-colors text-sm font-bold uppercase border border-red-200"
+              className="px-5 py-1.5 rounded text-xs font-bold uppercase border transition-colors"
+              style={{ background: 'var(--hero-a)', color: 'var(--lagoon-deep)', borderColor: 'var(--lagoon)', fontFamily: 'var(--font-mono)' }}
             >
               {t('home.clear_board')}
             </button>
@@ -199,18 +210,18 @@ function App() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           <div className="space-y-6">
-            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-gray-700">
-              <h2 className="text-xl font-bold mb-4 border-b pb-2 text-gray-800">{t('home.controls')}</h2>
-              <div className="text-sm text-gray-600 space-y-4">
+            <div className="p-5 rounded border-l-4" style={{ background: 'var(--surface-strong)', border: '1.5px solid var(--line)', borderLeftColor: 'var(--sea-ink)', borderLeftWidth: '3px' }}>
+              <h2 className="text-sm font-bold mb-4 border-b pb-2 island-kicker" style={{ borderColor: 'var(--line)', color: 'var(--sea-ink)' }}>{t('home.controls')}</h2>
+              <div className="text-sm space-y-3" style={{ color: 'var(--sea-ink-soft)' }}>
                 <ul className="space-y-2 list-none">
                   <li className="flex items-center">
-                    <span className="w-6 h-6 flex items-center justify-center rounded-full bg-red-600 text-white text-[10px] font-bold mr-2">
+                    <span className="w-6 h-6 flex items-center justify-center rounded-full text-white text-[10px] font-bold mr-2" style={{ background: 'var(--lagoon)' }}>
                       1
                     </span>
                     {t('home.controls.1_click')}
                   </li>
                   <li className="flex items-center">
-                    <span className="w-6 h-6 flex items-center justify-center rounded-full bg-gray-500 text-white text-[10px] font-bold mr-2">
+                    <span className="w-6 h-6 flex items-center justify-center rounded-full text-white text-[10px] font-bold mr-2" style={{ background: 'var(--sea-ink-soft)' }}>
                       0
                     </span>
                     {t('home.controls.2_clicks')}

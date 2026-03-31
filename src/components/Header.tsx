@@ -4,53 +4,99 @@ import LanguageToggle from './LanguageToggle'
 import PremiseOrderToggle from './PremiseOrderToggle'
 import { useTranslation } from '../i18n/I18nContext'
 
+/** Venn-diagram logo mark — two overlapping circles, filled accent */
+function VennLogo() {
+  return (
+    <svg
+      width="34"
+      height="24"
+      viewBox="0 0 34 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" fill="var(--lagoon)" fillOpacity="0.18" stroke="var(--lagoon)" strokeWidth="1.6" />
+      <circle cx="22" cy="12" r="10" fill="var(--lagoon)" fillOpacity="0.10" stroke="var(--lagoon)" strokeWidth="1.6" />
+      {/* intersection tint */}
+      <path
+        d="M17 3.8 A10 10 0 0 1 17 20.2 A10 10 0 0 1 17 3.8 Z"
+        fill="var(--lagoon)"
+        fillOpacity="0.26"
+      />
+    </svg>
+  )
+}
+
 export default function Header() {
   const { t } = useTranslation()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] px-4 backdrop-blur-lg">
-      <nav className="mx-auto flex max-w-7xl flex-nowrap items-center justify-between gap-4 py-3 sm:py-4">
-        {/* Left spacer */}
-        <div className="hidden sm:block sm:w-1/3" />
+    <header
+      className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] px-4 backdrop-blur-md"
+      style={{ boxShadow: '0 1px 0 rgba(15,25,35,0.06)' }}
+    >
+      <nav className="mx-auto flex max-w-7xl flex-nowrap items-center justify-between gap-4 py-3 sm:py-3.5">
 
-        {/* Navigation links - center */}
-        <div className="flex flex-shrink-0 items-center gap-4 text-sm font-semibold">
+        {/* ── LEFT: Logo + wordmark ── */}
+        <Link
+          to="/"
+          search={{ x: undefined, y: undefined, m: undefined, large: undefined, small: undefined }}
+          className="flex items-center gap-2 no-underline flex-shrink-0"
+          style={{ textDecoration: 'none' }}
+        >
+          <VennLogo />
+          <span
+            className="display-title text-base font-semibold tracking-tight hidden sm:block"
+            style={{ color: 'var(--sea-ink)', letterSpacing: '-0.01em' }}
+          >
+            Carroll{' '}
+            <span style={{ color: 'var(--lagoon)' }}>Logic</span>
+          </span>
+        </Link>
+
+        {/* ── CENTER: Navigation ── */}
+        <div className="flex flex-shrink-0 items-center gap-1">
           <Link
             to="/"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
+            search={{ x: undefined, y: undefined, m: undefined, large: undefined, small: undefined }}
+            className="nav-link px-3 py-1.5 rounded"
+            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
           >
             {t('nav.game')}
           </Link>
+          <span className="text-[var(--line)] select-none">·</span>
           <Link
             to="/practice"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
+            className="nav-link px-3 py-1.5 rounded"
+            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
           >
             {t('nav.practice')}
           </Link>
+          <span className="text-[var(--line)] select-none">·</span>
           <Link
             to="/campaign"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
+            className="nav-link px-3 py-1.5 rounded"
+            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
           >
             {t('nav.campaign')}
           </Link>
+          <span className="text-[var(--line)] select-none">·</span>
           <Link
             to="/game"
-            className="nav-link"
-            activeProps={{ className: 'nav-link is-active' }}
+            className="nav-link px-3 py-1.5 rounded"
+            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
           >
             {t('nav.game_quiz')}
           </Link>
         </div>
 
-        {/* Theme, Premise Order, and Language toggles - far right */}
-        <div className="flex flex-shrink-0 items-center gap-1.5 sm:w-1/3 sm:justify-end">
+        {/* ── RIGHT: Toggles ── */}
+        <div className="flex flex-shrink-0 items-center gap-1.5">
           <ThemeToggle />
           <PremiseOrderToggle />
           <LanguageToggle />
         </div>
+
       </nav>
     </header>
   )
