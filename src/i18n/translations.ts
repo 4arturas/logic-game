@@ -8,6 +8,7 @@ export type TranslationKey =
   | 'nav.game_quiz'
   | 'nav.about'
   | 'nav.campaign'
+  | 'nav.syllogisms'
   // Footer
   | 'footer.copyright'
   // Home page
@@ -164,6 +165,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.game_quiz': 'Game',
     'nav.about': 'About',
     'nav.campaign': 'Campaign',
+    'nav.syllogisms': 'Atlas',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll Logic Game. Learn logic through interactive diagrams.',
     // Home page
@@ -320,6 +322,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.game_quiz': 'Žaidimas',
     'nav.about': 'Apie',
     'nav.campaign': 'Kampanija',
+    'nav.syllogisms': 'Atlasas',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll logikos žaidimas. Mokykitės logikos per interaktyvias diagramas.',
     // Home page

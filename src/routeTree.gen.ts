@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SyllogismsRouteImport } from './routes/syllogisms'
 import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as CampaignRouteImport } from './routes/campaign'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SyllogismsRoute = SyllogismsRouteImport.update({
+  id: '/syllogisms',
+  path: '/syllogisms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PracticeRoute = PracticeRouteImport.update({
   id: '/practice',
   path: '/practice',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
   '/practice': typeof PracticeRoute
+  '/syllogisms': typeof SyllogismsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
   '/practice': typeof PracticeRoute
+  '/syllogisms': typeof SyllogismsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
   '/practice': typeof PracticeRoute
+  '/syllogisms': typeof SyllogismsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/campaign' | '/game' | '/practice'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/campaign'
+    | '/game'
+    | '/practice'
+    | '/syllogisms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/campaign' | '/game' | '/practice'
-  id: '__root__' | '/' | '/about' | '/campaign' | '/game' | '/practice'
+  to: '/' | '/about' | '/campaign' | '/game' | '/practice' | '/syllogisms'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/campaign'
+    | '/game'
+    | '/practice'
+    | '/syllogisms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,10 +99,18 @@ export interface RootRouteChildren {
   CampaignRoute: typeof CampaignRoute
   GameRoute: typeof GameRoute
   PracticeRoute: typeof PracticeRoute
+  SyllogismsRoute: typeof SyllogismsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/syllogisms': {
+      id: '/syllogisms'
+      path: '/syllogisms'
+      fullPath: '/syllogisms'
+      preLoaderRoute: typeof SyllogismsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/practice': {
       id: '/practice'
       path: '/practice'
@@ -125,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   CampaignRoute: CampaignRoute,
   GameRoute: GameRoute,
   PracticeRoute: PracticeRoute,
+  SyllogismsRoute: SyllogismsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

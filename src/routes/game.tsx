@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useTranslation } from '../i18n/I18nContext'
+import { Award, Target, Zap, ShieldCheck } from 'lucide-react'
 import {
   SYLLOGISM_EXAMPLES,
   type Syllogism,
@@ -13,26 +14,16 @@ import { PropositionLogicSequence } from '../components/PropositionLogicSequence
 import { LargeDiagram } from '../components/LargeDiagram'
 import { SmallDiagram } from '../components/SmallDiagram'
 import { useSettings } from '../contexts/SettingsContext'
-import { type CellState, type CounterState } from '../lib/types'
+import { type CellState } from '../lib/types'
 
 export const Route = createFileRoute('/game')({ component: Game })
 
+// ----------------------------------------------------------------------------
+// TYPES & CONSTANTS
+// ----------------------------------------------------------------------------
 
-interface Terms {
-  x: string
-  y: string
-  m: string
-}
-
-interface Badge {
-  id: string
-  name: string
-  description: string
-  icon: string
-  unlocked: boolean
-  requirement: number
-}
-
+interface Badge { id: string; name: string; description: string; icon: any; unlocked: boolean; requirement: number }
+interface GameHistoryEntry { id: string; date: string; syllogism: string; score: number; correct: boolean; timeSpent: number }
 interface GameState {
   totalScore: number
   streak: number
@@ -46,45 +37,28 @@ interface GameState {
   history: GameHistoryEntry[]
 }
 
-interface GameHistoryEntry {
-  id: string
-  date: string
-  syllogism: string
-  score: number
-  correct: boolean
-  timeSpent: number
-}
-
 const BADGES: Badge[] = [
-  { id: 'first_win', name: 'First Steps', description: 'Win your first game', icon: '🌟', unlocked: false, requirement: 1 },
-  { id: 'win_10', name: 'Dedicated', description: 'Win 10 games', icon: '🏆', unlocked: false, requirement: 10 },
-  { id: 'win_25', name: 'Logic Master', description: 'Win 25 games', icon: '👑', unlocked: false, requirement: 25 },
-  { id: 'win_50', name: 'Carroll Expert', description: 'Win 50 games', icon: '🎓', unlocked: false, requirement: 50 },
-  { id: 'streak_5', name: 'On Fire', description: 'Get a 5-game streak', icon: '🔥', unlocked: false, requirement: 5 },
-  { id: 'streak_10', name: 'Unstoppable', description: 'Get a 10-game streak', icon: '💫', unlocked: false, requirement: 10 },
-  { id: 'level_5', name: 'Rising Star', description: 'Reach level 5', icon: '⭐', unlocked: false, requirement: 5 },
-  { id: 'level_10', name: 'Legend', description: 'Reach level 10', icon: '🌈', unlocked: false, requirement: 10 },
+  { id: 'first_win', name: 'Initiate', description: 'Complete first verification', icon: Target, unlocked: false, requirement: 1 },
+  { id: 'win_10', name: 'Logician', description: 'Complete 10 verifications', icon: ShieldCheck, unlocked: false, requirement: 10 },
+  { id: 'win_25', name: 'Scholar', description: 'Complete 25 verifications', icon: Award, unlocked: false, requirement: 25 },
+  { id: 'streak_5', name: 'Momentum', description: 'Maintain 5-streak', icon: Zap, unlocked: false, requirement: 5 },
 ]
 
 const STORAGE_KEY = 'logic-game-progress'
 
+// ----------------------------------------------------------------------------
+// UTILS
+// ----------------------------------------------------------------------------
+
 function loadGameState(): GameState {
-  if (typeof window === 'undefined') {
-    return getInitialState()
-  }
+  if (typeof window === 'undefined') return getInitialState()
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
       const parsed = JSON.parse(stored)
-      return {
-        ...getInitialState(),
-        ...parsed,
-        badges: parsed.badges || BADGES,
-      }
+      return { ...getInitialState(), ...parsed }
     }
-  } catch (e) {
-    console.error('Failed to load game state:', e)
-  }
+  } catch (e) { console.error(e) }
   return getInitialState()
 }
 
@@ -104,200 +78,136 @@ function getInitialState(): GameState {
 }
 
 function saveGameState(state: GameState) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  } catch (e) {
-    console.error('Failed to save game state:', e)
-  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) } catch (e) { console.error(e) }
 }
 
-function checkBadges(state: GameState): Badge[] {
-  return state.badges.map(badge => {
-    if (badge.unlocked) return badge
-    
-    let unlocked = false
-    switch (badge.id) {
-      case 'first_win':
-        unlocked = state.gamesWon >= badge.requirement
-        break
-      case 'win_10':
-        unlocked = state.gamesWon >= badge.requirement
-        break
-      case 'win_25':
-        unlocked = state.gamesWon >= badge.requirement
-        break
-      case 'win_50':
-        unlocked = state.gamesWon >= badge.requirement
-        break
-      case 'streak_5':
-        unlocked = state.bestStreak >= badge.requirement
-        break
-      case 'streak_10':
-        unlocked = state.bestStreak >= badge.requirement
-        break
-      case 'level_5':
-        unlocked = state.currentLevel >= badge.requirement
-        break
-      case 'level_10':
-        unlocked = state.currentLevel >= badge.requirement
-        break
-    }
-    
-    return { ...badge, unlocked }
-  })
-}
-
-// Sound effects using Web Audio API
-function playSound(type: 'correct' | 'wrong' | 'badge' | 'level' | 'click') {
+function playSound(type: 'correct' | 'wrong' | 'click') {
   if (typeof window === 'undefined') return
-  
   try {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)()
     const oscillator = audioContext.createOscillator()
     const gainNode = audioContext.createGain()
-    
-    oscillator.connect(gainNode)
-    gainNode.connect(audioContext.destination)
-    
-    switch (type) {
-      case 'correct':
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime)
-        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1)
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2)
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3)
-        oscillator.start(audioContext.currentTime)
-        oscillator.stop(audioContext.currentTime + 0.3)
-        break
-      case 'wrong':
-        oscillator.frequency.setValueAtTime(200, audioContext.currentTime)
-        oscillator.frequency.setValueAtTime(150, audioContext.currentTime + 0.1)
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2)
-        oscillator.start(audioContext.currentTime)
-        oscillator.stop(audioContext.currentTime + 0.2)
-        break
-      case 'badge':
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime)
-        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime + 0.15)
-        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.3)
-        oscillator.frequency.setValueAtTime(1046.50, audioContext.currentTime + 0.45)
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime)
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6)
-        oscillator.start(audioContext.currentTime)
-        oscillator.stop(audioContext.currentTime + 0.6)
-        break
-      case 'level':
-        [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, i) => {
-          const osc = audioContext.createOscillator()
-          const gain = audioContext.createGain()
-          osc.connect(gain)
-          gain.connect(audioContext.destination)
-          osc.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.1)
-          gain.gain.setValueAtTime(0.3, audioContext.currentTime + i * 0.1)
-          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.2)
-          osc.start(audioContext.currentTime + i * 0.1)
-          osc.stop(audioContext.currentTime + i * 0.1 + 0.2)
-        })
-        break
-      case 'click':
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
-        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05)
-        oscillator.start(audioContext.currentTime)
-        oscillator.stop(audioContext.currentTime + 0.05)
-        break
+    oscillator.connect(gainNode); gainNode.connect(audioContext.destination)
+    if (type === 'correct') {
+      oscillator.frequency.setValueAtTime(523, audioContext.currentTime)
+      oscillator.frequency.exponentialRampToValueAtTime(783, audioContext.currentTime + 0.1)
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
+    } else if (type === 'wrong') {
+      oscillator.frequency.setValueAtTime(200, audioContext.currentTime)
+      gainNode.gain.setValueAtTime(0.1, audioContext.currentTime)
+    } else {
+      oscillator.frequency.setValueAtTime(800, audioContext.currentTime)
+      gainNode.gain.setValueAtTime(0.05, audioContext.currentTime)
     }
-  } catch (e) {
-    console.error('Failed to play sound:', e)
-  }
+    oscillator.start(); oscillator.stop(audioContext.currentTime + 0.2)
+  } catch (e) {}
 }
 
 // ----------------------------------------------------------------------------
 // COMPONENTS
 // ----------------------------------------------------------------------------
 
-function ProgressBar({ value, max, color = 'bg-[var(--lagoon)]' }: { value: number; max: number; color?: string }) {
-  const percentage = Math.min(100, (value / max) * 100)
+function GameHUD({ state }: { state: GameState }) {
+  const progress = (state.xp / state.xpToNextLevel) * 100
   return (
-    <div className="w-full bg-[var(--sand)] rounded-full h-3 overflow-hidden">
-      <div 
-        className={`h-full ${color} transition-all duration-500 ease-out`}
-        style={{ width: `${percentage}%` }}
-      />
-    </div>
-  )
-}
-
-function LevelBadge({ level }: { level: number }) {
-  const icons = ['🌱', '🌿', '🌳', '⭐', '🌟', '💫', '🏆', '👑', '💎', '🌈']
-  const icon = icons[Math.min(level - 1, icons.length - 1)]
-  
-  return (
-    <div className="text-center">
-      <div className="text-4xl mb-1">{icon}</div>
-      <div className="text-sm font-bold text-[var(--sea-ink)]">Level {level}</div>
-    </div>
-  )
-}
-
-function BadgeDisplay({ badge, isNew }: { badge: Badge; isNew?: boolean }) {
-  return (
-    <div className={`relative p-3 rounded-lg border-2 transition-all duration-300 ${
-      badge.unlocked 
-        ? 'bg-[var(--surface)] border-[var(--lagoon)]' 
-        : 'bg-[var(--sand)] border-[var(--line)] opacity-50'
-    } ${isNew ? 'animate-bounce' : ''}`}>
-      <div className="text-3xl text-center mb-1">{badge.icon}</div>
-      <div className="text-xs font-bold text-center text-[var(--sea-ink)]">{badge.name}</div>
-      <div className="text-[10px] text-center text-[var(--sea-ink-soft)]">{badge.description}</div>
-      {badge.unlocked && (
-        <div className="absolute -top-1 -right-1 w-4 h-4 bg-[var(--lagoon)] rounded-full flex items-center justify-center text-[8px] text-white">✓</div>
-      )}
-    </div>
-  )
-}
-
-function NewBadgeModal({ badge, onClose }: { badge: Badge; onClose: () => void }) {
-  useEffect(() => {
-    const timer = setTimeout(onClose, 3000)
-    return () => clearTimeout(timer)
-  }, [onClose])
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-fade-in">
-      <div className="bg-[var(--surface)] p-8 rounded-2xl shadow-2xl border-4 border-[var(--lagoon)] animate-scale-in text-center">
-        <div className="text-6xl mb-4 animate-bounce">{badge.icon}</div>
-        <h2 className="text-2xl font-bold text-[var(--palm)] mb-2">New Badge Unlocked!</h2>
-        <p className="text-lg font-semibold text-[var(--sea-ink)]">{badge.name}</p>
-        <p className="text-sm text-[var(--sea-ink-soft)]">{badge.description}</p>
+    <div className="max-w-6xl mx-auto mb-10 bg-[var(--surface-strong)] border-2 border-[var(--line)] rounded overflow-hidden shadow-sm flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-[var(--line)]">
+      <div className="p-4 flex items-center gap-4 bg-[var(--sand)] flex-1">
+        <div className="w-12 h-12 bg-[var(--sea-ink)] text-white flex items-center justify-center text-xl font-black rounded border-2 border-white/20">
+          {state.currentLevel}
+        </div>
+        <div className="flex-1">
+          <div className="flex justify-between items-end mb-1">
+            <span className="text-[9px] font-black uppercase text-[var(--sea-ink-soft)]">Logic Grade</span>
+            <span className="text-[10px] font-mono font-bold text-[var(--sea-ink)]">{state.xp} / {state.xpToNextLevel} XP</span>
+          </div>
+          <div className="h-1.5 bg-[var(--foam)] border border-[var(--line)] rounded-full overflow-hidden">
+            <div className="h-full bg-[var(--lagoon)] transition-all duration-700" style={{ width: `${progress}%` }} />
+          </div>
+        </div>
+      </div>
+      <div className="p-4 grid grid-cols-3 gap-8 min-w-[320px] bg-white">
+        <div className="text-center">
+          <div className="text-[9px] font-black uppercase text-[var(--sea-ink-soft)] mb-1">Archives</div>
+          <div className="text-xl font-black text-[var(--sea-ink)]">{state.gamesWon}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[9px] font-black uppercase text-[var(--sea-ink-soft)] mb-1">Streak</div>
+          <div className="text-xl font-black text-[var(--palm)]">{state.streak}x</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[9px] font-black uppercase text-[var(--sea-ink-soft)] mb-1">Total XP</div>
+          <div className="text-xl font-black text-[var(--lagoon)]">{state.totalScore}</div>
+        </div>
       </div>
     </div>
   )
 }
 
-function Confetti() {
+function BadgeGallery({ badges }: { badges: Badge[] }) {
   return (
-    <div className="fixed inset-0 pointer-events-none z-40 overflow-hidden">
-      {[...Array(50)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute w-3 h-3 rounded-full animate-confetti"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: '-20px',
-            backgroundColor: ['#4fb8b2', '#2f6a4a', '#e7f0e8', '#f3faf5'][Math.floor(Math.random() * 4)],
-            animationDelay: `${Math.random() * 2}s`,
-            animationDuration: `${2 + Math.random() * 2}s`,
-          }}
-        />
+    <div className="max-w-6xl mx-auto mb-10 grid grid-cols-2 md:grid-cols-4 gap-4">
+      {badges.map(b => (
+        <div key={b.id} className={`p-4 border-2 rounded flex items-center gap-3 transition-all ${b.unlocked ? 'bg-white border-[var(--palm)] opacity-100' : 'bg-[var(--foam)] border-[var(--line)] opacity-40'}`}>
+          <div className={`p-2 rounded ${b.unlocked ? 'bg-[var(--hero-a)] text-[var(--palm)]' : 'bg-[var(--sand)] text-[var(--sea-ink-soft)]'}`}>
+            <b.icon size={18} />
+          </div>
+          <div>
+            <div className="text-[10px] font-black uppercase text-[var(--sea-ink)] leading-none mb-0.5">{b.name}</div>
+            <div className="text-[8px] font-medium text-[var(--sea-ink-soft)] uppercase tracking-tighter leading-none">{b.description}</div>
+          </div>
+        </div>
       ))}
     </div>
   )
 }
 
+function SyllogismPanel({ syllogism, t, premiseOrder }: { syllogism: Syllogism; t: any; premiseOrder: string }) {
+  const formatProp = (prop: any) => {
+    const getTermColor = (key: string) => {
+      if (key === syllogism.terms.minorTerm) return 'var(--term-x)'
+      if (key === syllogism.terms.majorTerm) return 'var(--term-y)'
+      if (key === syllogism.terms.middleTerm) return 'var(--term-m)'
+      return 'inherit'
+    }
+    const s = <span style={{ color: getTermColor(prop.subject), fontWeight: 700 }}>{t(prop.subject)}</span>
+    const p = <span style={{ color: getTermColor(prop.predicate), fontWeight: 700 }}>{t(prop.predicate)}</span>
+    const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
+    if (prop.quantifier === 'E') return <>{t('quiz.no_word')} {s} {verb} {p}.</>
+    if (prop.quantifier === 'O') return <>{t('quiz.some_word')} {s} {verb} {t('quiz.not_word')} {p}.</>
+    if (prop.quantifier === 'A') return <>{t('quiz.all_word')} {s} {verb} {p}.</>
+    return <>{t('quiz.some_word')} {s} {verb} {p}.</>
+  }
+  const items = premiseOrder === 'major-first' 
+    ? [{ type: 'major', prop: syllogism.premises.major }, { type: 'minor', prop: syllogism.premises.minor }]
+    : [{ type: 'minor', prop: syllogism.premises.minor }, { type: 'major', prop: syllogism.premises.major }]
+
+  return (
+    <div className="bg-[var(--surface-strong)] border-2 border-[var(--line)] rounded overflow-hidden shadow-sm">
+      <div className="p-3 bg-[var(--sand)] border-b border-[var(--line)] flex justify-between items-center">
+         <span className="text-[10px] font-black uppercase text-[var(--sea-ink-soft)] font-mono">Game Variant</span>
+         <span className="px-2 py-0.5 bg-white border border-[var(--line)] text-[var(--sea-ink)] text-[9px] font-mono font-bold rounded">
+           {syllogism.mood}-{syllogism.figure}
+         </span>
+      </div>
+      <div className="p-6 space-y-4">
+        {items.map((item, idx) => (
+          <div key={idx} className="pl-4 border-l-4 border-[var(--lagoon)]">
+             <p className="text-base font-serif italic text-[var(--sea-ink)] leading-relaxed mb-1">{formatProp(item.prop)}</p>
+             <PropositionLogicSequence prop={item.prop} syllogism={syllogism} />
+          </div>
+        ))}
+        <div className="pl-4 border-l-4 border-[var(--palm)] bg-[var(--hero-a)] p-3 rounded">
+           <div className="text-[10px] font-bold text-[var(--palm)] uppercase mb-1">Conclusion ∴</div>
+           <p className="text-base font-serif italic text-[var(--sea-ink)] leading-relaxed mb-1">{formatProp(syllogism.conclusion)}</p>
+           <PropositionLogicSequence prop={syllogism.conclusion} syllogism={syllogism} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ----------------------------------------------------------------------------
-// MAIN COMPONENT
+// PAGE COMPONENT
 // ----------------------------------------------------------------------------
 
 function Game() {
@@ -305,447 +215,146 @@ function Game() {
   const { premiseOrder } = useSettings()
   const [gameState, setGameState] = useState<GameState>(getInitialState)
   const [currentSyllogism, setCurrentSyllogism] = useState<Syllogism | null>(null)
-  const [terms, setTerms] = useState<Terms>({ x: '', y: '', m: '' })
   const [largeState, setLargeState] = useState<CellState>({})
   const [smallState, setSmallState] = useState<CellState>({})
   const [isComplete, setIsComplete] = useState(false)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
-  const [startTime, setStartTime] = useState<number>(0)
-  const [newBadge, setNewBadge] = useState<Badge | null>(null)
-  const [showConfetti, setShowConfetti] = useState(false)
-  const [showBadges, setShowBadges] = useState(false)
+  const [startTime, setStartTime] = useState<number>(Date.now())
   const [showHelp, setShowHelp] = useState(false)
 
-  const correctEncoding = useMemo(() => {
-    if (!currentSyllogism) return null
-    return generateDiagram(currentSyllogism)
-  }, [currentSyllogism])
-
-  // Load game state on mount
-  useEffect(() => {
-    setGameState(loadGameState())
-    startNewGame()
-  }, [])
-
-  // Save game state when it changes
-  useEffect(() => {
-    if (gameState.gamesPlayed > 0) {
-      saveGameState(gameState)
-    }
-  }, [gameState])
-
   const startNewGame = useCallback(() => {
-    const shuffled = [...SYLLOGISM_EXAMPLES].sort(() => Math.random() - 0.5)
-    const syllogism = shuffled[0]
-    setCurrentSyllogism(syllogism)
-    setTerms({
-      x: syllogism.terms.minorTerm,
-      y: syllogism.terms.majorTerm,
-      m: syllogism.terms.middleTerm,
-    })
-    setLargeState({})
-    setSmallState({})
-    setIsComplete(false)
-    setIsCorrect(null)
-    setStartTime(Date.now())
+    const random = SYLLOGISM_EXAMPLES[Math.floor(Math.random() * SYLLOGISM_EXAMPLES.length)]
+    setCurrentSyllogism(random); setLargeState({}); setSmallState({}); setIsComplete(false); setIsCorrect(null); setStartTime(Date.now())
   }, [])
 
-  const cycleCounter = useCallback((type: 'small' | 'large', id: string) => {
-    if (isComplete) return
-    playSound('click')
+  useEffect(() => { setGameState(loadGameState()); startNewGame() }, [startNewGame])
+  useEffect(() => { if (gameState.gamesPlayed > 0) saveGameState(gameState) }, [gameState])
 
-    const setState = type === 'small' ? setSmallState : setLargeState
-    setState(prev => {
-      const currentState = prev[id] || null
-      let nextState: CounterState
-      if (currentState === null) nextState = 'red'
-      else if (currentState === 'red') nextState = 'grey'
-      else nextState = null
-
-      const newState = { ...prev }
-      if (nextState === null) {
-        delete newState[id]
-      } else {
-        newState[id] = nextState
-      }
-      return newState
-    })
-  }, [isComplete])
-
-  const handleValidate = useCallback(() => {
-    if (!correctEncoding || isComplete) return
-
+  const handleValidate = () => {
+    if (!currentSyllogism || isComplete) return
+    const correctEncoding = generateDiagram(currentSyllogism)
     const getStateCode = (state: CellState, cellIds: number[], prefix: string) => {
-      return cellIds
-        .map(id => {
-          const key = `${prefix}_${id}`
-          const val = state[key] === 'red' ? '1' : state[key] === 'grey' ? '0' : '-'
-          return `${id}-${val}`
-        })
-        .join(',')
+      return cellIds.map(id => {
+        const key = prefix === 'lg' ? `${prefix}_${id}` : `c${id}`
+        const val = state[key] === 'red' ? '1' : state[key] === 'grey' ? '0' : '-'
+        return `${id}-${val}`
+      }).join(',')
     }
-
     const userDD = `DD=${getStateCode(largeState, [9, 10, 11, 12, 13, 14, 15, 16], 'lg')}`
     const userMD = `MD=${getStateCode(smallState, [5, 6, 7, 8], 'c')}`
-
     const result = validateUserDiagram(userDD, userMD, correctEncoding)
-    const correct = result.isCorrect
-    const timeSpent = (Date.now() - startTime) / 1000
-
-    setIsComplete(true)
-    setIsCorrect(correct)
-
+    const correct = result.isCorrect; setIsComplete(true); setIsCorrect(correct)
+    
     if (correct) {
       playSound('correct')
-      setShowConfetti(true)
-      setTimeout(() => setShowConfetti(false), 3000)
-
-      const xpGained = 10 + Math.floor(gameState.streak * 2)
-      const newTotalScore = gameState.totalScore + 10 + gameState.streak
-      const newStreak = gameState.streak + 1
-      const newGamesWon = gameState.gamesWon + 1
-      const newXp = gameState.xp + xpGained
-      const levelUp = newXp >= gameState.xpToNextLevel
-
-      let newGameState: GameState = {
-        ...gameState,
-        totalScore: newTotalScore,
-        streak: newStreak,
-        bestStreak: Math.max(newStreak, gameState.bestStreak),
-        gamesPlayed: gameState.gamesPlayed + 1,
-        gamesWon: newGamesWon,
-        xp: newXp,
-        history: [
-          {
-            id: Date.now().toString(),
-            date: new Date().toISOString(),
-            syllogism: `${currentSyllogism!.figure}-${currentSyllogism!.mood}`,
-            score: 10 + gameState.streak,
-            correct: true,
-            timeSpent,
-          },
-          ...gameState.history.slice(0, 49),
-        ],
-      }
-
-      if (levelUp) {
-        playSound('level')
-        newGameState = {
-          ...newGameState,
-          currentLevel: gameState.currentLevel + 1,
-          xp: newXp - gameState.xpToNextLevel,
-          xpToNextLevel: Math.floor(gameState.xpToNextLevel * 1.5),
-        }
-      }
-
-      const updatedBadges = checkBadges(newGameState)
-      const newBadges = updatedBadges.filter(b => b.unlocked && !gameState.badges.find(b2 => b2.id === b.id && b2.unlocked))
+      const xpGained = 15 + (gameState.streak * 5)
+      let nextXp = gameState.xp + xpGained; let nextLevel = gameState.currentLevel; let nextXpToNext = gameState.xpToNextLevel
+      if (nextXp >= nextXpToNext) { nextLevel++; nextXp -= nextXpToNext; nextXpToNext = Math.floor(nextXpToNext * 1.5) }
       
-      newGameState.badges = updatedBadges
-      setGameState(newGameState)
+      const newBadges = gameState.badges.map(b => {
+        if (b.unlocked) return b
+        if (b.id === 'first_win' && gameState.gamesWon + 1 >= 1) return { ...b, unlocked: true }
+        if (b.id === 'win_10' && gameState.gamesWon + 1 >= 10) return { ...b, unlocked: true }
+        if (b.id === 'streak_5' && gameState.streak + 1 >= 5) return { ...b, unlocked: true }
+        return b
+      })
 
-      if (newBadges.length > 0) {
-        setNewBadge(newBadges[0])
-        playSound('badge')
-      }
+      const timeSpent = (Date.now() - startTime) / 1000
+      setGameState(prev => ({
+        ...prev, totalScore: prev.totalScore + xpGained, streak: prev.streak + 1,
+        bestStreak: Math.max(prev.streak + 1, prev.bestStreak), gamesPlayed: prev.gamesPlayed + 1,
+        gamesWon: prev.gamesWon + 1, xp: nextXp, currentLevel: nextLevel, xpToNextLevel: nextXpToNext, badges: newBadges,
+        history: [{ id: Date.now().toString(), date: new Date().toISOString(), syllogism: `${currentSyllogism!.figure}-${currentSyllogism!.mood}`, score: xpGained, correct: true, timeSpent }, ...prev.history.slice(0, 49)]
+      }))
     } else {
       playSound('wrong')
-      setGameState({
-        ...gameState,
-        streak: 0,
-        gamesPlayed: gameState.gamesPlayed + 1,
-        history: [
-          {
-            id: Date.now().toString(),
-            date: new Date().toISOString(),
-            syllogism: `${currentSyllogism!.figure}-${currentSyllogism!.mood}`,
-            score: 0,
-            correct: false,
-            timeSpent,
-          },
-          ...gameState.history.slice(0, 49),
-        ],
-      })
+      const timeSpent = (Date.now() - startTime) / 1000
+      setGameState(prev => ({ ...prev, streak: 0, gamesPlayed: prev.gamesPlayed + 1,
+        history: [{ id: Date.now().toString(), date: new Date().toISOString(), syllogism: `${currentSyllogism!.figure}-${currentSyllogism!.mood}`, score: 0, correct: false, timeSpent }, ...prev.history.slice(0, 49)]
+      }))
     }
-  }, [correctEncoding, largeState, smallState, isComplete, startTime, gameState, currentSyllogism])
-
-  const handleApplyRule = useCallback((cells: number[]) => {
-    playSound('click')
-    setLargeState(prev => {
-      const newState = { ...prev }
-      cells.forEach(id => {
-        newState[`lg_${id}`] = 'grey'
-      })
-      return newState
-    })
-  }, [])
-
-  const getStatusCodes = useCallback(() => {
-    const getStateCode = (state: CellState, cellIds: number[], prefix: string) => {
-      return cellIds
-        .map(id => {
-          const key = prefix === 'lg' ? `${prefix}_${id}` : `${prefix}${id}`
-          const val = state[key] === 'red' ? '1' : state[key] === 'grey' ? '0' : '-'
-          return `${id}-${val}`
-        })
-        .join(',')
-    }
-
-    const ddStr = getStateCode(largeState, [9, 10, 11, 12, 13, 14, 15, 16], 'lg')
-    const mdStr = getStateCode(smallState, [5, 6, 7, 8], 'c')
-
-    return { dd: ddStr, md: mdStr }
-  }, [largeState, smallState])
-
-  const statusCodes = useMemo(() => getStatusCodes(), [getStatusCodes])
-
-  const formatSyllogismText = useCallback(() => {
-    if (!currentSyllogism) return ''
-    
-    const formatProp = (prop: { quantifier: string; subject: string; predicate: string }) => {
-      const s = t(prop.subject as any)
-      const p = t(prop.predicate as any)
-      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
-      
-      if (prop.quantifier === 'E') return `${t('quiz.no_word')} ${s} ${verb} ${p}`
-      if (prop.quantifier === 'O') return `${t('quiz.some_word')} ${s} ${verb} ${t('quiz.not_word')} ${p}`
-      if (prop.quantifier === 'A') return `${t('quiz.all_word')} ${s} ${verb} ${p}`
-      return `${t('quiz.some_word')} ${s} ${verb} ${p}`
-    }
-
-    const m = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.major : currentSyllogism.premises.minor)
-    const n = formatProp(premiseOrder === 'major-first' ? currentSyllogism.premises.minor : currentSyllogism.premises.major)
-    const c = formatProp(currentSyllogism.conclusion)
-
-    return `${m}\n${n}\n∴ ${c}`
-  }, [currentSyllogism, t])
-
-
-  if (!currentSyllogism) {
-    return (
-      <main className="page-wrap px-4 pb-8 pt-14">
-        <div className="max-w-4xl mx-auto text-center py-20">
-          <p className="text-gray-500">{t('quiz.loading')}</p>
-        </div>
-      </main>
-    )
   }
 
-  return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      {showConfetti && <Confetti />}
-      {newBadge && <NewBadgeModal badge={newBadge} onClose={() => setNewBadge(null)} />}
-      {showHelp && <HelpModal onClose={() => setShowHelp(false)} onApplyRule={handleApplyRule} />}
+  if (!currentSyllogism) return null
 
-      <div className="max-w-[90vw] mx-auto">
-        {/* Header with Level and Stats */}
-        <div className="bg-[var(--surface)] p-6 rounded-xl shadow-lg border-2 border-[var(--chip-line)] mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <LevelBadge level={gameState.currentLevel} />
-            <div className="flex-1 mx-8">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-[var(--sea-ink-soft)]">XP</span>
-                <span className="text-[var(--sea-ink)] font-bold">{gameState.xp} / {gameState.xpToNextLevel}</span>
-              </div>
-              <ProgressBar value={gameState.xp} max={gameState.xpToNextLevel} />
+  return (
+    <main className="page-wrap px-4 pb-20 pt-8 min-h-screen">
+      {showHelp && <HelpModal onClose={() => setShowHelp(false)} onApplyRule={(cells) => setLargeState(p => { const n={...p}; cells.forEach(c => n[`lg_${c}`]='grey'); return n })} />}
+      
+      <GameHUD state={gameState} />
+      <BadgeGallery badges={gameState.badges} />
+
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        <div className="space-y-8">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-[var(--lagoon)]">
+               <ShieldCheck size={20} />
+               <span className="text-xs font-black uppercase tracking-widest font-mono">Formal Verification</span>
             </div>
-            <div className="text-right">
-              <div className="text-3xl font-bold text-[var(--lagoon)]">{gameState.totalScore}</div>
-              <div className="text-sm text-[var(--sea-ink-soft)]">Total Score</div>
-            </div>
+            <h1 className="text-4xl font-black text-[var(--sea-ink)] leading-none italic" style={{ fontFamily: 'var(--font-serif)' }}>
+              Syllogism Laboratory
+            </h1>
           </div>
-          <div className="grid grid-cols-4 gap-4 text-center">
-            <div>
-              <div className="text-2xl font-bold text-[var(--palm)]">{gameState.gamesWon}/{gameState.gamesPlayed}</div>
-              <div className="text-xs text-[var(--sea-ink-soft)]">Games Won</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-orange-500">{gameState.streak} 🔥</div>
-              <div className="text-xs text-[var(--sea-ink-soft)]">Current Streak</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-[var(--lagoon-deep)]">{gameState.bestStreak}</div>
-              <div className="text-xs text-[var(--sea-ink-soft)]">Best Streak</div>
-            </div>
-            <div>
-              <button 
-                onClick={() => setShowBadges(!showBadges)}
-                className="text-2xl hover:scale-110 transition-transform"
-              >
-                🏅
-              </button>
-              <div className="text-xs text-[var(--sea-ink-soft)]">Badges</div>
-            </div>
+
+          <SyllogismPanel syllogism={currentSyllogism} t={t} premiseOrder={premiseOrder} />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+             <button
+               onClick={handleValidate}
+               disabled={isComplete}
+               className={`py-4 rounded font-bold uppercase tracking-widest text-sm transition-all shadow-md ${
+                 isComplete ? (isCorrect ? 'bg-[var(--palm)] text-white' : 'bg-red-600 text-white') : 'bg-[var(--lagoon)] text-white hover:brightness-110'
+               }`}
+             >
+               {isComplete ? (isCorrect ? 'VERIFIED ✓' : 'ABORTED ✗') : 'Validate Logic'}
+             </button>
+             <button
+               onClick={startNewGame}
+               className="py-4 bg-[var(--foam)] border-2 border-[var(--line)] text-[var(--sea-ink)] rounded font-bold uppercase tracking-widest text-sm hover:bg-[var(--sand)] transition-all"
+             >
+               Next Sample
+             </button>
           </div>
+
+          <CopyCode 
+            dd={`DD=${[9,10,11,12,13,14,15,16].map(id => `${id}-${largeState['lg_'+id]==='red'?'1':largeState['lg_'+id]==='grey'?'0':'-'}`).join(',')}`}
+            md={`MD=${[5,6,7,8].map(id => `${id}-${smallState['c'+id]==='red'?'1':smallState['c'+id]==='grey'?'0':'-'}`).join(',')}`}
+            terms={{ x: currentSyllogism.terms.minorTerm, y: currentSyllogism.terms.majorTerm, m: currentSyllogism.terms.middleTerm }}
+            onShowHelp={() => setShowHelp(true)}
+          />
         </div>
 
-        {/* Badges Panel */}
-        {showBadges && (
-          <div className="bg-[var(--surface)] p-6 rounded-xl shadow-lg border-2 border-[var(--chip-line)] mb-6">
-            <h3 className="text-xl font-bold text-[var(--sea-ink)] mb-4">Your Badges</h3>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-              {gameState.badges.map(badge => (
-                <BadgeDisplay key={badge.id} badge={badge} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left: Syllogism and Controls */}
-          <div className="space-y-4">
-            {/* Syllogism Card */}
-            <div className="bg-[var(--surface)] p-4 rounded-xl shadow-md border border-[var(--chip-line)]">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="bg-[var(--lagoon)] text-white px-2 py-1 rounded-full text-xs font-bold">
-                  Figure {currentSyllogism.figure}
-                </span>
-                <span className="bg-[var(--foam)] text-[var(--palm)] px-2 py-1 rounded-full text-xs font-mono font-bold border border-[var(--chip-line)]">
-                  {currentSyllogism.mood}
-                </span>
-              </div>
-              <div className="space-y-4 text-sm mt-4">
-                {[
-                  ...(premiseOrder === 'major-first'
-                    ? [
-                        { type: 'major', prop: currentSyllogism.premises.major, label: 'Major Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-y)' },
-                        { type: 'minor', prop: currentSyllogism.premises.minor, label: 'Minor Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-x)' }
-                      ]
-                    : [
-                        { type: 'minor', prop: currentSyllogism.premises.minor, label: 'Minor Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-x)' },
-                        { type: 'major', prop: currentSyllogism.premises.major, label: 'Major Premise:', t_s: 'var(--term-m)', t_p: 'var(--term-y)' }
-                      ]),
-                ].map((item) => (
-                  <div key={item.type} className="bg-[var(--foam)] p-3 rounded-lg border border-[var(--chip-line)]">
-                    <span className="text-xs text-[var(--lagoon)] font-semibold">{item.label}</span>
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-1">
-                      <p className="text-[var(--sea-ink)] text-center md:text-left">
-                        <span style={{ color: item.t_s, fontWeight: 'bold', textDecoration: 'underline' }}>{t(item.prop.subject as any)}</span> - <span style={{ color: item.t_p, fontWeight: 'bold', textDecoration: 'underline' }}>{t(item.prop.predicate as any)}</span>
-                      </p>
-                      <div className="bg-white/60 px-3 rounded text-sm border border-dashed border-[var(--lagoon)] shadow-sm scale-90 origin-right">
-                        <PropositionLogicSequence prop={item.prop} syllogism={currentSyllogism} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div className="bg-[var(--hero-a)]/30 p-3 rounded-lg border border-[var(--lagoon)]">
-                  <span className="text-xs text-[var(--palm)] font-semibold">Conclusion:</span>
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-2 mt-1">
-                    <p className="text-[var(--sea-ink)] text-center md:text-left">
-                      <span style={{ color: 'var(--term-x)', fontWeight: 'bold', textDecoration: 'underline' }}>{t(currentSyllogism.conclusion.subject as any)}</span> - <span style={{ color: 'var(--term-y)', fontWeight: 'bold', textDecoration: 'underline' }}>{t(currentSyllogism.conclusion.predicate as any)}</span>
-                    </p>
-                    <div className="bg-white/60 px-3 rounded text-sm border border-dashed border-[var(--palm)] shadow-sm scale-90 origin-right">
-                      <PropositionLogicSequence prop={currentSyllogism.conclusion} syllogism={currentSyllogism} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-
-            {/* Action Buttons */}
-            <div className="flex gap-2">
-              <button
-                onClick={handleValidate}
-                disabled={isComplete}
-                className={`flex-1 px-4 py-3 rounded-lg font-bold uppercase transition-all ${
-                  isComplete
-                    ? 'bg-[var(--sand)] text-[var(--sea-ink-soft)] cursor-not-allowed'
-                    : 'bg-[var(--lagoon)] text-white hover:bg-[var(--lagoon-deep)] hover:scale-105'
-                }`}
-              >
-                Check
-              </button>
-              <button
-                onClick={startNewGame}
-                className="px-4 py-3 bg-[var(--foam)] text-[var(--sea-ink)] rounded-lg font-bold uppercase border border-[var(--chip-line)] hover:bg-[var(--sand)] transition-all"
-              >
-                Next
-              </button>
-            </div>
-
-            {/* Result Display */}
-            {isComplete && (
-              <div className={`p-4 rounded-xl border-2 ${
-                isCorrect
-                  ? 'bg-[var(--foam)] border-[var(--palm)]'
-                  : 'bg-[var(--sand)] border-[var(--lagoon-deep)]'
-              }`}>
-                <div className="text-center">
-                  {isCorrect ? (
-                    <>
-                      <div className="text-4xl mb-2">✓</div>
-                      <div className="text-xl font-bold text-[var(--palm)]">Correct!</div>
-                      <div className="text-sm text-[var(--sea-ink-soft)]">+{10 + gameState.streak - 1} points</div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-4xl mb-2">✗</div>
-                      <div className="text-xl font-bold text-[var(--lagoon-deep)]">Try Again!</div>
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Status Code Display */}
-            <CopyCode 
-              dd={statusCodes.dd} 
-              md={statusCodes.md} 
-              terms={terms} 
-              syllogismText={formatSyllogismText()} 
-              onShowHelp={() => setShowHelp(true)}
-            />
-          </div>
-
-          {/* Right: Diagrams */}
-          <div className="lg:col-span-2 space-y-4">
-            <LargeDiagram
-              state={largeState}
-              onCellClick={(id) => cycleCounter('large', id)}
-              minorTerm={currentSyllogism.terms.minorTerm}
-              majorTerm={currentSyllogism.terms.majorTerm}
-              middleTerm={currentSyllogism.terms.middleTerm}
-              t={t}
-              isReadOnly={isComplete}
-            />
-
-            <SmallDiagram
-              state={smallState}
-              onCellClick={(id) => cycleCounter('small', id)}
-              minorTerm={currentSyllogism.terms.minorTerm}
-              majorTerm={currentSyllogism.terms.majorTerm}
-              t={t}
-              isReadOnly={isComplete}
-            />
-          </div>
+        <div className="flex flex-col items-center gap-10">
+           <div className="bg-white p-8 border-2 border-[var(--line)] rounded-lg shadow-inner">
+              <LargeDiagram
+                state={largeState}
+                onCellClick={(id) => {
+                  if (isComplete) return; playSound('click')
+                  setLargeState(prev => {
+                    const key = id; const cur = prev[key] || null
+                    const next = cur === null ? 'red' : cur === 'red' ? 'grey' : null
+                    const n = { ...prev }; if (next) n[key] = next; else delete n[key]; return n
+                  })
+                }}
+                minorTerm={currentSyllogism.terms.minorTerm} majorTerm={currentSyllogism.terms.majorTerm} middleTerm={currentSyllogism.terms.middleTerm} t={t}
+              />
+           </div>
+           <div className="bg-white p-8 border-2 border-[var(--line)] rounded-lg shadow-inner">
+              <SmallDiagram
+                state={smallState}
+                onCellClick={(id) => {
+                  if (isComplete) return; playSound('click')
+                  setSmallState(prev => {
+                    const key = id; const cur = prev[key] || null
+                    const next = cur === null ? 'red' : cur === 'red' ? 'grey' : null
+                    const n = { ...prev }; if (next) n[key] = next; else delete n[key]; return n
+                  })
+                }}
+                minorTerm={currentSyllogism.terms.minorTerm} majorTerm={currentSyllogism.terms.majorTerm} t={t}
+              />
+           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes confetti {
-          0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-          100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-        }
-        .animate-confetti {
-          animation: confetti linear forwards;
-        }
-        @keyframes fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out;
-        }
-        @keyframes scale-in {
-          from { transform: scale(0.5); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        .animate-scale-in {
-          animation: scale-in 0.4s ease-out;
-        }
-      `}</style>
     </main>
   )
 }

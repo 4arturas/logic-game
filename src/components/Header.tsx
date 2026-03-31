@@ -88,6 +88,14 @@ export default function Header() {
           >
             {t('nav.game_quiz')}
           </Link>
+          <span className="text-[var(--line)] select-none">·</span>
+          <Link
+            to="/syllogisms"
+            className="nav-link px-3 py-1.5 rounded"
+            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
+          >
+            {t('nav.syllogisms')}
+          </Link>
         </div>
 
         {/* ── RIGHT: Toggles ── */}
