@@ -15,6 +15,8 @@ export type TranslationKey =
   | 'home.clear_board'
   | 'home.large_diagram'
   | 'home.small_diagram'
+  | 'home.copy'
+  | 'home.copied'
   // Logic LT page
   | 'logic_lt.square_title'
   | 'logic_lt.syllogism_title'
@@ -160,6 +162,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'home.clear_board': 'Clear Board',
     'home.large_diagram': 'Large Diagram (Premises)',
     'home.small_diagram': 'Small Diagram (Conclusions)',
+    'home.copy': 'Copy',
+    'home.copied': 'Copied!',
     // Logic LT page
     'logic_lt.square_title': 'Logikos kvadratas (Oppositio)',
     'logic_lt.syllogism_title': 'Silogizmų figūros',
@@ -305,6 +309,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'home.clear_board': 'Išvalyti viską',
     'home.large_diagram': 'Didžioji diagrama (Prielaidos)',
     'home.small_diagram': 'Mažoji diagrama (Išvados)',
+    'home.copy': 'Kopijuoti',
+    'home.copied': 'Nukopijuota!',
     // Logic LT page
     'logic_lt.square_title': 'Logikos kvadratas (Oppositio)',
     'logic_lt.syllogism_title': 'Silogizmų figūros',
