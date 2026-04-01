@@ -1,8 +1,8 @@
-import React from 'react'
-import { useTranslation } from '../i18n/I18nContext'
+import React, { useState } from 'react'
 import { useSettings } from '../contexts/SettingsContext'
 import { type Syllogism } from '../lib/logic'
 import { PropositionLogicSequence } from './PropositionLogicSequence'
+import { Clipboard, Check } from 'lucide-react'
 
 interface SyllogismCardProps {
   syllogism: Syllogism
@@ -20,6 +20,32 @@ export function SyllogismCard({
   showSetSelect = false
 }: SyllogismCardProps) {
   const { premiseOrder } = useSettings()
+  const [copied, setCopied] = useState(false)
+
+  const getFullSyllogismText = () => {
+    const items = premiseOrder === 'major-first'
+      ? [syllogism.premises.major, syllogism.premises.minor]
+      : [syllogism.premises.minor, syllogism.premises.major]
+    
+    const format = (prop: any) => {
+      const s = t(prop.subject as any)
+      const p = t(prop.predicate as any)
+      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
+      if (prop.quantifier === 'E') return `${t('quiz.no_word')} ${s} ${verb} ${p}.`
+      if (prop.quantifier === 'O') return `${t('quiz.some_word')} ${s} ${verb} ${t('quiz.not_word')} ${p}.`
+      if (prop.quantifier === 'A') return `${t('quiz.all_word')} ${s} ${verb} ${p}.`
+      return `${t('quiz.some_word')} ${s} ${verb} ${p}.`
+    }
+
+    return items.map(format).join('\n') + '\n∴ ' + format(syllogism.conclusion)
+  }
+
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    navigator.clipboard.writeText(getFullSyllogismText())
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   const formatProposition = (prop: { quantifier: string; subject: string; predicate: string }) => {
     const sKey = prop.subject
@@ -58,8 +84,9 @@ export function SyllogismCard({
     <div style={{ background: 'var(--surface-strong)', border: '1.5px solid var(--line)', borderRadius: '4px', overflow: 'hidden' }}>
 
       {/* Header: figure + mood + mnemonic */}
-      <div style={{ background: 'var(--sand)', borderBottom: '1.5px solid var(--line)', padding: '10px 12px' }}>
-        <div className="flex items-center gap-2 flex-wrap mb-2">
+      <div style={{ background: 'var(--sand)', borderBottom: '1.5px solid var(--line)', padding: '10px 12px' }} className="flex justify-between items-start">
+        <div className="flex-1">
+          <div className="flex items-center gap-2 flex-wrap mb-2">
           <span className="text-white text-xs font-bold px-2.5 py-0.5" style={{ background: 'var(--sea-ink)', fontFamily: 'var(--font-mono)', borderRadius: '2px' }}>
             Fig.&nbsp;{syllogism.figure}
           </span>
@@ -70,6 +97,17 @@ export function SyllogismCard({
             <span className="text-xs italic" style={{ color: 'var(--sea-ink-soft)' }}>{syllogism.mnemonic}</span>
           )}
         </div>
+        <button
+          onClick={handleCopy}
+          className={`flex items-center gap-1.5 px-2 py-1 rounded transition-all active:scale-95 border ${
+            copied ? 'bg-[var(--palm)] text-white border-[var(--palm)]' : 'bg-white text-[var(--sea-ink)] border-[var(--line)] hover:border-[var(--lagoon)] hover:text-[var(--lagoon)]'
+          }`}
+          title={t('home.copy' as any)}
+        >
+          {copied ? <Check size={14} /> : <Clipboard size={14} />}
+          <span className="text-[10px] font-bold uppercase">{copied ? t('home.copied' as any) : t('home.copy' as any)}</span>
+        </button>
+      </div>
         {showSetSelect && onSetChange && (
           <select
             value={selectedSet}

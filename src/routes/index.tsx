@@ -63,7 +63,7 @@ function PracticeQuiz() {
   const getStatusCodes = useCallback(() => {
     const getStateCode = (state: any, cellIds: number[], prefix: string) => {
       return cellIds.map(id => {
-        const key = prefix === 'lg' ? '${prefix}_${id}' : '${prefix}${id}'
+        const key = prefix === 'lg' ? `${prefix}_${id}` : `${prefix}${id}`
         const val = state[key] === 'red' ? '1' : state[key] === 'grey' ? '0' : '-'
         return `${id}-${val}`
       }).join(',')
@@ -87,12 +87,32 @@ function PracticeQuiz() {
     }
   }
 
+  const getFullSyllogismText = useCallback(() => {
+    if (!currentSyllogism) return ''
+    const items = premiseOrder === 'major-first'
+      ? [currentSyllogism.premises.major, currentSyllogism.premises.minor]
+      : [currentSyllogism.premises.minor, currentSyllogism.premises.major]
+    
+    const format = (prop: any) => {
+      const s = t(prop.subject as any)
+      const p = t(prop.predicate as any)
+      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
+      if (prop.quantifier === 'E') return `${t('quiz.no_word')} ${s} ${verb} ${p}.`
+      if (prop.quantifier === 'O') return `${t('quiz.some_word')} ${s} ${verb} ${t('quiz.not_word')} ${p}.`
+      if (prop.quantifier === 'A') return `${t('quiz.all_word')} ${s} ${verb} ${p}.`
+      return `${t('quiz.some_word')} ${s} ${verb} ${p}.`
+    }
+
+    return items.map(format).join('\n') + '\n∴ ' + format(currentSyllogism.conclusion)
+  }, [currentSyllogism, premiseOrder, t])
+
   if (!currentSyllogism || !correctEncoding) {
     return <div className="p-20 text-center font-mono opacity-50">{t("quiz.loading")}</div>
   }
 
   const terms = { x: currentSyllogism.terms.minorTerm, y: currentSyllogism.terms.majorTerm, m: currentSyllogism.terms.middleTerm }
   const codes = getStatusCodes()
+  const syllogismText = getFullSyllogismText()
 
   return (
     <main className="page-wrap px-4 pb-12 pt-14">
@@ -200,7 +220,13 @@ function PracticeQuiz() {
                 )}
              </div>
 
-             <CopyCode dd={codes.dd} md={codes.md} terms={terms} onShowHelp={() => setShowHelp(true)} />
+             <CopyCode 
+               dd={codes.dd} 
+               md={codes.md} 
+               terms={terms} 
+               syllogismText={syllogismText}
+               onShowHelp={() => setShowHelp(true)} 
+             />
           </div>
 
         </div>

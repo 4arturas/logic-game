@@ -25,9 +25,9 @@ export function CopyCode({
   const handleCopy = () => {
     const getTerm = (val: string) => translateTerms ? t(val as any) : val
     
-    const textToCopy = (syllogismText ? `Ar teisingai išspręstas silogizmas:\n${syllogismText}\n\n` : '') +
-      `Terminai:\nx: ${getTerm(terms.x)}\ny: ${getTerm(terms.y)}\nm: ${getTerm(terms.m)}\n\n` +
-      `Sprendimas:\nDD=${dd}\nMD=${md}`
+    const textToCopy = (syllogismText ? `${t('home.copy_prefix')}\n${syllogismText}\n\n` : '') +
+      `${t('home.terms_label')}\nx: ${getTerm(terms.x)}\ny: ${getTerm(terms.y)}\nm: ${getTerm(terms.m)}\n\n` +
+      `${t('home.solution_label')}\nDD=${dd}\nMD=${md}`
     
     navigator.clipboard.writeText(textToCopy)
     setCopied(true)

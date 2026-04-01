@@ -10,6 +10,7 @@ import { LargeDiagram } from './LargeDiagram'
 import { SmallDiagram } from './SmallDiagram'
 import { CopyCode } from './CopyCode'
 import { HelpModal } from './HelpModal'
+import { useSettings } from '../contexts/SettingsContext'
 
 interface SyllogismSolverProps {
   syllogism: Syllogism
@@ -29,6 +30,7 @@ export function SyllogismSolver({
   initialSmallState = {}
 }: SyllogismSolverProps) {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
   const [largeState, setLargeState] = useState<CellState>(initialLargeState)
   const [smallState, setSmallState] = useState<CellState>(initialSmallState)
   const [validationResult, setValidationResult] = useState<{ isCorrect: boolean; errors: string[] } | null>(null)
@@ -89,6 +91,26 @@ export function SyllogismSolver({
   }
 
   const statusCodes = getStatusCodes()
+
+  const getFullSyllogismText = useCallback(() => {
+    const items = premiseOrder === 'major-first'
+      ? [syllogism.premises.major, syllogism.premises.minor]
+      : [syllogism.premises.minor, syllogism.premises.major]
+    
+    const format = (prop: any) => {
+      const s = t(prop.subject as any)
+      const p = t(prop.predicate as any)
+      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
+      if (prop.quantifier === 'E') return `${t('quiz.no_word')} ${s} ${verb} ${p}.`
+      if (prop.quantifier === 'O') return `${t('quiz.some_word')} ${s} ${verb} ${t('quiz.not_word')} ${p}.`
+      if (prop.quantifier === 'A') return `${t('quiz.all_word')} ${s} ${verb} ${p}.`
+      return `${t('quiz.some_word')} ${s} ${verb} ${p}.`
+    }
+
+    return items.map(format).join('\n') + '\n∴ ' + format(syllogism.conclusion)
+  }, [syllogism, premiseOrder, t])
+
+  const syllogismText = getFullSyllogismText()
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-5xl mx-auto">
@@ -185,6 +207,7 @@ export function SyllogismSolver({
             dd={statusCodes.dd} 
             md={statusCodes.md} 
             terms={{ x: syllogism.terms.minorTerm, y: syllogism.terms.majorTerm, m: syllogism.terms.middleTerm }}
+            syllogismText={syllogismText}
             onShowHelp={() => setShowHelp(true)}
           />
         </div>

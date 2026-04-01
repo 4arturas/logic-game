@@ -13,10 +13,14 @@ export type TranslationKey =
   // Home page (used by components)
   | 'home.code'
   | 'home.clear_board'
+  | 'home.controls'
   | 'home.large_diagram'
   | 'home.small_diagram'
   | 'home.copy'
   | 'home.copied'
+  | 'home.copy_prefix'
+  | 'home.terms_label'
+  | 'home.solution_label'
   // Logic LT page
   | 'logic_lt.square_title'
   | 'logic_lt.syllogism_title'
@@ -171,10 +175,14 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // Home page (used by components)
     'home.code': 'Code:',
     'home.clear_board': 'Clear Board',
+    'home.controls': 'Controls',
     'home.large_diagram': 'Large Diagram (Premises)',
     'home.small_diagram': 'Small Diagram (Conclusions)',
     'home.copy': 'Copy',
     'home.copied': 'Copied!',
+    'home.copy_prefix': 'Is the following syllogism solved correctly:',
+    'home.terms_label': 'Terms:',
+    'home.solution_label': 'Solution:',
     // Logic LT page
     'logic_lt.square_title': 'Logikos kvadratas (Oppositio)',
     'logic_lt.syllogism_title': 'Silogizmų figūros',
@@ -329,10 +337,14 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     // Home page (used by components)
     'home.code': 'Kodas:',
     'home.clear_board': 'Išvalyti viską',
+    'home.controls': 'Valdymas',
     'home.large_diagram': 'Didžioji diagrama (Prielaidos)',
     'home.small_diagram': 'Mažoji diagrama (Išvados)',
     'home.copy': 'Kopijuoti',
     'home.copied': 'Nukopijuota!',
+    'home.copy_prefix': 'Ar teisingai išspręstas šis silogizmas:',
+    'home.terms_label': 'Terminai:',
+    'home.solution_label': 'Sprendimas:',
     // Logic LT page
     'logic_lt.square_title': 'Logikos kvadratas (Oppositio)',
     'logic_lt.syllogism_title': 'Silogizmų figūros',
