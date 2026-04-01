@@ -57,7 +57,7 @@ export default function Header() {
         {/* ── CENTER: Navigation ── */}
         <div className="flex flex-shrink-0 items-center gap-1">
           <Link
-            to="/practice"
+            to="/"
             className="nav-link px-3 py-1.5 rounded"
             activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
           >
