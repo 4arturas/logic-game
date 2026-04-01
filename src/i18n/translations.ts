@@ -10,6 +10,11 @@ export type TranslationKey =
   | 'nav.syllogisms'
   // Footer
   | 'footer.copyright'
+  // Home page (used by components)
+  | 'home.code'
+  | 'home.clear_board'
+  | 'home.large_diagram'
+  | 'home.small_diagram'
   // Logic LT page
   | 'logic_lt.square_title'
   | 'logic_lt.syllogism_title'
@@ -150,6 +155,11 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.syllogisms': 'Atlas',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll Logic Game. Learn logic through interactive diagrams.',
+    // Home page (used by components)
+    'home.code': 'Code:',
+    'home.clear_board': 'Clear Board',
+    'home.large_diagram': 'Large Diagram (Premises)',
+    'home.small_diagram': 'Small Diagram (Conclusions)',
     // Logic LT page
     'logic_lt.square_title': 'Logikos kvadratas (Oppositio)',
     'logic_lt.syllogism_title': 'Silogizmų figūros',
@@ -290,6 +300,11 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.syllogisms': 'Atlasas',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll logikos žaidimas. Mokykitės logikos per interaktyvias diagramas.',
+    // Home page (used by components)
+    'home.code': 'Kodas:',
+    'home.clear_board': 'Išvalyti viską',
+    'home.large_diagram': 'Didžioji diagrama (Prielaidos)',
+    'home.small_diagram': 'Mažoji diagrama (Išvados)',
     // Logic LT page
     'logic_lt.square_title': 'Logikos kvadratas (Oppositio)',
     'logic_lt.syllogism_title': 'Silogizmų figūros',
