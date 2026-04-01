@@ -14,6 +14,7 @@ import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as CampaignRouteImport } from './routes/campaign'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
 
 const SyllogismsRoute = SyllogismsRouteImport.update({
   id: '/syllogisms',
@@ -40,8 +41,14 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
@@ -49,6 +56,7 @@ export interface FileRoutesByFullPath {
   '/syllogisms': typeof SyllogismsRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
@@ -57,6 +65,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
@@ -65,11 +74,18 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/about' | '/campaign' | '/game' | '/practice' | '/syllogisms'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/campaign'
+    | '/game'
+    | '/practice'
+    | '/syllogisms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/about' | '/campaign' | '/game' | '/practice' | '/syllogisms'
+  to: '/' | '/about' | '/campaign' | '/game' | '/practice' | '/syllogisms'
   id:
     | '__root__'
+    | '/'
     | '/about'
     | '/campaign'
     | '/game'
@@ -78,6 +94,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CampaignRoute: typeof CampaignRoute
   GameRoute: typeof GameRoute
@@ -122,10 +139,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CampaignRoute: CampaignRoute,
   GameRoute: GameRoute,
