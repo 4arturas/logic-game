@@ -78,6 +78,17 @@ export type TranslationKey =
   | 'quiz.help_row2_3'
   | 'quiz.help_row2_4'
   | 'quiz.help_row3_1'
+  // Atlas page
+  | 'atlas.title'
+  | 'atlas.subtitle'
+  | 'atlas.search_placeholder'
+  | 'atlas.figure'
+  | 'atlas.syllogisms_count'
+  | 'atlas.table.mood'
+  | 'atlas.table.mnemonic'
+  | 'atlas.no_results'
+  | 'atlas.footer.label'
+  | 'atlas.footer.quote'
   | 'quiz.help_row3_2'
   | 'quiz.help_row3_3'
   | 'quiz.help_row3_4'
@@ -265,6 +276,17 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'square.subalternation': 'Subalternation',
     'square.contradiction': 'Contradiction',
     'square.legend': 'A: All... | E: No... | I: Some are... | O: Some are not...',
+    // Atlas page
+    'atlas.title': 'Syllogism Atlas',
+    'atlas.subtitle': 'A comprehensive collection of the 24 standard valid syllogisms defined by figure and mood. Click any entry to solve its logical diagram.',
+    'atlas.search_placeholder': 'Search by mood or mnemonic...',
+    'atlas.figure': 'Figure',
+    'atlas.syllogisms_count': '{count} SYLLOGISMS',
+    'atlas.table.mood': 'Mood',
+    'atlas.table.mnemonic': 'Mnemonic',
+    'atlas.no_results': 'No syllogisms match your search in this figure.',
+    'atlas.footer.label': 'Encyclopedic Data',
+    'atlas.footer.quote': '"The logic of the world is prior to all truth and falsehood. It is the form of thought itself."',
     // Campaign
     'campaign.level': 'Level',
     'campaign.xp': 'XP',
@@ -412,6 +434,17 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'square.subalternation': 'Pavaldumas',
     'square.contradiction': 'Prieštaravimas',
     'square.legend': 'A: Visi... | E: Nė vienas... | I: Kai kurie yra... | O: Kai kurie nėra...',
+    // Atlas page
+    'atlas.title': 'Silogizmų Atlasas',
+    'atlas.subtitle': 'Išsami 24 standartinių validžių silogizmų kolekcija, apibrėžta pagal figūrą ir nuotaiką. Spustelėkite bet kurį įrašą, kad išspręstumėte jo loginę diagramą.',
+    'atlas.search_placeholder': 'Ieškoti pagal nuotaiką ar mnemoniką...',
+    'atlas.figure': 'Figūra',
+    'atlas.syllogisms_count': '{count} SILOGIZMAI',
+    'atlas.table.mood': 'Nuotaika',
+    'atlas.table.mnemonic': 'Mnemonika',
+    'atlas.no_results': 'Jūsų paieškai šioje figūroje neatitinka joks silogizmas.',
+    'atlas.footer.label': 'Enciklopediniai duomenys',
+    'atlas.footer.quote': '"Pasaulio logika yra prieš bet kokią tiesą ir melą. Ji yra pati minties forma."',
     // Campaign
     'campaign.level': 'Lygis',
     'campaign.xp': 'XP',
