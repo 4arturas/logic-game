@@ -57,15 +57,6 @@ export default function Header() {
         {/* ── CENTER: Navigation ── */}
         <div className="flex flex-shrink-0 items-center gap-1">
           <Link
-            to="/"
-            search={{ x: undefined, y: undefined, m: undefined, large: undefined, small: undefined }}
-            className="nav-link px-3 py-1.5 rounded"
-            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
-          >
-            {t('nav.game')}
-          </Link>
-          <span className="text-[var(--line)] select-none">·</span>
-          <Link
             to="/practice"
             className="nav-link px-3 py-1.5 rounded"
             activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
