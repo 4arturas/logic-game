@@ -51,6 +51,8 @@ export interface DiagramEncoding {
   md: string; // e.g., "MD=5-1,6-0,7-0,8--"
   ddCells: Record<number, CellValue>;
   mdCells: Record<number, CellValue>;
+  explicitDDCells: Record<number, CellValue>; // State before existential import
+  explicitMDCells: Record<number, CellValue>; // MD derived before existential import
   ddCellDetails: DiagramCell[]; // Full cell info with expressions
   mdCellDetails: DiagramCell[];
 }
@@ -301,9 +303,29 @@ export function generateDiagram(syllogism: Syllogism): DiagramEncoding {
 
   // Try to use pre-calculated answer if available
   const predefined = getPredefinedAnswer(figure, mood);
+  
+  // We need to calculate explicit cells even if predefined is available
+  // for the relaxed validation to work properly.
+  
+  // Initialize all cells as unknown
+  let ddCells: Record<number, CellValue> = {
+    9: '-', 10: '-', 11: '-', 12: '-', 13: '-', 14: '-', 15: '-', 16: '-'
+  };
+
+  // Apply major premise
+  const majorMapping = mapTermsToXYM(terms, 'major', figure);
+  ddCells = applyPropositionToCells(syllogism.premises.major.quantifier, majorMapping, ddCells);
+
+  // Apply minor premise
+  const minorMapping = mapTermsToXYM(terms, 'minor', figure);
+  ddCells = applyPropositionToCells(syllogism.premises.minor.quantifier, minorMapping, ddCells);
+
+  const explicitDDCells = { ...ddCells };
+  const explicitMDCells = deriveMDFromDD(explicitDDCells);
+
   if (predefined) {
-    const ddCells = parseUserDiagramCode(predefined.dd);
-    const mdCells = parseUserDiagramCode(predefined.md);
+    const finalDDCells = parseUserDiagramCode(predefined.dd);
+    const finalMDCells = parseUserDiagramCode(predefined.md);
 
     // Build cell details with expressions
     const ddCellDetails = DD_CELLS.map(cell => ({
@@ -329,25 +351,19 @@ export function generateDiagram(syllogism: Syllogism): DiagramEncoding {
     return {
       dd: predefined.dd,
       md: predefined.md,
-      ddCells,
-      mdCells,
+      ddCells: finalDDCells,
+      mdCells: finalMDCells,
+      explicitDDCells,
+      explicitMDCells,
       ddCellDetails,
       mdCellDetails,
     };
   }
 
-  // Initialize all cells as unknown
-  let ddCells: Record<number, CellValue> = {
-    9: '-', 10: '-', 11: '-', 12: '-', 13: '-', 14: '-', 15: '-', 16: '-'
-  };
+  // Final result continues from explicit state
+  ddCells = { ...explicitDDCells };
 
-  // Apply major premise
-  const majorMapping = mapTermsToXYM(terms, 'major', figure);
-  ddCells = applyPropositionToCells(syllogism.premises.major.quantifier, majorMapping, ddCells);
-
-  // Apply minor premise
-  const minorMapping = mapTermsToXYM(terms, 'minor', figure);
-  ddCells = applyPropositionToCells(syllogism.premises.minor.quantifier, minorMapping, ddCells);
+  // Already applied premises above
 
 
 
@@ -391,6 +407,8 @@ export function generateDiagram(syllogism: Syllogism): DiagramEncoding {
     md: formatDiagramCode('MD', mdCells),
     ddCells,
     mdCells,
+    explicitDDCells,
+    explicitMDCells,
     ddCellDetails,
     mdCellDetails,
   };
@@ -489,7 +507,13 @@ export function validateUserDiagram(
   [9, 10, 11, 12, 13, 14, 15, 16].forEach(cell => {
     const user = userDDCells[cell] || '-';
     const correctVal = correct.ddCells[cell];
+    
     if (user !== correctVal) {
+      // RELAXED VALIDATION: Allow '-' if correct is '1' but it was only inferred
+      const wasInferred = correctVal === '1' && correct.explicitDDCells[cell] !== '1';
+      if (user === '-' && wasInferred) {
+        return; // Accept
+      }
       errors.push(`DD${cell}: expected ${correctVal}, got ${user}`);
     }
   });
@@ -497,7 +521,13 @@ export function validateUserDiagram(
   [5, 6, 7, 8].forEach(cell => {
     const user = userMDCells[cell] || '-';
     const correctVal = correct.mdCells[cell];
+    
     if (user !== correctVal) {
+      // RELAXED VALIDATION: Allow '-' if correct is '1' but it was only inferred
+      const wasInferred = correctVal === '1' && correct.explicitMDCells[cell] !== '1';
+      if (user === '-' && wasInferred) {
+        return; // Accept
+      }
       errors.push(`MD${cell}: expected ${correctVal}, got ${user}`);
     }
   });
