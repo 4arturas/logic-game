@@ -128,13 +128,14 @@ function SyllogismSimpleCard({ syllogism, t }: { syllogism: Syllogism; t: (key: 
 
 function CampaignRoute() {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
   const [gameState, setGameState] = useState<GameState>(Gamification.defaultState())
   const [currentSyllogism, setCurrentSyllogism] = useState<Syllogism | null>(null)
-  
+
   const [largeState, setLargeState] = useState<CellState>({})
   const [smallState, setSmallState] = useState<CellState>({})
   const [validationResult, setValidationResult] = useState<{ isCorrect: boolean } | null>(null)
-  
+
   const [showConfetti, setShowConfetti] = useState(false)
   const [levelUpModal, setLevelUpModal] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
@@ -146,6 +147,25 @@ function CampaignRoute() {
     setGameState(saved)
     pickNextSyllogism(saved.level)
   }, [])
+
+  const getFullSyllogismText = useCallback(() => {
+    if (!currentSyllogism) return ''
+    const items = premiseOrder === 'major-first'
+      ? [currentSyllogism.premises.major, currentSyllogism.premises.minor]
+      : [currentSyllogism.premises.minor, currentSyllogism.premises.major]
+
+    const format = (prop: any) => {
+      const s = t(prop.subject as any)
+      const p = t(prop.predicate as any)
+      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? t('quiz.have') : t('quiz.are')
+      if (prop.quantifier === 'E') return `${t('quiz.no_word')} ${s} ${verb} ${p}.`
+      if (prop.quantifier === 'O') return `${t('quiz.some_word')} ${s} ${verb} ${t('quiz.not_word')} ${p}.`
+      if (prop.quantifier === 'A') return `${t('quiz.all_word')} ${s} ${verb} ${p}.`
+      return `${t('quiz.some_word')} ${s} ${verb} ${p}.`
+    }
+
+    return items.map(format).join('\n') + '\n∴ ' + format(currentSyllogism.conclusion)
+  }, [currentSyllogism, premiseOrder, t])
 
   const pickNextSyllogism = (level: number) => {
     const constraints = Gamification.getChallengeConstraints(level)
@@ -280,10 +300,11 @@ function CampaignRoute() {
              </div>
           )}
 
-          <CopyCode 
-            dd={statusCodes.dd} 
-            md={statusCodes.md} 
+          <CopyCode
+            dd={statusCodes.dd}
+            md={statusCodes.md}
             terms={{ x: currentSyllogism.terms.minorTerm, y: currentSyllogism.terms.majorTerm, m: currentSyllogism.terms.middleTerm }}
+            syllogismText={getFullSyllogismText()}
             onShowHelp={() => setShowHelp(true)}
           />
         </div>
