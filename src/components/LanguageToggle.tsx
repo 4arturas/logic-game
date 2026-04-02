@@ -23,7 +23,7 @@ export default function LanguageToggle() {
   return (
     <button
       onClick={toggleLanguage}
-      className="rounded-xl p-1 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)] font-bold text-sm uppercase flex items-center gap-1 overflow-hidden"
+      className="cursor-pointer rounded-xl p-1 text-[var(--sea-ink-soft)] transition hover:bg-[var(--link-bg-hover)] hover:text-[var(--sea-ink)] font-bold text-sm uppercase flex items-center gap-1 overflow-hidden"
       title={`Switch to ${language === 'en' ? 'Lithuanian' : 'English'}`}
     >
       {language === 'en' ? (
