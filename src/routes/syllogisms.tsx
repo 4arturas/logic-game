@@ -1,22 +1,45 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from '../i18n/I18nContext'
-import { 
-  type Syllogism, 
+import {
+  type Syllogism,
   type Figure,
   SYLLOGISM_EXAMPLES
 } from '../lib/logic'
 import { SolveModal } from '../components/SolveModal'
-import { BookOpen, Search, ArrowRight } from 'lucide-react'
+import { BookOpen, Search, ArrowRight, CheckCircle2 } from 'lucide-react'
 
 export const Route = createFileRoute('/syllogisms')({
   component: SyllogismsPage,
 })
 
+const LAST_SELECTED_KEY = 'atlas-last-selected'
+
+function getLastSelectedId(): string | null {
+  try {
+    return localStorage.getItem(LAST_SELECTED_KEY)
+  } catch {
+    return null
+  }
+}
+
+function setLastSelectedId(id: string) {
+  try {
+    localStorage.setItem(LAST_SELECTED_KEY, id)
+  } catch {
+    // localStorage not available
+  }
+}
+
 function SyllogismsPage() {
   const { t } = useTranslation()
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [lastSelectedId, setLastSelectedId] = useState<string | null>(null)
+
+  useEffect(() => {
+    setLastSelectedId(getLastSelectedId())
+  }, [])
 
   const groupedSyllogisms = useMemo(() => {
     const res: Record<Figure, Syllogism[]> = { 1: [], 2: [], 3: [], 4: [] }
@@ -96,29 +119,56 @@ function SyllogismsPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[var(--line)]">
-                    {groupedSyllogisms[fig].map(s => (
-                      <tr
-                        key={s.id}
-                        onClick={() => setSelectedSyllogism(s)}
-                        className="group hover:bg-[var(--foam)] cursor-pointer transition-colors"
-                      >
-                        <td className="px-4 py-3">
-                           <span className="inline-block px-2 py-0.5 bg-[var(--foam)] border border-[var(--line)] rounded text-xs font-mono font-bold text-[var(--lagoon)] group-hover:border-[var(--lagoon)] transition-all">
-                             {s.mood}
-                           </span>
-                        </td>
-                        <td className="px-4 py-3">
-                           <span className="text-sm font-bold text-[var(--sea-ink)] italic" style={{ fontFamily: 'var(--font-serif)' }}>
-                             {s.mnemonic}
-                           </span>
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                           <div className="inline-flex items-center justify-center w-6 h-6 rounded border border-transparent group-hover:border-[var(--lagoon)] group-hover:bg-white transition-all text-[var(--sea-ink-soft)] group-hover:text-[var(--lagoon)] scale-0 group-hover:scale-100">
-                             <ArrowRight size={14} />
-                           </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {groupedSyllogisms[fig].map(s => {
+                      const isSelected = lastSelectedId === s.id
+                      return (
+                        <tr
+                          key={s.id}
+                          onClick={() => {
+                            setSelectedSyllogism(s)
+                            setLastSelectedId(s.id)
+                          }}
+                          className={`group cursor-pointer transition-colors ${
+                            isSelected
+                              ? 'bg-[var(--lagoon)]/10 border-l-2 border-l-[var(--lagoon)]'
+                              : 'hover:bg-[var(--foam)]'
+                          }`}
+                        >
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              {isSelected && (
+                                <CheckCircle2 size={14} className="text-[var(--lagoon)] shrink-0" />
+                              )}
+                              <span className={`inline-block px-2 py-0.5 rounded text-xs font-mono font-bold transition-all ${
+                                isSelected
+                                  ? 'bg-[var(--lagoon)] text-white border-[var(--lagoon)]'
+                                  : 'bg-[var(--foam)] border border-[var(--line)] text-[var(--lagoon)] group-hover:border-[var(--lagoon)]'
+                              }`}>
+                                {s.mood}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span className={`text-sm italic transition-all ${
+                              isSelected
+                                ? 'font-bold text-[var(--lagoon)]'
+                                : 'text-[var(--sea-ink)]'
+                            }`} style={{ fontFamily: 'var(--font-serif)' }}>
+                              {s.mnemonic}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <div className={`inline-flex items-center justify-center w-6 h-6 rounded border border-transparent transition-all ${
+                              isSelected
+                                ? 'border-[var(--lagoon)] bg-[var(--lagoon)] text-white scale-100'
+                                : 'text-[var(--sea-ink-soft)] group-hover:border-[var(--lagoon)] group-hover:bg-white group-hover:text-[var(--lagoon)] scale-0 group-hover:scale-100'
+                            }`}>
+                              <ArrowRight size={14} />
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
                     {groupedSyllogisms[fig].length === 0 && (
                       <tr>
                         <td colSpan={3} className="px-4 py-8 text-center text-xs text-[var(--sea-ink-soft)] italic">
