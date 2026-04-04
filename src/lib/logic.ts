@@ -507,13 +507,15 @@ export function validateUserDiagram(
   [9, 10, 11, 12, 13, 14, 15, 16].forEach(cell => {
     const user = userDDCells[cell] || '-';
     const correctVal = correct.ddCells[cell];
-    
+
     if (user !== correctVal) {
-      // RELAXED VALIDATION: Allow '-' if correct is '1' but it was only inferred
-      const wasInferred = correctVal === '1' && correct.explicitDDCells[cell] !== '1';
-      if (user === '-' && wasInferred) {
-        return; // Accept
+      // RELAXED VALIDATION: Accept '-' for any cell that should be empty (0)
+      // or occupied (1) but only inferred - users shouldn't be penalized for
+      // not marking cells they didn't explicitly reason about
+      if (user === '-') {
+        return; // Accept - not marking a cell is never wrong
       }
+      // Only reject if user actively placed wrong marker
       errors.push(`DD${cell}: expected ${correctVal}, got ${user}`);
     }
   });
@@ -521,11 +523,10 @@ export function validateUserDiagram(
   [5, 6, 7, 8].forEach(cell => {
     const user = userMDCells[cell] || '-';
     const correctVal = correct.mdCells[cell];
-    
+
     if (user !== correctVal) {
-      // RELAXED VALIDATION: Allow '-' if correct is '1' but it was only inferred
-      const wasInferred = correctVal === '1' && correct.explicitMDCells[cell] !== '1';
-      if (user === '-' && wasInferred) {
+      // RELAXED VALIDATION: same as above for MD cells
+      if (user === '-') {
         return; // Accept
       }
       errors.push(`MD${cell}: expected ${correctVal}, got ${user}`);
