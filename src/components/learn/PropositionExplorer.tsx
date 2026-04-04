@@ -12,6 +12,8 @@ const PROPOSITION_INFO = {
     latin: 'AffIrmo',
     symbol: 'A',
     form: 'All x are y',
+    symbolic: 'x₁y\'₀',
+    symbolicLabel: 'x(1-y) = 0',
     meaningKey: 'learn.prop_a_meaning',
     cells: {
       xy: 'occupied' as const,
@@ -24,6 +26,8 @@ const PROPOSITION_INFO = {
     latin: 'nEgo',
     symbol: 'E',
     form: 'No x are y',
+    symbolic: 'x₁y₁ = 0',
+    symbolicLabel: 'xy = 0',
     meaningKey: 'learn.prop_e_meaning',
     cells: {
       xy: 'empty' as const,
@@ -35,6 +39,8 @@ const PROPOSITION_INFO = {
     latin: 'affIrmo',
     symbol: 'I',
     form: 'Some x are y',
+    symbolic: 'x₁y₁ > 0',
+    symbolicLabel: 'xy ≠ 0',
     meaningKey: 'learn.prop_i_meaning',
     cells: {
       xy: 'occupied' as const,
@@ -46,6 +52,8 @@ const PROPOSITION_INFO = {
     latin: 'negO',
     symbol: 'O',
     form: 'Some x are not y',
+    symbolic: 'x₁y\'₁ > 0',
+    symbolicLabel: 'x(1-y) ≠ 0',
     meaningKey: 'learn.prop_o_meaning',
     cells: {
       "x'y": 'occupied' as const,
@@ -171,6 +179,18 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
           <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">{t('learn.form_label')}</div>
           <div className="text-base font-bold text-[var(--sea-ink)] italic" style={{ fontFamily: 'var(--font-serif)' }}>
             {info.form}
+          </div>
+        </div>
+
+        <div className="p-3 rounded-lg bg-[var(--foam)] border border-[var(--line)]">
+          <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">{t('learn.symbolic_label')}</div>
+          <div className="flex items-center gap-3">
+            <span className="text-base font-mono font-bold text-[var(--lagoon)]">
+              {info.symbolic}
+            </span>
+            <span className="text-xs text-[var(--sea-ink-soft)]">
+              ({info.symbolicLabel})
+            </span>
           </div>
         </div>
 
