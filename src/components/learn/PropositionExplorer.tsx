@@ -14,7 +14,7 @@ const PROPOSITION_INFO = {
     form: 'All x are y',
     symbolic: 'x₁y\'₀',
     symbolicLabel: 'x(1-y) = 0',
-    sql: 'SELECT * FROM things WHERE x = 1 AND y = 0 LIMIT 0',
+    sql: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
     meaningKey: 'learn.prop_a_meaning',
     cells: {
       xy: 'occupied' as const,
@@ -29,7 +29,7 @@ const PROPOSITION_INFO = {
     form: 'No x are y',
     symbolic: 'x₁y₁ = 0',
     symbolicLabel: 'xy = 0',
-    sql: 'SELECT * FROM things WHERE x = 1 AND y = 1 LIMIT 0',
+    sql: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
     meaningKey: 'learn.prop_e_meaning',
     cells: {
       xy: 'empty' as const,
@@ -43,7 +43,7 @@ const PROPOSITION_INFO = {
     form: 'Some x are y',
     symbolic: 'x₁y₁ > 0',
     symbolicLabel: 'xy ≠ 0',
-    sql: 'SELECT * FROM things WHERE x = 1 AND y = 1',
+    sql: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
     meaningKey: 'learn.prop_i_meaning',
     cells: {
       xy: 'occupied' as const,
@@ -57,7 +57,7 @@ const PROPOSITION_INFO = {
     form: 'Some x are not y',
     symbolic: 'x₁y\'₁ > 0',
     symbolicLabel: 'x(1-y) ≠ 0',
-    sql: 'SELECT * FROM things WHERE x = 1 AND y = 0',
+    sql: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
     meaningKey: 'learn.prop_o_meaning',
     cells: {
       "x'y": 'occupied' as const,
