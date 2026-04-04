@@ -903,7 +903,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.major_term_y': 'Didysis terminas (y)',
     'workshop.middle_term_m': 'Vidurinysis terminas (m)',
     'workshop.quantifier_all': 'Visi',
-    'workshop.quantifier_no': 'Joks',
+    'workshop.quantifier_no': 'Neegzistuoja',
     'workshop.quantifier_some': 'Kai kurie',
     'workshop.quantifier_some_not': 'Kai kurie ... nėra',
     'workshop.have_verb': 'turi',
