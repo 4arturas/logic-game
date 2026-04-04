@@ -132,6 +132,7 @@ export type TranslationKey =
   | 'learn.meaning_label'
   | 'learn.symbolic_label'
   | 'learn.set_notation_label'
+  | 'learn.programming_label'
   | 'learn.sql_label'
   | 'learn.diagram_explanation_label'
   | 'learn.prop_a_name'
@@ -436,6 +437,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.meaning_label': 'Meaning',
     'learn.symbolic_label': 'Symbolic Form',
     'learn.set_notation_label': 'Set Notation',
+    'learn.programming_label': 'Programming Logic',
     'learn.sql_label': 'SQL Equivalent',
     'learn.diagram_explanation_label': 'Diagram Explanation',
     'learn.prop_a_name': 'Universal Affirmative',
@@ -740,6 +742,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.meaning_label': 'Reikšmė',
     'learn.symbolic_label': 'Simbolinė forma',
     'learn.set_notation_label': 'Aibių notacija',
+    'learn.programming_label': 'Programavimo logika',
     'learn.sql_label': 'SQL atitikmuo',
     'learn.diagram_explanation_label': 'Diagramos paaiškinimas',
     'learn.prop_a_name': 'Universalusis teigiamasis',

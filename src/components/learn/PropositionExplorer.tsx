@@ -15,6 +15,7 @@ const PROPOSITION_INFO = {
     symbolic: 'x₁y\'₀',
     symbolicLabel: 'x(1-y) = 0',
     setNotation: 'x ⊆ y',
+    programming: 'if (x && !y) return false',
     sql: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
     meaningKey: 'learn.prop_a_meaning',
     cells: {
@@ -31,6 +32,7 @@ const PROPOSITION_INFO = {
     symbolic: 'x₁y₁ = 0',
     symbolicLabel: 'xy = 0',
     setNotation: 'x ∩ y = ∅',
+    programming: 'if (x && y) return false',
     sql: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
     meaningKey: 'learn.prop_e_meaning',
     cells: {
@@ -46,6 +48,7 @@ const PROPOSITION_INFO = {
     symbolic: 'x₁y₁ > 0',
     symbolicLabel: 'xy ≠ 0',
     setNotation: 'x ∩ y ≠ ∅',
+    programming: 'return x && y',
     sql: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
     meaningKey: 'learn.prop_i_meaning',
     cells: {
@@ -61,6 +64,7 @@ const PROPOSITION_INFO = {
     symbolic: 'x₁y\'₁ > 0',
     symbolicLabel: 'x(1-y) ≠ 0',
     setNotation: 'x ⊈ y',
+    programming: 'return x && !y',
     sql: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
     meaningKey: 'learn.prop_o_meaning',
     cells: {
@@ -207,6 +211,13 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
           <span className="text-lg font-serif font-bold text-[var(--term-x)]">
             {info.setNotation}
           </span>
+        </div>
+
+        <div className="p-3 rounded-lg bg-[var(--foam)] border border-[var(--line)]">
+          <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">{t('learn.programming_label')}</div>
+          <code className="text-sm font-mono text-[var(--palm)] block">
+            {info.programming}
+          </code>
         </div>
 
         <div className="p-3 rounded-lg bg-[var(--foam)] border border-[var(--line)]">
