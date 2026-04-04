@@ -75,6 +75,7 @@ function WorkshopPage() {
   const [validationResult, setValidationResult] = useState<{ isCorrect: boolean; errors: string[] } | null>(null)
   const [showAnswer, setShowAnswer] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [diagramVersion, setDiagramVersion] = useState(0)
 
   const syllogisms = useMemo(() => {
     const data = syllogismSet === 'standard' ? standardSyllogisms : customSyllogisms
@@ -150,6 +151,7 @@ function WorkshopPage() {
     setUserBiliteral({})
     setValidationResult(null)
     setShowAnswer(false)
+    setDiagramVersion(v => v + 1)
   }, [])
 
   const handleCopySolution = useCallback(() => {
@@ -333,6 +335,7 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
               </div>
               <div className="flex justify-center">
                 <TriliteralDiagram
+                  key={`tri-${selectedSyllogism.id}-${showAnswer}-${diagramVersion}`}
                   xLabel={selectedSyllogism.terms.minorTerm}
                   yLabel={selectedSyllogism.terms.majorTerm}
                   mLabel={selectedSyllogism.terms.middleTerm}
@@ -354,6 +357,7 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
               </div>
               <div className="flex justify-center">
                 <BiliteralDiagram
+                  key={`bil-${selectedSyllogism.id}-${showAnswer}-${diagramVersion}`}
                   xLabel={selectedSyllogism.terms.minorTerm}
                   yLabel={selectedSyllogism.terms.majorTerm}
                   initialState={displayBiliteralState}
