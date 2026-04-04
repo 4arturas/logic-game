@@ -97,6 +97,7 @@ export const termTranslations: Record<string, TermTranslations> = {
     'fast': 'greiti',
     'quiet': 'tylūs',
     'spiky': 'dygliuoti',
+    'green': 'žali',
     'cacti': 'kaktusai',
     'glass': 'stiklas',
     'flammable': 'degi',
