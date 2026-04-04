@@ -46,6 +46,17 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
     return <><span className="text-[var(--palm)] font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
   }
 
+  // Real-term English sentence
+  const subjectTerm = t(subject as any)
+  const predicateTerm = t(predicate as any)
+  const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => predicate.includes(w)) ? 'have' : 'are'
+  const realSentence: Record<string, string> = {
+    A: `All ${subjectTerm} ${verb} ${predicateTerm}.`,
+    E: `No ${subjectTerm} ${verb} ${predicateTerm}.`,
+    I: `Some ${subjectTerm} ${verb} ${predicateTerm}.`,
+    O: `Some ${subjectTerm} do not ${verb} ${predicateTerm}.`,
+  }
+
   return (
     <div className="space-y-1">
       <p className="text-sm leading-snug" style={{ color: 'var(--sea-ink)' }}>
@@ -56,6 +67,9 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
         {quantifier === 'E' && <span>¬∃x (X(x) ∧ Y(x)) — <em>There does not exist an x that is both X and Y</em></span>}
         {quantifier === 'I' && <span>∃x (X(x) ∧ Y(x)) — <em>There exists an x that is both X and Y</em></span>}
         {quantifier === 'O' && <span>∃x (X(x) ∧ ¬Y(x)) — <em>There exists an x that is X but not Y</em></span>}
+      </div>
+      <div className="text-xs italic" style={{ color: 'var(--sea-ink)', fontFamily: 'var(--font-serif)' }}>
+        {realSentence[quantifier]}
       </div>
       <PropositionLogicSequence prop={prop} syllogism={syllogism} />
     </div>
