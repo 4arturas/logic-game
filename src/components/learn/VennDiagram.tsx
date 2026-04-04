@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useTranslation } from '../../i18n/I18nContext'
 
 export type CellState = 'empty' | 'occupied' | null
 
@@ -37,6 +38,7 @@ export function VennDiagram({
   initialState = {},
   readOnly = false,
 }: VennDiagramProps) {
+  const { t } = useTranslation()
   const [cellStates, setCellStates] = useState<Record<string, CellState>>(initialState)
 
   const handleRegionClick = useCallback((regionId: string) => {
@@ -124,7 +126,7 @@ export function VennDiagram({
         </svg>
 
         <div className="text-xs text-center text-[var(--sea-ink-soft)]">
-          Two-circle Venn diagram — click regions to place counters
+          {t('Two-circle Venn diagram — click regions to place counters')}
         </div>
 
         {/* Legend */}
@@ -133,7 +135,7 @@ export function VennDiagram({
             <div className="w-4 h-4 rounded-full bg-red-200 border border-red-500 relative">
               <div className="absolute inset-0 flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-red-500" /></div>
             </div>
-            <span className="text-[var(--sea-ink-soft)]">Some exist</span>
+            <span className="text-[var(--sea-ink-soft)]">{t('Some exist')}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="w-4 h-4 rounded-full bg-gray-200 border border-gray-500 relative">
@@ -142,7 +144,7 @@ export function VennDiagram({
                 <div className="w-3 h-0.5 bg-gray-500 -rotate-45 absolute" />
               </div>
             </div>
-            <span className="text-[var(--sea-ink-soft)]">Empty</span>
+            <span className="text-[var(--sea-ink-soft)]">{t('Empty')}</span>
           </div>
         </div>
       </div>
@@ -170,7 +172,7 @@ export function VennDiagram({
       </svg>
 
       <div className="text-xs text-center text-[var(--sea-ink-soft)]">
-        Three-circle Venn diagram — shows 8 regions
+        {t('Three-circle Venn diagram — shows 8 regions')}
       </div>
 
       {/* Legend */}
@@ -179,7 +181,7 @@ export function VennDiagram({
           <div className="w-4 h-4 rounded-full bg-red-200 border border-red-500 relative">
             <div className="absolute inset-0 flex items-center justify-center"><div className="w-1.5 h-1.5 rounded-full bg-red-500" /></div>
           </div>
-          <span className="text-[var(--sea-ink-soft)]">Some exist</span>
+          <span className="text-[var(--sea-ink-soft)]">{t('Some exist')}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-full bg-gray-200 border border-gray-500 relative">
@@ -188,7 +190,7 @@ export function VennDiagram({
               <div className="w-3 h-0.5 bg-gray-500 -rotate-45 absolute" />
             </div>
           </div>
-          <span className="text-[var(--sea-ink-soft)]">Empty</span>
+          <span className="text-[var(--sea-ink-soft)]">{t('Empty')}</span>
         </div>
       </div>
     </div>

@@ -338,9 +338,9 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
               <div className="flex justify-center">
                 <TriliteralDiagram
                   key={`tri-${selectedSyllogism.id}-${showAnswer}-${diagramVersion}`}
-                  xLabel={selectedSyllogism.terms.minorTerm}
-                  yLabel={selectedSyllogism.terms.majorTerm}
-                  mLabel={selectedSyllogism.terms.middleTerm}
+                  xLabel={t(selectedSyllogism.terms.minorTerm)}
+                  yLabel={t(selectedSyllogism.terms.majorTerm)}
+                  mLabel={t(selectedSyllogism.terms.middleTerm)}
                   initialState={displayTriliteralState}
                   onStateChange={showAnswer ? undefined : setUserTriliteral}
                   readOnly={showAnswer}
@@ -360,8 +360,8 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
               <div className="flex justify-center">
                 <BiliteralDiagram
                   key={`bil-${selectedSyllogism.id}-${showAnswer}-${diagramVersion}`}
-                  xLabel={selectedSyllogism.terms.minorTerm}
-                  yLabel={selectedSyllogism.terms.majorTerm}
+                  xLabel={t(selectedSyllogism.terms.minorTerm)}
+                  yLabel={t(selectedSyllogism.terms.majorTerm)}
                   initialState={displayBiliteralState}
                   onStateChange={showAnswer ? undefined : setUserBiliteral}
                   readOnly={showAnswer}
@@ -442,15 +442,15 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
           <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
               <span className="font-bold" style={{ color: 'var(--term-x)' }}>{t('workshop.minor_term_x')}</span>
-              <span className="text-[var(--sea-ink-soft)]">= {selectedSyllogism.terms.minorTerm}</span>
+              <span className="text-[var(--sea-ink-soft)]">= {t(selectedSyllogism.terms.minorTerm)}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-bold" style={{ color: 'var(--term-y)' }}>{t('workshop.major_term_y')}</span>
-              <span className="text-[var(--sea-ink-soft)]">= {selectedSyllogism.terms.majorTerm}</span>
+              <span className="text-[var(--sea-ink-soft)]">= {t(selectedSyllogism.terms.majorTerm)}</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="font-bold" style={{ color: 'var(--term-m)' }}>{t('workshop.middle_term_m')}</span>
-              <span className="text-[var(--sea-ink-soft)]">= {selectedSyllogism.terms.middleTerm}</span>
+              <span className="text-[var(--sea-ink-soft)]">= {t(selectedSyllogism.terms.middleTerm)}</span>
             </div>
           </div>
         </div>

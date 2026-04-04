@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useTranslation } from '../../i18n/I18nContext'
 
 export type CellState = 'empty' | 'occupied' | null
 
@@ -39,6 +40,7 @@ export function TriliteralDiagram({
   readOnly = false,
   showLabels = true,
 }: TriliteralDiagramProps) {
+  const { t } = useTranslation()
   const [cellStates, setCellStates] = useState<Record<string, CellState>>(initialState)
 
   const handleCellClick = useCallback((cellId: string) => {
@@ -200,7 +202,7 @@ export function TriliteralDiagram({
               <div className="w-1.5 h-1.5 rounded-full bg-red-500" />
             </div>
           </div>
-          <span className="text-[var(--sea-ink-soft)]">Some exist</span>
+          <span className="text-[var(--sea-ink-soft)]">{t('Some exist')}</span>
         </div>
         <div className="flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-full bg-gray-200 border border-gray-500 relative">
@@ -209,7 +211,7 @@ export function TriliteralDiagram({
               <div className="w-3 h-0.5 bg-gray-500 -rotate-45 absolute" />
             </div>
           </div>
-          <span className="text-[var(--sea-ink-soft)]">None (empty)</span>
+          <span className="text-[var(--sea-ink-soft)]">{t('None (empty)')}</span>
         </div>
       </div>
     </div>

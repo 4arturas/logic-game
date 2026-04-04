@@ -67,5 +67,10 @@ export const termTranslations: Record<string, TermTranslations> = {
     'taste': 'skonis',
     'apple': 'obuolys',
     'delicious': 'skanus',
+    'Some exist': 'Kažkas egzistuoja',
+    'None (empty)': 'Nėra (tuščia)',
+    'Empty': 'Tuščia',
+    'Two-circle Venn diagram — click regions to place counters': 'Dviejų apskritimų Venų diagrama — spustelėkite sritis, kad padėtumėte žetonus',
+    'Three-circle Venn diagram — shows 8 regions': 'Trijų apskritimų Venų diagrama — rodo 8 sritis',
   },
 }
