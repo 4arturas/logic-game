@@ -109,6 +109,23 @@ export type TranslationKey =
   | 'learn.interactive_guide'
   | 'learn.lessons'
   | 'learn.next'
+  // Venn diagrams chapter
+  | 'learn.ch4_title'
+  | 'learn.ch4_lesson1_title'
+  | 'learn.ch4_lesson1_p1'
+  | 'learn.venn_diagram'
+  | 'learn.carroll_diagram'
+  | 'learn.key_differences'
+  | 'learn.venn_approach'
+  | 'learn.venn_approach_desc'
+  | 'learn.carroll_approach'
+  | 'learn.carroll_approach_desc'
+  | 'learn.ch4_lesson2_title'
+  | 'learn.ch4_lesson2_p1'
+  | 'learn.venn_3circle'
+  | 'learn.carroll_3circle'
+  | 'learn.note'
+  | 'learn.ch4_lesson2_note'
   // Footer
   | 'footer.copyright'
   // Home page (used by components)
@@ -372,6 +389,23 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.interactive_guide': 'Interactive Guide',
     'learn.lessons': 'Lessons',
     'learn.next': 'Next',
+    // Venn diagrams chapter
+    'learn.ch4_title': '4. Venn Diagrams',
+    'learn.ch4_lesson1_title': 'Venn vs Carroll',
+    'learn.ch4_lesson1_p1': 'Venn diagrams, invented by John Venn in 1880, are another way to visualize logical propositions. Unlike Carroll\'s square diagrams, Venn diagrams use <strong>overlapping circles</strong> to represent classes. Both methods show the same logical relationships, just with different geometry.',
+    'learn.venn_diagram': 'Venn Diagram',
+    'learn.carroll_diagram': 'Carroll Diagram',
+    'learn.key_differences': 'Key Differences',
+    'learn.venn_approach': 'Venn\'s Approach',
+    'learn.venn_approach_desc': 'Uses overlapping circles. The intersection naturally shows things that belong to both classes. Regions outside the circles represent things that don\'t belong to those classes.',
+    'learn.carroll_approach': 'Carroll\'s Approach',
+    'learn.carroll_approach_desc': 'Uses a square divided into cells. Each cell represents a specific combination of attributes (x, y, x\', y\'). Carroll\'s method is more explicit and systematic — perfect for solving syllogisms step by step.',
+    'learn.ch4_lesson2_title': 'Three-Circle Venn',
+    'learn.ch4_lesson2_p1': 'For syllogisms with three terms (x, y, m), Venn diagrams use <strong>three overlapping circles</strong>. This creates 8 regions — the same 8 regions as Carroll\'s triliteral diagram, just arranged differently.',
+    'learn.venn_3circle': 'Venn (3 circles)',
+    'learn.carroll_3circle': 'Carroll (circle in square)',
+    'learn.note': 'Note:',
+    'learn.ch4_lesson2_note': 'In Carroll\'s Symbolic Logic book, he preferred his square diagram method because it made it easier to systematically mark and read off conclusions. Venn diagrams are more common in modern logic textbooks, but Carroll\'s method is equally valid and often clearer for step-by-step reasoning.',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll Logic Game. Learn logic through interactive diagrams.',
     // Home page (used by components)
@@ -635,6 +669,23 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.interactive_guide': 'Interaktyvus vadovas',
     'learn.lessons': 'Pamokos',
     'learn.next': 'Toliau',
+    // Venn diagrams chapter
+    'learn.ch4_title': '4. Venų diagramos',
+    'learn.ch4_lesson1_title': 'Venų ir Carrollo palyginimas',
+    'learn.ch4_lesson1_p1': 'Venų diagramos, sukurtos John Venn 1880 m., yra kitas būdas vaizduoti loginius teiginius. Skirtingai nei Carrollo kvadratinės diagramos, Venų diagramos naudoja <strong>persidengiančius apskritimus</strong> klasėms vaizduoti. Abu metodai rodo tuos pačius loginius ryšius, tik su skirtinga geometrija.',
+    'learn.venn_diagram': 'Venų diagrama',
+    'learn.carroll_diagram': 'Carrollo diagrama',
+    'learn.key_differences': 'Esminiai skirtumai',
+    'learn.venn_approach': 'Venų metodas',
+    'learn.venn_approach_desc': 'Naudoja persidengiančius apskritimus. Sankirta natūraliai rodo dalykus, priklausančias abiem klasėms. Regionai už apskritimų ribų vaizduoja dalykus, nepriklausančias toms klasėms.',
+    'learn.carroll_approach': 'Carrollo metodas',
+    'learn.carroll_approach_desc': 'Naudoja kvadratą, padalintą į korteles. Kiekviena kortelė vaizduoja specifinę savybių kombinaciją (x, y, x\', y\'). Carrollo metodas yra aiškesnis ir sistemingesnis – puikiai tinka silogizmams spręsti žingsnis po žingsnio.',
+    'learn.ch4_lesson2_title': 'Trijų apskritimų Venų diagrama',
+    'learn.ch4_lesson2_p1': 'Silogizmams su trimis terminais (x, y, m) Venų diagramos naudoja <strong>tris persidengiančius apskritimus</strong>. Tai sukuria 8 regionus – tuos pačius 8 regionus kaip Carrollo trijų raidžių diagramoje, tik išdėstytus kitaip.',
+    'learn.venn_3circle': 'Venų (3 apskritimai)',
+    'learn.carroll_3circle': 'Carroll (apskritimas kvadrate)',
+    'learn.note': 'Pastaba:',
+    'learn.ch4_lesson2_note': 'Carrollo knygoje „Simbolinė logika" jis pirmenybę teikė savo kvadratiniam diagramos metodui, nes jis leido lengviau sistemingai žymėti ir nuskaityti išvadas. Venų diagramos yra dažnesnės šiuolaikinių logikos vadovėliuose, tačiau Carrollo metodas yra vienodai teisingas ir dažnai aiškesnis žingsnis po žingsnio samprotavimui.',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll logikos žaidimas. Mokykitės logikos per interaktyvias diagramas.',
     // Home page (used by components)

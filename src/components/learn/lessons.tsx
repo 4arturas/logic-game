@@ -2,6 +2,7 @@ import { useTranslation } from '../../i18n/I18nContext'
 import { BiliteralDiagram } from './BiliteralDiagram'
 import { TriliteralDiagram } from './TriliteralDiagram'
 import { PropositionExplorer } from './PropositionExplorer'
+import { VennDiagram } from './VennDiagram'
 
 // Helper to render HTML from translation strings
 function HtmlText({ html }: { html: string }) {
@@ -357,6 +358,80 @@ export function useLessons() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          ),
+        },
+      ],
+    },
+    {
+      id: 'venn',
+      title: t('learn.ch4_title'),
+      lessons: [
+        {
+          id: 'venn-intro',
+          title: t('learn.ch4_lesson1_title'),
+          content: (
+            <div className="space-y-6">
+              <div className="prose max-w-none">
+                <p className="text-base leading-relaxed">
+                  <HtmlText html={t('learn.ch4_lesson1_p1')} />
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-4 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]">
+                  <h4 className="text-sm font-bold text-[var(--lagoon)] mb-3 text-center">{t('learn.venn_diagram')}</h4>
+                  <VennDiagram type="biliteral" />
+                </div>
+                <div className="p-4 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]">
+                  <h4 className="text-sm font-bold text-[var(--palm)] mb-3 text-center">{t('learn.carroll_diagram')}</h4>
+                  <BiliteralDiagram xLabel="x" yLabel="y" />
+                </div>
+              </div>
+
+              <div className="p-6 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]">
+                <h4 className="text-sm font-bold uppercase text-[var(--sea-ink)] mb-4">{t('learn.key_differences')}</h4>
+                <div className="space-y-3">
+                  <div className="p-3 rounded bg-[var(--foam)] border border-[var(--line)]">
+                    <div className="font-bold text-[var(--sea-ink)] mb-1">{t('learn.venn_approach')}</div>
+                    <p className="text-sm text-[var(--sea-ink)]">{t('learn.venn_approach_desc')}</p>
+                  </div>
+                  <div className="p-3 rounded bg-[var(--foam)] border border-[var(--line)]">
+                    <div className="font-bold text-[var(--sea-ink)] mb-1">{t('learn.carroll_approach')}</div>
+                    <p className="text-sm text-[var(--sea-ink)]">{t('learn.carroll_approach_desc')}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ),
+        },
+        {
+          id: 'venn-triliteral',
+          title: t('learn.ch4_lesson2_title'),
+          content: (
+            <div className="space-y-6">
+              <div className="prose max-w-none">
+                <p className="text-base leading-relaxed">
+                  <HtmlText html={t('learn.ch4_lesson2_p1')} />
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="p-4 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]">
+                  <h4 className="text-sm font-bold text-[var(--lagoon)] mb-3 text-center">{t('learn.venn_3circle')}</h4>
+                  <VennDiagram type="triliteral" />
+                </div>
+                <div className="p-4 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]">
+                  <h4 className="text-sm font-bold text-[var(--palm)] mb-3 text-center">{t('learn.carroll_3circle')}</h4>
+                  <TriliteralDiagram xLabel="x" yLabel="y" mLabel="m" />
+                </div>
+              </div>
+
+              <div className="p-4 rounded-lg border-l-4 border-[var(--palm)] bg-[var(--hero-a)]">
+                <p className="text-sm">
+                  <strong>{t('learn.note')}</strong> {t('learn.ch4_lesson2_note')}
+                </p>
               </div>
             </div>
           ),
