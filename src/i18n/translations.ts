@@ -157,6 +157,15 @@ export type TranslationKey =
   | 'workshop.programming'
   | 'workshop.sql'
   | 'workshop.copy_representations'
+  | 'workshop.click_to_place'
+  | 'workshop.check_answer'
+  | 'workshop.clear_board'
+  | 'workshop.show_answer'
+  | 'workshop.hide_answer'
+  | 'workshop.copy_solution'
+  | 'workshop.copied'
+  | 'workshop.correct'
+  | 'workshop.incorrect'
   // Proposition explorer
   | 'learn.from_latin'
   | 'learn.form_label'
@@ -493,6 +502,15 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.programming': 'Programming',
     'workshop.sql': 'SQL',
     'workshop.copy_representations': 'Copy representations',
+    'workshop.click_to_place': 'Click cells to place counters',
+    'workshop.check_answer': 'Check Answer',
+    'workshop.clear_board': 'Clear Board',
+    'workshop.show_answer': 'Show Answer',
+    'workshop.hide_answer': 'Hide Answer',
+    'workshop.copy_solution': 'Copy Solution',
+    'workshop.copied': 'Copied!',
+    'workshop.correct': 'Correct!',
+    'workshop.incorrect': 'Incorrect - check your diagram',
     // Proposition explorer
     'learn.from_latin': 'From Latin:',
     'learn.form_label': 'Form',
@@ -829,6 +847,15 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.programming': 'Programavimas',
     'workshop.sql': 'SQL',
     'workshop.copy_representations': 'Kopijuoti reprezentacijas',
+    'workshop.click_to_place': 'Spustelėkite korteles, kad padėtumėte žetonus',
+    'workshop.check_answer': 'Tikrinti atsakymą',
+    'workshop.clear_board': 'Išvalyti lentą',
+    'workshop.show_answer': 'Rodyti atsakymą',
+    'workshop.hide_answer': 'Slėpti atsakymą',
+    'workshop.copy_solution': 'Kopijuoti sprendimą',
+    'workshop.copied': 'Nukopijuota!',
+    'workshop.correct': 'Teisingai!',
+    'workshop.incorrect': 'Neteisingai - patikrinkite diagramą',
     // Proposition explorer
     'learn.from_latin': 'Iš lotynų k.:',
     'learn.form_label': 'Forma',

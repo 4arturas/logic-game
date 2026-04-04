@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useTranslation } from '../i18n/I18nContext'
-import { createSyllogism, generateDiagram, type Syllogism, type Figure } from '../lib/logic'
+import { createSyllogism, generateDiagram, validateUserDiagram, type Syllogism, type Figure, type CellValue } from '../lib/logic'
 import { BiliteralDiagram } from '../components/learn/BiliteralDiagram'
 import { TriliteralDiagram } from '../components/learn/TriliteralDiagram'
-import { Copy, Check } from 'lucide-react'
+import { Copy, Check, Clipboard, Eraser, Eye } from 'lucide-react'
 
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
@@ -136,6 +136,13 @@ function WorkshopPage() {
   const [selectedFigure, setSelectedFigure] = useState<Figure>(1)
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
 
+  // User's diagram states
+  const [userTriliteral, setUserTriliteral] = useState<Record<string, 'empty' | 'occupied' | null>>({})
+  const [userBiliteral, setUserBiliteral] = useState<Record<string, 'empty' | 'occupied' | null>>({})
+  const [validationResult, setValidationResult] = useState<{ isCorrect: boolean; errors: string[] } | null>(null)
+  const [showAnswer, setShowAnswer] = useState(false)
+  const [copied, setCopied] = useState(false)
+
   const syllogisms = useMemo(() => {
     const data = syllogismSet === 'standard' ? standardSyllogisms : customSyllogisms
     return data.map((d: any) => createSyllogism(d.figure as Figure, d.mood, d.terms))
@@ -149,13 +156,17 @@ function WorkshopPage() {
   useEffect(() => {
     if (figureSyllogisms.length > 0) {
       setSelectedSyllogism(figureSyllogisms[0])
+      setUserTriliteral({})
+      setUserBiliteral({})
+      setValidationResult(null)
+      setShowAnswer(false)
     }
   }, [selectedFigure, syllogismSet, figureSyllogisms])
 
   const diagramEncoding = selectedSyllogism ? generateDiagram(selectedSyllogism) : null
 
-  // Convert diagram encoding to CellState for diagrams
-  const triliteralState = useMemo(() => {
+  // Correct answer states
+  const correctTriliteralState = useMemo(() => {
     const state: Record<string, 'empty' | 'occupied' | null> = {}
     if (diagramEncoding?.explicitDDCells) {
       Object.entries(diagramEncoding.explicitDDCells).forEach(([k, v]) => {
@@ -169,7 +180,7 @@ function WorkshopPage() {
     return state
   }, [diagramEncoding])
 
-  const biliteralState = useMemo(() => {
+  const correctBiliteralState = useMemo(() => {
     const state: Record<string, 'empty' | 'occupied' | null> = {}
     if (diagramEncoding?.explicitMDCells) {
       Object.entries(diagramEncoding.explicitMDCells).forEach(([k, v]) => {
@@ -183,7 +194,59 @@ function WorkshopPage() {
     return state
   }, [diagramEncoding])
 
+  const handleCheckAnswer = useCallback(() => {
+    if (!selectedSyllogism || !diagramEncoding) return
+
+    const getStateCode = (state: Record<string, 'empty' | 'occupied' | null>, cellIds: number[], prefix: string) => {
+      return cellIds.map(id => {
+        const key = prefix === 'lg' ? `${prefix}_${id}` : `${prefix}${id}`
+        const val = state[key] === 'occupied' ? '1' : state[key] === 'empty' ? '0' : '-'
+        return `${id}-${val}`
+      }).join(',')
+    }
+
+    const userDD = `DD=${getStateCode(userTriliteral, [9, 10, 11, 12, 13, 14, 15, 16], 'lg')}`
+    const userMD = `MD=${getStateCode(userBiliteral, [5, 6, 7, 8], 'c')}`
+    const result = validateUserDiagram(userDD, userMD, diagramEncoding)
+
+    setValidationResult({ isCorrect: result.isCorrect, errors: result.errors })
+  }, [selectedSyllogism, diagramEncoding, userTriliteral, userBiliteral])
+
+  const handleClear = useCallback(() => {
+    setUserTriliteral({})
+    setUserBiliteral({})
+    setValidationResult(null)
+    setShowAnswer(false)
+  }, [])
+
+  const handleCopySolution = useCallback(() => {
+    if (!diagramEncoding || !selectedSyllogism) return
+
+    const ddCells = diagramEncoding.ddCells
+    const mdCells = diagramEncoding.mdCells
+
+    const formatCell = (cells: Record<number, CellValue>, ids: number[]) => {
+      return ids.map(id => `${id}-${cells[id]}`).join(',')
+    }
+
+    const text = `${t('workshop.syllogism')}: ${selectedSyllogism.mood}-${selectedSyllogism.figure} (${selectedSyllogism.mnemonic})
+
+${t('workshop.major_premise')}: ${selectedSyllogism.premises.major.quantifier} ${selectedSyllogism.premises.major.subject} ${selectedSyllogism.premises.major.predicate}
+${t('workshop.minor_premise')}: ${selectedSyllogism.premises.minor.quantifier} ${selectedSyllogism.premises.minor.subject} ${selectedSyllogism.premises.minor.predicate}
+${t('workshop.conclusion')}: ${selectedSyllogism.conclusion.quantifier} ${selectedSyllogism.conclusion.subject} ${selectedSyllogism.conclusion.predicate}
+
+DD=${formatCell(ddCells, [9, 10, 11, 12, 13, 14, 15, 16])}
+MD=${formatCell(mdCells, [5, 6, 7, 8])}`
+
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }, [diagramEncoding, selectedSyllogism, t])
+
   if (!selectedSyllogism) return null
+
+  const displayTriliteralState = showAnswer ? correctTriliteralState : userTriliteral
+  const displayBiliteralState = showAnswer ? correctBiliteralState : userBiliteral
 
   return (
     <main className="page-wrap pb-16 pt-8" style={{ background: 'var(--page-bg)' }}>
@@ -250,7 +313,13 @@ function WorkshopPage() {
               return (
                 <button
                   key={s.id}
-                  onClick={() => setSelectedSyllogism(s)}
+                  onClick={() => {
+                    setSelectedSyllogism(s)
+                    setUserTriliteral({})
+                    setUserBiliteral({})
+                    setValidationResult(null)
+                    setShowAnswer(false)
+                  }}
                   className={`px-4 py-2 rounded-lg text-xs font-mono font-bold cursor-pointer transition-all border ${
                     isActive
                       ? 'bg-[var(--lagoon)] text-white border-[var(--lagoon)]'
@@ -321,7 +390,7 @@ function WorkshopPage() {
             </div>
           </div>
 
-          {/* Center: Triliteral Diagram */}
+          {/* Center: Triliteral Diagram (Interactive) */}
           <div className="lg:col-span-4">
             <div className="p-6 rounded-xl border bg-white">
               <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-4 text-center">
@@ -332,17 +401,18 @@ function WorkshopPage() {
                   xLabel={selectedSyllogism.terms.minorTerm}
                   yLabel={selectedSyllogism.terms.majorTerm}
                   mLabel={selectedSyllogism.terms.middleTerm}
-                  initialState={triliteralState as Record<string, 'empty' | 'occupied' | null>}
-                  readOnly={true}
+                  initialState={displayTriliteralState}
+                  onStateChange={showAnswer ? undefined : setUserTriliteral}
+                  readOnly={showAnswer}
                 />
               </div>
               <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
-                {t('workshop.triliteral_desc')}
+                {showAnswer ? t('workshop.triliteral_desc') : t('workshop.click_to_place')}
               </div>
             </div>
           </div>
 
-          {/* Right: Biliteral Diagram */}
+          {/* Right: Biliteral Diagram (Interactive) */}
           <div className="lg:col-span-4">
             <div className="p-6 rounded-xl border bg-white">
               <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-4 text-center">
@@ -352,16 +422,78 @@ function WorkshopPage() {
                 <BiliteralDiagram
                   xLabel={selectedSyllogism.terms.minorTerm}
                   yLabel={selectedSyllogism.terms.majorTerm}
-                  initialState={biliteralState as Record<string, 'empty' | 'occupied' | null>}
-                  readOnly={true}
+                  initialState={displayBiliteralState}
+                  onStateChange={showAnswer ? undefined : setUserBiliteral}
+                  readOnly={showAnswer}
                 />
               </div>
               <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
-                {t('workshop.biliteral_desc')}
+                {showAnswer ? t('workshop.biliteral_desc') : t('workshop.click_to_place')}
               </div>
             </div>
           </div>
         </div>
+
+        {/* Action Buttons */}
+        <div className="mt-8 flex flex-wrap gap-3 justify-center">
+          <button
+            onClick={handleCheckAnswer}
+            disabled={showAnswer}
+            className="px-6 py-3 rounded-lg bg-[var(--lagoon)] text-white font-bold text-sm uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            <Check size={16} />
+            {t('workshop.check_answer')}
+          </button>
+          <button
+            onClick={handleClear}
+            className="px-6 py-3 rounded-lg bg-transparent border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-sm uppercase tracking-wide cursor-pointer hover:bg-[var(--foam)] transition-all flex items-center gap-2"
+          >
+            <Eraser size={16} />
+            {t('workshop.clear_board')}
+          </button>
+          <button
+            onClick={() => setShowAnswer(!showAnswer)}
+            className="px-6 py-3 rounded-lg bg-[var(--foam)] border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-sm uppercase tracking-wide cursor-pointer hover:bg-[var(--sand)] transition-all flex items-center gap-2"
+          >
+            <Eye size={16} />
+            {showAnswer ? t('workshop.hide_answer') : t('workshop.show_answer')}
+          </button>
+          <button
+            onClick={handleCopySolution}
+            className="px-6 py-3 rounded-lg bg-[var(--palm)] text-white font-bold text-sm uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all flex items-center gap-2"
+          >
+            {copied ? <Check size={16} /> : <Clipboard size={16} />}
+            {copied ? t('workshop.copied') : t('workshop.copy_solution')}
+          </button>
+        </div>
+
+        {/* Validation Result */}
+        {validationResult && (
+          <div className={`mt-6 p-4 rounded-xl border-2 ${
+            validationResult.isCorrect
+              ? 'bg-[var(--hero-a)] border-[var(--palm)]'
+              : 'bg-red-50 border-red-300'
+          }`}>
+            <div className="flex items-center gap-3">
+              {validationResult.isCorrect ? (
+                <>
+                  <Check size={24} className="text-[var(--palm)]" />
+                  <span className="font-bold text-[var(--palm)]">{t('workshop.correct')}</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-red-500 font-bold text-lg">✗</span>
+                  <span className="font-bold text-red-600">{t('workshop.incorrect')}</span>
+                </>
+              )}
+            </div>
+            {!validationResult.isCorrect && validationResult.errors.length > 0 && (
+              <div className="mt-2 text-xs text-red-600 font-mono">
+                {validationResult.errors.join(', ')}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Terms Legend */}
         <div className="mt-8 p-4 rounded-xl border bg-[var(--surface-strong)]">
