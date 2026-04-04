@@ -405,6 +405,7 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   initialState={displayTriliteralState}
                   onStateChange={showAnswer ? undefined : setUserTriliteral}
                   readOnly={showAnswer}
+                  showLabels={true}
                 />
               </div>
               <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
@@ -424,6 +425,7 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   initialState={displayBiliteralState}
                   onStateChange={showAnswer ? undefined : setUserBiliteral}
                   readOnly={showAnswer}
+                  showLabels={true}
                 />
               </div>
               <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
@@ -436,30 +438,30 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
               <button
                 onClick={handleCheckAnswer}
                 disabled={showAnswer}
-                className="px-6 py-3 rounded-lg bg-[var(--lagoon)] text-white font-bold text-sm uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="px-5 py-2 rounded-lg bg-[var(--lagoon)] text-white font-bold text-xs uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                <Check size={16} />
+                <Check size={14} />
                 {t('workshop.check_answer')}
               </button>
               <button
                 onClick={handleClear}
-                className="px-6 py-3 rounded-lg bg-transparent border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-sm uppercase tracking-wide cursor-pointer hover:bg-[var(--foam)] transition-all flex items-center gap-2"
+                className="px-5 py-2 rounded-lg bg-transparent border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-xs uppercase tracking-wide cursor-pointer hover:bg-[var(--foam)] transition-all flex items-center gap-2"
               >
-                <Eraser size={16} />
+                <Eraser size={14} />
                 {t('workshop.clear_board')}
               </button>
               <button
                 onClick={() => setShowAnswer(!showAnswer)}
-                className="px-6 py-3 rounded-lg bg-[var(--foam)] border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-sm uppercase tracking-wide cursor-pointer hover:bg-[var(--sand)] transition-all flex items-center gap-2"
+                className="px-5 py-2 rounded-lg bg-[var(--foam)] border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-xs uppercase tracking-wide cursor-pointer hover:bg-[var(--sand)] transition-all flex items-center gap-2"
               >
-                <Eye size={16} />
+                <Eye size={14} />
                 {showAnswer ? t('workshop.hide_answer') : t('workshop.show_answer')}
               </button>
               <button
                 onClick={handleCopySolution}
-                className="px-6 py-3 rounded-lg bg-[var(--palm)] text-white font-bold text-sm uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all flex items-center gap-2"
+                className="px-5 py-2 rounded-lg bg-[var(--palm)] text-white font-bold text-xs uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all flex items-center gap-2"
               >
-                {copied ? <Check size={16} /> : <Clipboard size={16} />}
+                {copied ? <Check size={14} /> : <Clipboard size={14} />}
                 {copied ? t('workshop.copied') : t('workshop.copy_solution')}
               </button>
             </div>
