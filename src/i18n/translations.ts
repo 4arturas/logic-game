@@ -1,5 +1,8 @@
-export type Language = 'en' | 'lt'
+// Available languages - add new languages here
+export const LANGUAGES = ['en', 'lt'] as const
+export type Language = (typeof LANGUAGES)[number]
 
+// Translation keys - add new keys as needed
 export type TranslationKey =
   // Header
   | 'header.title'
@@ -1018,21 +1021,5 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'campaign.subtitle': 'Įveikite lygius, kad taptumėte Lewis Carroll meistru',
     'campaign.try_again': 'Bandyti dar kartą',
     'campaign.streak': 'Serijos priedas!',
-    // Logic terms
-    'mortal': 'mirtingi', 'humans': 'žmonės', 'animals': 'gyvūnai', 'have fur': 'kailiniai', 'snakes': 'gyvatės',
-    'reptiles': 'ropliai', 'playful': 'žaismingi', 'pets': 'augintiniai', 'kittens': 'kačiukai', 'fun': 'smagūs',
-    'readings': 'skaitiniai', 'homework': 'namų darbai', 'healthy food': 'sveikas maistas', 'cakes': 'pyragai',
-    'gain weight': 'storinantys', 'horse': 'arklys', 'have bloating': 'tinstantys', 'lazy': 'tinginiai',
-    'students': 'studentai', 'pass exams': 'išlaiko egzaminus', 'informative': 'informatyvūs', 'websites': 'svetainės',
-    'useful': 'naudingi', 'nutritious': 'maistingi', 'tasty things': 'skanūs dalykai', 'fruits': 'vaisiai',
-    'beautiful': 'gražūs', 'useful things': 'naudingi daiktai', 'cups': 'puodeliai', 'red': 'raudoni',
-    'boarding students': 'internato mokiniai', 'diligent boys': 'darbštūs berniukai', 'new': 'nauji',
-    'cracked things': 'įtrūkę daiktai', 'pitchers': 'ąsočiai', 'have tails': 'turi uodegas',
-    'mammals': 'žinduoliai', 'cats': 'katės', 'edible': 'valgomi', 'green things': 'žali daiktai',
-    'trees': 'medžiai', 'apples': 'obuoliai', 'ripe fruits': 'sunokę vaisiai', 'bright': 'ryškūs',
-    'indoor flowers': 'kambarinės gėlės', 'fragrant': 'kvepiantys', 'small': 'maži', 'colorful birds': 'spalvoti paukščiai',
-    'eat honey': 'valgo medų', 'mythical beings': 'mitinės būtybės', 'perfect': 'tobuli',
-    'competent': 'kompetentingi', 'workers': 'darbuotojai', 'make mistakes': 'daro klaidas',
-    'color': 'spalva', 'taste': 'skonis', 'apple': 'obuolys', 'delicious': 'skanus',
   },
 }

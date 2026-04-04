@@ -1,8 +1,7 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
-import { translations } from './translations'
-import termsLt from '../data/terms_lt.json'
-
-export type Language = 'en' | 'lt'
+import { translations, LANGUAGES } from './translations'
+import type { Language } from './translations'
+import { termTranslations } from './terms'
 
 type TranslationKey = keyof typeof translations['en']
 
@@ -23,10 +22,14 @@ function getUrlLanguage(): Language | null {
   }
   const params = new URLSearchParams(window.location.search)
   const lang = params.get('lang')
-  if (lang === 'en' || lang === 'lt') {
-    return lang
+  if (lang && LANGUAGES.includes(lang as Language)) {
+    return lang as Language
   }
   return null
+}
+
+function isValidLanguage(lang: string): lang is Language {
+  return LANGUAGES.includes(lang as Language)
 }
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
@@ -35,19 +38,19 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setIsMounted(true)
-    
+
     // Priority: URL param > localStorage > default
     const urlLang = getUrlLanguage()
     if (urlLang) {
       setLanguageState(urlLang)
-      localStorage.setItem(STORAGE_KEY, urlLang)
+      try { localStorage.setItem(STORAGE_KEY, urlLang) } catch {}
     } else {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY) as Language
-        if (stored === 'en' || stored === 'lt') {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (stored && isValidLanguage(stored)) {
           setLanguageState(stored)
         }
-      } catch (e) {
+      } catch {
         // localStorage not available
       }
     }
@@ -59,23 +62,28 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== 'undefined') {
         localStorage.setItem(STORAGE_KEY, lang)
       }
-    } catch (e) {
+    } catch {
       // localStorage not available
     }
   }, [])
 
   const t = useCallback(
     (key: TranslationKey | string): string => {
-      // First check main translations
       const translationKey = key as TranslationKey
-      if (translationKey in translations[language]) {
-        return translations[language][translationKey]
+
+      // 1. Check program translations (UI text)
+      const langTranslations = translations[language]
+      if (langTranslations && translationKey in langTranslations) {
+        return langTranslations[translationKey]
       }
-      // For Lithuanian, check term translations
-      if (language === 'lt' && key in termsLt) {
-        return (termsLt as Record<string, string>)[key] || key
+
+      // 2. Check term translations (syllogism terms)
+      const terms = termTranslations[language]
+      if (terms && key in terms) {
+        return terms[key]
       }
-      // Return key itself if not found (English fallback)
+
+      // 3. Return key itself as fallback (for untranslatable terms)
       return key
     },
     [language]
@@ -105,4 +113,9 @@ export function useI18n(): I18nContextType {
 export function useTranslation() {
   const { t, language, setLanguage } = useI18n()
   return { t, language, setLanguage }
+}
+
+// Helper to get available languages
+export function getAvailableLanguages(): readonly Language[] {
+  return LANGUAGES
 }
