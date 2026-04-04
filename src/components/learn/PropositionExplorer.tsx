@@ -14,6 +14,7 @@ const PROPOSITION_INFO = {
     form: 'All x are y',
     symbolic: 'x₁y\'₀',
     symbolicLabel: 'x(1-y) = 0',
+    sql: 'SELECT * FROM things WHERE x = 1 AND y = 0 LIMIT 0',
     meaningKey: 'learn.prop_a_meaning',
     cells: {
       xy: 'occupied' as const,
@@ -28,6 +29,7 @@ const PROPOSITION_INFO = {
     form: 'No x are y',
     symbolic: 'x₁y₁ = 0',
     symbolicLabel: 'xy = 0',
+    sql: 'SELECT * FROM things WHERE x = 1 AND y = 1 LIMIT 0',
     meaningKey: 'learn.prop_e_meaning',
     cells: {
       xy: 'empty' as const,
@@ -41,6 +43,7 @@ const PROPOSITION_INFO = {
     form: 'Some x are y',
     symbolic: 'x₁y₁ > 0',
     symbolicLabel: 'xy ≠ 0',
+    sql: 'SELECT * FROM things WHERE x = 1 AND y = 1',
     meaningKey: 'learn.prop_i_meaning',
     cells: {
       xy: 'occupied' as const,
@@ -54,6 +57,7 @@ const PROPOSITION_INFO = {
     form: 'Some x are not y',
     symbolic: 'x₁y\'₁ > 0',
     symbolicLabel: 'x(1-y) ≠ 0',
+    sql: 'SELECT * FROM things WHERE x = 1 AND y = 0',
     meaningKey: 'learn.prop_o_meaning',
     cells: {
       "x'y": 'occupied' as const,
@@ -192,6 +196,13 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
               ({info.symbolicLabel})
             </span>
           </div>
+        </div>
+
+        <div className="p-3 rounded-lg bg-[var(--foam)] border border-[var(--line)]">
+          <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">{t('learn.sql_label')}</div>
+          <code className="text-sm font-mono text-[var(--palm)] block overflow-x-auto">
+            {info.sql}
+          </code>
         </div>
 
         <div>
