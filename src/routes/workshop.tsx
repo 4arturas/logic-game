@@ -5,6 +5,7 @@ import { createSyllogism, generateDiagram, validateUserDiagram, type Syllogism, 
 import { BiliteralDiagram } from '../components/learn/BiliteralDiagram'
 import { TriliteralDiagram } from '../components/learn/TriliteralDiagram'
 import { Copy, Check, Clipboard, Eraser, Eye } from 'lucide-react'
+import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
@@ -13,7 +14,7 @@ export const Route = createFileRoute('/workshop')({ component: WorkshopPage })
 
 const FIGURE_LABELS: Record<number, string> = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' }
 
-function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM, t }: {
+function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM, t, syllogism, prop }: {
   quantifier: string
   subject: string
   predicate: string
@@ -21,9 +22,9 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
   termY: string
   termM: string
   t: (key: string) => string
+  syllogism: Syllogism
+  prop: { quantifier: string; subject: string; predicate: string }
 }) {
-  const [copied, setCopied] = useState(false)
-
   const subjectColor = subject === termX ? 'var(--term-x)' : subject === termY ? 'var(--term-y)' : subject === termM ? 'var(--term-m)' : 'var(--sea-ink)'
   const predicateColor = predicate === termX ? 'var(--term-x)' : predicate === termY ? 'var(--term-y)' : predicate === termM ? 'var(--term-m)' : 'var(--sea-ink)'
 
@@ -44,88 +45,12 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
     return <><span className="text-[var(--palm)] font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
   }
 
-  const symbolicLabels: Record<string, string> = {
-    A: 'x₁y\'₀',
-    E: 'x₁y₁ = 0',
-    I: 'x₁y₁ > 0',
-    O: 'x₁y\'₁ > 0',
-  }
-  const symbolicAlgebra: Record<string, string> = {
-    A: 'x(1-y) = 0',
-    E: 'xy = 0',
-    I: 'xy ≠ 0',
-    O: 'x(1-y) ≠ 0',
-  }
-  const setNotations: Record<string, string> = {
-    A: 'x ⊆ y',
-    E: 'x ∩ y = ∅',
-    I: 'x ∩ y ≠ ∅',
-    O: 'x ⊈ y',
-  }
-  const programmingLogic: Record<string, string> = {
-    A: 'if (x && !y) return false',
-    E: 'if (x && y) return false',
-    I: 'return x && y',
-    O: 'return x && !y',
-  }
-  const sqlQueries: Record<string, string> = {
-    A: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
-    E: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
-    I: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
-    O: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
-  }
-
-  const handleCopy = () => {
-    const text = `Form: ${symbolicLabels[quantifier]} (${symbolicAlgebra[quantifier]})
-Set: ${setNotations[quantifier]}
-Programming: ${programmingLogic[quantifier]}
-SQL: ${sqlQueries[quantifier]}`
-    navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
   return (
-    <div className="p-4 rounded-xl border bg-[var(--surface-strong)] space-y-3">
-      {/* Proposition Form */}
-      <div className="flex items-center justify-between">
-        <span className={`px-2 py-0.5 rounded text-xs font-mono font-bold ${
-          quantifier === 'A' ? 'bg-[var(--lagoon)] text-white' :
-          quantifier === 'E' ? 'bg-red-600 text-white' :
-          quantifier === 'I' ? 'bg-[var(--palm)] text-white' :
-          'bg-amber-600 text-white'
-        }`}>
-          {quantifier}: {quantifierLabels[quantifier]}
-        </span>
-        <button onClick={handleCopy} className="p-1 hover:bg-[var(--foam)] rounded cursor-pointer transition-colors" title={t('workshop.copy_representations')}>
-          {copied ? <Check size={16} className="text-[var(--palm)]" /> : <Copy size={16} className="text-[var(--sea-ink-soft)]" />}
-        </button>
-      </div>
-
-      {/* Natural Language */}
-      <p className="text-base font-serif italic text-[var(--sea-ink)]" style={{ fontFamily: 'var(--font-serif)' }}>
+    <div className="space-y-1">
+      <p className="text-sm leading-snug" style={{ color: 'var(--sea-ink)' }}>
         {formatProp(quantifier, subject, predicate)}
       </p>
-
-      {/* All Representations */}
-      <div className="grid grid-cols-2 gap-3 text-xs">
-        <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.symbolic')}</div>
-          <div className="font-mono text-[var(--lagoon)]">{symbolicLabels[quantifier]} <span className="text-[var(--sea-ink-soft)]">({symbolicAlgebra[quantifier]})</span></div>
-        </div>
-        <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.set_theory')}</div>
-          <div className="font-serif text-lg text-[var(--term-x)]">{setNotations[quantifier]}</div>
-        </div>
-        <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.programming')}</div>
-          <code className="font-mono text-[var(--palm)]">{programmingLogic[quantifier]}</code>
-        </div>
-        <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.sql')}</div>
-          <code className="font-mono text-[var(--sea-ink)] text-[10px]">{sqlQueries[quantifier]}</code>
-        </div>
-      </div>
+      <PropositionLogicSequence prop={prop} syllogism={syllogism} />
     </div>
   )
 }
@@ -357,6 +282,8 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   termY={selectedSyllogism.terms.majorTerm}
                   termM={selectedSyllogism.terms.middleTerm}
                   t={t}
+                  syllogism={selectedSyllogism}
+                  prop={selectedSyllogism.premises.major}
                 />
               </div>
 
@@ -371,6 +298,8 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   termY={selectedSyllogism.terms.majorTerm}
                   termM={selectedSyllogism.terms.middleTerm}
                   t={t}
+                  syllogism={selectedSyllogism}
+                  prop={selectedSyllogism.premises.minor}
                 />
               </div>
 
@@ -385,16 +314,18 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   termY={selectedSyllogism.terms.majorTerm}
                   termM={selectedSyllogism.terms.middleTerm}
                   t={t}
+                  syllogism={selectedSyllogism}
+                  prop={selectedSyllogism.conclusion}
                 />
               </div>
             </div>
           </div>
 
           {/* Diagrams and Buttons Section */}
-          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Center: Triliteral Diagram (Interactive) */}
-            <div className="p-6 rounded-xl border bg-white">
-              <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-4 text-center">
+            <div className="p-2 rounded-xl border bg-white">
+              <div className="text-[10px] font-bold uppercase text-[var(--sea-ink-soft)] mb-1 text-center">
                 {t('workshop.triliteral_diagram')}
               </div>
               <div className="flex justify-center">
@@ -408,14 +339,14 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   showLabels={true}
                 />
               </div>
-              <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
+              <div className="mt-1 text-center text-[10px] text-[var(--sea-ink-soft)]">
                 {showAnswer ? t('workshop.triliteral_desc') : t('workshop.click_to_place')}
               </div>
             </div>
 
             {/* Right: Biliteral Diagram (Interactive) */}
-            <div className="p-6 rounded-xl border bg-white">
-              <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-4 text-center">
+            <div className="p-2 rounded-xl border bg-white">
+              <div className="text-[10px] font-bold uppercase text-[var(--sea-ink-soft)] mb-1 text-center">
                 {t('workshop.biliteral_diagram')}
               </div>
               <div className="flex justify-center">
@@ -428,40 +359,40 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                   showLabels={true}
                 />
               </div>
-              <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
+              <div className="mt-1 text-center text-[10px] text-[var(--sea-ink-soft)]">
                 {showAnswer ? t('workshop.biliteral_desc') : t('workshop.click_to_place')}
               </div>
             </div>
 
             {/* Action Buttons below diagrams */}
-            <div className="md:col-span-2 mt-2 flex flex-wrap gap-3 justify-center">
+            <div className="md:col-span-2 mt-1 flex flex-wrap gap-2 justify-center">
               <button
                 onClick={handleCheckAnswer}
                 disabled={showAnswer}
-                className="px-5 py-2 rounded-lg bg-[var(--lagoon)] text-white font-bold text-xs uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                className="h-8 px-4 rounded-lg bg-[var(--lagoon)] text-white font-bold text-xs uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
               >
-                <Check size={14} />
+                <Check size={12} />
                 {t('workshop.check_answer')}
               </button>
               <button
                 onClick={handleClear}
-                className="px-5 py-2 rounded-lg bg-transparent border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-xs uppercase tracking-wide cursor-pointer hover:bg-[var(--foam)] transition-all flex items-center gap-2"
+                className="h-8 px-4 rounded-lg bg-transparent border border-[var(--line)] text-[var(--sea-ink)] font-bold text-xs uppercase tracking-wide cursor-pointer hover:bg-[var(--foam)] transition-all flex items-center gap-1.5"
               >
-                <Eraser size={14} />
+                <Eraser size={12} />
                 {t('workshop.clear_board')}
               </button>
               <button
                 onClick={() => setShowAnswer(!showAnswer)}
-                className="px-5 py-2 rounded-lg bg-[var(--foam)] border-2 border-[var(--line)] text-[var(--sea-ink)] font-bold text-xs uppercase tracking-wide cursor-pointer hover:bg-[var(--sand)] transition-all flex items-center gap-2"
+                className="h-8 px-4 rounded-lg bg-[var(--foam)] border border-[var(--line)] text-[var(--sea-ink)] font-bold text-xs uppercase tracking-wide cursor-pointer hover:bg-[var(--sand)] transition-all flex items-center gap-1.5"
               >
-                <Eye size={14} />
+                <Eye size={12} />
                 {showAnswer ? t('workshop.hide_answer') : t('workshop.show_answer')}
               </button>
               <button
                 onClick={handleCopySolution}
-                className="px-5 py-2 rounded-lg bg-[var(--palm)] text-white font-bold text-xs uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all flex items-center gap-2"
+                className="h-8 px-4 rounded-lg bg-[var(--palm)] text-white font-bold text-xs uppercase tracking-wide cursor-pointer hover:brightness-110 transition-all flex items-center gap-1.5"
               >
-                {copied ? <Check size={14} /> : <Clipboard size={14} />}
+                {copied ? <Check size={12} /> : <Clipboard size={12} />}
                 {copied ? t('workshop.copied') : t('workshop.copy_solution')}
               </button>
             </div>

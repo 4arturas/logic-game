@@ -155,18 +155,18 @@ export function TriliteralDiagram({
         {showLabels && (
           <>
             {/* X labels - TOP = x, BOTTOM = x' */}
-            <text x={100} y={22} textAnchor="middle" className="fill-[var(--lagoon)]" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <text x={100} y={22} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--lagoon)' }}>
               {xLabel}
             </text>
-            <text x={100} y={188} textAnchor="middle" className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <text x={100} y={188} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
               {xLabel}'
             </text>
-            
+
             {/* Y labels - LEFT = y, RIGHT = y' */}
-            <text x={22} y={100} textAnchor="middle" className="fill-[var(--lagoon)]" style={{ fontSize: '13px', fontWeight: 700 }} transform="rotate(-90 22 100)">
+            <text x={22} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--lagoon)' }} transform="rotate(-90 22 100)">
               {yLabel}
             </text>
-            <text x={178} y={100} textAnchor="middle" className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '13px', fontWeight: 700 }} transform="rotate(90 178 100)">
+            <text x={178} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }} transform="rotate(90 178 100)">
               {yLabel}'
             </text>
 
