@@ -11,81 +11,75 @@ import customSyllogisms from '../data/syllogisms_custom.json'
 
 export const Route = createFileRoute('/workshop')({ component: WorkshopPage })
 
-// Proposition info for all 4 types
-const PROP_INFO = {
-  A: {
-    name: 'Universal Affirmative',
-    symbolic: 'x₁y\'₀',
-    symbolicLabel: 'x(1-y) = 0',
-    setNotation: 'x ⊆ y',
-    programming: 'if (x && !y) return false',
-    sql: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
-  },
-  E: {
-    name: 'Universal Negative',
-    symbolic: 'x₁y₁ = 0',
-    symbolicLabel: 'xy = 0',
-    setNotation: 'x ∩ y = ∅',
-    programming: 'if (x && y) return false',
-    sql: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
-  },
-  I: {
-    name: 'Particular Affirmative',
-    symbolic: 'x₁y₁ > 0',
-    symbolicLabel: 'xy ≠ 0',
-    setNotation: 'x ∩ y ≠ ∅',
-    programming: 'return x && y',
-    sql: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
-  },
-  O: {
-    name: 'Particular Negative',
-    symbolic: 'x₁y\'₁ > 0',
-    symbolicLabel: 'x(1-y) ≠ 0',
-    setNotation: 'x ⊈ y',
-    programming: 'return x && !y',
-    sql: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
-  },
-} as const
-
 const FIGURE_LABELS: Record<number, string> = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' }
-const QUANTIFIER_LABELS: Record<string, string> = {
-  A: 'All',
-  E: 'No',
-  I: 'Some',
-  O: 'Some ... not',
-}
 
-function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM }: {
+function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM, t }: {
   quantifier: string
   subject: string
   predicate: string
   termX: string
   termY: string
   termM: string
+  t: (key: string) => string
 }) {
   const [copied, setCopied] = useState(false)
-
-  const info = PROP_INFO[quantifier as keyof typeof PROP_INFO]
-  if (!info) return null
 
   const subjectColor = subject === termX ? 'var(--term-x)' : subject === termY ? 'var(--term-y)' : subject === termM ? 'var(--term-m)' : 'var(--sea-ink)'
   const predicateColor = predicate === termX ? 'var(--term-x)' : predicate === termY ? 'var(--term-y)' : predicate === termM ? 'var(--term-m)' : 'var(--sea-ink)'
 
-  const formatProp = (prop: string) => {
-    const subjectEl = <span style={{ color: subjectColor, fontWeight: 700 }}>{prop.subject}</span>
-    const predicateEl = <span style={{ color: predicateColor, fontWeight: 700 }}>{prop.predicate}</span>
-    const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => prop.predicate.includes(w)) ? 'have' : 'are'
-    if (prop.quantifier === 'E') return <><span className="text-red-500 font-bold">{QUANTIFIER_LABELS[prop.quantifier]}</span> {subjectEl} {verb} {predicateEl}.</>
-    if (prop.quantifier === 'O') return <><span className="text-amber-500 font-bold">{QUANTIFIER_LABELS[prop.quantifier]}</span> {subjectEl} {verb} {predicateEl}.</>
-    if (prop.quantifier === 'A') return <><span className="text-[var(--lagoon)] font-bold">{QUANTIFIER_LABELS[prop.quantifier]}</span> {subjectEl} {verb} {predicateEl}.</>
-    return <><span className="text-[var(--palm)] font-bold">{QUANTIFIER_LABELS[prop.quantifier]}</span> {subjectEl} {verb} {predicateEl}.</>
+  const quantifierLabels: Record<string, string> = {
+    A: t('workshop.quantifier_all'),
+    E: t('workshop.quantifier_no'),
+    I: t('workshop.quantifier_some'),
+    O: t('workshop.quantifier_some_not'),
+  }
+
+  const formatProp = (q: string, s: string, p: string) => {
+    const subjectEl = <span style={{ color: subjectColor, fontWeight: 700 }}>{s}</span>
+    const predicateEl = <span style={{ color: predicateColor, fontWeight: 700 }}>{p}</span>
+    const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => p.includes(w)) ? t('workshop.have_verb') : t('workshop.are_verb')
+    if (q === 'E') return <><span className="text-red-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
+    if (q === 'O') return <><span className="text-amber-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
+    if (q === 'A') return <><span className="text-[var(--lagoon)] font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
+    return <><span className="text-[var(--palm)] font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
+  }
+
+  const symbolicLabels: Record<string, string> = {
+    A: 'x₁y\'₀',
+    E: 'x₁y₁ = 0',
+    I: 'x₁y₁ > 0',
+    O: 'x₁y\'₁ > 0',
+  }
+  const symbolicAlgebra: Record<string, string> = {
+    A: 'x(1-y) = 0',
+    E: 'xy = 0',
+    I: 'xy ≠ 0',
+    O: 'x(1-y) ≠ 0',
+  }
+  const setNotations: Record<string, string> = {
+    A: 'x ⊆ y',
+    E: 'x ∩ y = ∅',
+    I: 'x ∩ y ≠ ∅',
+    O: 'x ⊈ y',
+  }
+  const programmingLogic: Record<string, string> = {
+    A: 'if (x && !y) return false',
+    E: 'if (x && y) return false',
+    I: 'return x && y',
+    O: 'return x && !y',
+  }
+  const sqlQueries: Record<string, string> = {
+    A: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
+    E: 'NOT EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
+    I: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 1)',
+    O: 'EXISTS (SELECT 1 FROM things WHERE x = 1 AND y = 0)',
   }
 
   const handleCopy = () => {
-    const text = `Form: ${info.symbolic} (${info.symbolicLabel})
-Set: ${info.setNotation}
-Programming: ${info.programming}
-SQL: ${info.sql}`
+    const text = `Form: ${symbolicLabels[quantifier]} (${symbolicAlgebra[quantifier]})
+Set: ${setNotations[quantifier]}
+Programming: ${programmingLogic[quantifier]}
+SQL: ${sqlQueries[quantifier]}`
     navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
@@ -101,35 +95,35 @@ SQL: ${info.sql}`
           quantifier === 'I' ? 'bg-[var(--palm)] text-white' :
           'bg-amber-600 text-white'
         }`}>
-          {quantifier}: {info.name}
+          {quantifier}: {quantifierLabels[quantifier]}
         </span>
-        <button onClick={handleCopy} className="p-1 hover:bg-[var(--foam)] rounded cursor-pointer transition-colors" title="Copy representations">
+        <button onClick={handleCopy} className="p-1 hover:bg-[var(--foam)] rounded cursor-pointer transition-colors" title={t('workshop.copy_representations')}>
           {copied ? <Check size={16} className="text-[var(--palm)]" /> : <Copy size={16} className="text-[var(--sea-ink-soft)]" />}
         </button>
       </div>
 
       {/* Natural Language */}
       <p className="text-base font-serif italic text-[var(--sea-ink)]" style={{ fontFamily: 'var(--font-serif)' }}>
-        {formatProp({ quantifier, subject, predicate })}
+        {formatProp(quantifier, subject, predicate)}
       </p>
 
       {/* All Representations */}
       <div className="grid grid-cols-2 gap-3 text-xs">
         <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">Symbolic</div>
-          <div className="font-mono text-[var(--lagoon)]">{info.symbolic} <span className="text-[var(--sea-ink-soft)]">({info.symbolicLabel})</span></div>
+          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.symbolic')}</div>
+          <div className="font-mono text-[var(--lagoon)]">{symbolicLabels[quantifier]} <span className="text-[var(--sea-ink-soft)]">({symbolicAlgebra[quantifier]})</span></div>
         </div>
         <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">Set Theory</div>
-          <div className="font-serif text-lg text-[var(--term-x)]">{info.setNotation}</div>
+          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.set_theory')}</div>
+          <div className="font-serif text-lg text-[var(--term-x)]">{setNotations[quantifier]}</div>
         </div>
         <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">Programming</div>
-          <code className="font-mono text-[var(--palm)]">{info.programming}</code>
+          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.programming')}</div>
+          <code className="font-mono text-[var(--palm)]">{programmingLogic[quantifier]}</code>
         </div>
         <div className="p-2 rounded bg-[var(--foam)]">
-          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">SQL</div>
-          <code className="font-mono text-[var(--sea-ink)] text-[10px]">{info.sql}</code>
+          <div className="text-[9px] font-bold uppercase text-[var(--sea-ink-soft)] mb-0.5">{t('workshop.sql')}</div>
+          <code className="font-mono text-[var(--sea-ink)] text-[10px]">{sqlQueries[quantifier]}</code>
         </div>
       </div>
     </div>
@@ -197,10 +191,10 @@ function WorkshopPage() {
         {/* Page Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold" style={{ color: 'var(--sea-ink)', fontFamily: 'var(--font-serif)' }}>
-            Logic Workshop
+            {t('workshop.title')}
           </h1>
           <p className="text-sm mt-2" style={{ color: 'var(--sea-ink-soft)' }}>
-            Explore syllogisms with interactive diagrams and multiple representations
+            {t('workshop.subtitle')}
           </p>
         </div>
 
@@ -208,7 +202,7 @@ function WorkshopPage() {
         <div className="mb-6 flex flex-wrap items-center gap-4">
           {/* Dataset Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase text-[var(--sea-ink-soft)]">Dataset:</span>
+            <span className="text-xs font-bold uppercase text-[var(--sea-ink-soft)]">{t('workshop.dataset')}</span>
             <div className="flex rounded-lg border overflow-hidden" style={{ borderColor: 'var(--line)' }}>
               <button
                 onClick={() => setSyllogismSet('standard')}
@@ -216,7 +210,7 @@ function WorkshopPage() {
                   syllogismSet === 'standard' ? 'bg-[var(--lagoon)] text-white' : 'bg-[var(--foam)] text-[var(--sea-ink-soft)] hover:bg-[var(--sand)]'
                 }`}
               >
-                Standard (24)
+                {t('workshop.standard')}
               </button>
               <button
                 onClick={() => setSyllogismSet('custom')}
@@ -224,14 +218,14 @@ function WorkshopPage() {
                   syllogismSet === 'custom' ? 'bg-[var(--lagoon)] text-white' : 'bg-[var(--foam)] text-[var(--sea-ink-soft)] hover:bg-[var(--sand)]'
                 }`}
               >
-                Custom (24)
+                {t('workshop.custom')}
               </button>
             </div>
           </div>
 
           {/* Figure Selector */}
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase text-[var(--sea-ink-soft)]">Figure:</span>
+            <span className="text-xs font-bold uppercase text-[var(--sea-ink-soft)]">{t('workshop.figure')}</span>
             <div className="flex rounded-lg border overflow-hidden" style={{ borderColor: 'var(--line)' }}>
               {([1, 2, 3, 4] as Figure[]).map(fig => (
                 <button
@@ -275,7 +269,7 @@ function WorkshopPage() {
           {/* Left: Syllogism Cards */}
           <div className="lg:col-span-4 space-y-6">
             <div className="p-4 rounded-xl border bg-[var(--surface-strong)]">
-              <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-3">Syllogism</div>
+              <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-3">{t('workshop.syllogism')}</div>
               <div className="flex items-center gap-2 mb-4">
                 <span className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-[var(--sand)] border text-[var(--sea-ink)]" style={{ borderColor: 'var(--line)' }}>
                   Fig. {FIGURE_LABELS[selectedSyllogism.figure]} • {selectedSyllogism.mood}
@@ -285,7 +279,7 @@ function WorkshopPage() {
 
               {/* Major Premise */}
               <div className="mb-3">
-                <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">Major Premise</div>
+                <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">{t('workshop.major_premise')}</div>
                 <PropositionDetail
                   quantifier={selectedSyllogism.premises.major.quantifier}
                   subject={selectedSyllogism.premises.major.subject}
@@ -293,12 +287,13 @@ function WorkshopPage() {
                   termX={selectedSyllogism.terms.minorTerm}
                   termY={selectedSyllogism.terms.majorTerm}
                   termM={selectedSyllogism.terms.middleTerm}
+                  t={t}
                 />
               </div>
 
               {/* Minor Premise */}
               <div className="mb-3">
-                <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">Minor Premise</div>
+                <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">{t('workshop.minor_premise')}</div>
                 <PropositionDetail
                   quantifier={selectedSyllogism.premises.minor.quantifier}
                   subject={selectedSyllogism.premises.minor.subject}
@@ -306,12 +301,13 @@ function WorkshopPage() {
                   termX={selectedSyllogism.terms.minorTerm}
                   termY={selectedSyllogism.terms.majorTerm}
                   termM={selectedSyllogism.terms.middleTerm}
+                  t={t}
                 />
               </div>
 
               {/* Conclusion */}
               <div>
-                <div className="text-[10px] font-bold uppercase text-[var(--palm)] mb-1">Conclusion</div>
+                <div className="text-[10px] font-bold uppercase text-[var(--palm)] mb-1">{t('workshop.conclusion')}</div>
                 <PropositionDetail
                   quantifier={selectedSyllogism.conclusion.quantifier}
                   subject={selectedSyllogism.conclusion.subject}
@@ -319,6 +315,7 @@ function WorkshopPage() {
                   termX={selectedSyllogism.terms.minorTerm}
                   termY={selectedSyllogism.terms.majorTerm}
                   termM={selectedSyllogism.terms.middleTerm}
+                  t={t}
                 />
               </div>
             </div>
@@ -328,7 +325,7 @@ function WorkshopPage() {
           <div className="lg:col-span-4">
             <div className="p-6 rounded-xl border bg-white">
               <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-4 text-center">
-                Triliteral Diagram (Premises on 3 terms)
+                {t('workshop.triliteral_diagram')}
               </div>
               <div className="flex justify-center">
                 <TriliteralDiagram
@@ -340,7 +337,7 @@ function WorkshopPage() {
                 />
               </div>
               <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
-                Both premises marked on the diagram
+                {t('workshop.triliteral_desc')}
               </div>
             </div>
           </div>
@@ -349,7 +346,7 @@ function WorkshopPage() {
           <div className="lg:col-span-4">
             <div className="p-6 rounded-xl border bg-white">
               <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-4 text-center">
-                Biliteral Diagram (Conclusion)
+                {t('workshop.biliteral_diagram')}
               </div>
               <div className="flex justify-center">
                 <BiliteralDiagram
@@ -360,7 +357,7 @@ function WorkshopPage() {
                 />
               </div>
               <div className="mt-4 text-center text-xs text-[var(--sea-ink-soft)]">
-                Conclusion read off by ignoring middle term
+                {t('workshop.biliteral_desc')}
               </div>
             </div>
           </div>
@@ -368,18 +365,18 @@ function WorkshopPage() {
 
         {/* Terms Legend */}
         <div className="mt-8 p-4 rounded-xl border bg-[var(--surface-strong)]">
-          <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-3">Term Colors</div>
+          <div className="text-xs font-bold uppercase text-[var(--sea-ink-soft)] mb-3">{t('workshop.term_colors')}</div>
           <div className="flex flex-wrap gap-6 text-sm">
             <div className="flex items-center gap-2">
-              <span className="font-bold" style={{ color: 'var(--term-x)' }}>Minor Term (x)</span>
+              <span className="font-bold" style={{ color: 'var(--term-x)' }}>{t('workshop.minor_term_x')}</span>
               <span className="text-[var(--sea-ink-soft)]">= {selectedSyllogism.terms.minorTerm}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-bold" style={{ color: 'var(--term-y)' }}>Major Term (y)</span>
+              <span className="font-bold" style={{ color: 'var(--term-y)' }}>{t('workshop.major_term_y')}</span>
               <span className="text-[var(--sea-ink-soft)]">= {selectedSyllogism.terms.majorTerm}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="font-bold" style={{ color: 'var(--term-m)' }}>Middle Term (m)</span>
+              <span className="font-bold" style={{ color: 'var(--term-m)' }}>{t('workshop.middle_term_m')}</span>
               <span className="text-[var(--sea-ink-soft)]">= {selectedSyllogism.terms.middleTerm}</span>
             </div>
           </div>

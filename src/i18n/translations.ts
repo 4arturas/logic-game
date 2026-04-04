@@ -127,6 +127,36 @@ export type TranslationKey =
   | 'learn.carroll_3circle'
   | 'learn.note'
   | 'learn.ch4_lesson2_note'
+  // Workshop page
+  | 'workshop.title'
+  | 'workshop.subtitle'
+  | 'workshop.dataset'
+  | 'workshop.standard'
+  | 'workshop.custom'
+  | 'workshop.figure'
+  | 'workshop.syllogism'
+  | 'workshop.major_premise'
+  | 'workshop.minor_premise'
+  | 'workshop.conclusion'
+  | 'workshop.triliteral_diagram'
+  | 'workshop.triliteral_desc'
+  | 'workshop.biliteral_diagram'
+  | 'workshop.biliteral_desc'
+  | 'workshop.term_colors'
+  | 'workshop.minor_term_x'
+  | 'workshop.major_term_y'
+  | 'workshop.middle_term_m'
+  | 'workshop.quantifier_all'
+  | 'workshop.quantifier_no'
+  | 'workshop.quantifier_some'
+  | 'workshop.quantifier_some_not'
+  | 'workshop.have_verb'
+  | 'workshop.are_verb'
+  | 'workshop.symbolic'
+  | 'workshop.set_theory'
+  | 'workshop.programming'
+  | 'workshop.sql'
+  | 'workshop.copy_representations'
   // Proposition explorer
   | 'learn.from_latin'
   | 'learn.form_label'
@@ -433,6 +463,36 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.carroll_3circle': 'Carroll (circle in square)',
     'learn.note': 'Note:',
     'learn.ch4_lesson2_note': 'In Carroll\'s Symbolic Logic book, he preferred his square diagram method because it made it easier to systematically mark and read off conclusions. Venn diagrams are more common in modern logic textbooks, but Carroll\'s method is equally valid and often clearer for step-by-step reasoning.',
+    // Workshop page
+    'workshop.title': 'Logic Workshop',
+    'workshop.subtitle': 'Explore syllogisms with interactive diagrams and multiple representations',
+    'workshop.dataset': 'Dataset:',
+    'workshop.standard': 'Standard (24)',
+    'workshop.custom': 'Custom (24)',
+    'workshop.figure': 'Figure:',
+    'workshop.syllogism': 'Syllogism',
+    'workshop.major_premise': 'Major Premise',
+    'workshop.minor_premise': 'Minor Premise',
+    'workshop.conclusion': 'Conclusion',
+    'workshop.triliteral_diagram': 'Triliteral Diagram',
+    'workshop.triliteral_desc': 'Both premises marked on the diagram',
+    'workshop.biliteral_diagram': 'Biliteral Diagram',
+    'workshop.biliteral_desc': 'Conclusion read off by ignoring middle term',
+    'workshop.term_colors': 'Term Colors',
+    'workshop.minor_term_x': 'Minor Term (x)',
+    'workshop.major_term_y': 'Major Term (y)',
+    'workshop.middle_term_m': 'Middle Term (m)',
+    'workshop.quantifier_all': 'All',
+    'workshop.quantifier_no': 'No',
+    'workshop.quantifier_some': 'Some',
+    'workshop.quantifier_some_not': 'Some ... not',
+    'workshop.have_verb': 'have',
+    'workshop.are_verb': 'are',
+    'workshop.symbolic': 'Symbolic',
+    'workshop.set_theory': 'Set Theory',
+    'workshop.programming': 'Programming',
+    'workshop.sql': 'SQL',
+    'workshop.copy_representations': 'Copy representations',
     // Proposition explorer
     'learn.from_latin': 'From Latin:',
     'learn.form_label': 'Form',
@@ -739,6 +799,36 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.carroll_3circle': 'Carroll (apskritimas kvadrate)',
     'learn.note': 'Pastaba:',
     'learn.ch4_lesson2_note': 'Carrollo knygoje „Simbolinė logika" jis pirmenybę teikė savo kvadratiniam diagramos metodui, nes jis leido lengviau sistemingai žymėti ir nuskaityti išvadas. Venų diagramos yra dažnesnės šiuolaikinių logikos vadovėliuose, tačiau Carrollo metodas yra vienodai teisingas ir dažnai aiškesnis žingsnis po žingsnio samprotavimui.',
+    // Workshop page
+    'workshop.title': 'Logikos dirbtuvė',
+    'workshop.subtitle': 'Tyrinėkite silogizmus su interaktyviomis diagramomis ir keliais reprezentacijos būdais',
+    'workshop.dataset': 'Duomenų rinkinys:',
+    'workshop.standard': 'Standartinis (24)',
+    'workshop.custom': 'Pasirinktinis (24)',
+    'workshop.figure': 'Figūra:',
+    'workshop.syllogism': 'Silogizmas',
+    'workshop.major_premise': 'Didžioji prielaida',
+    'workshop.minor_premise': 'Mažoji prielaida',
+    'workshop.conclusion': 'Išvada',
+    'workshop.triliteral_diagram': 'Trijų raidžių diagrama',
+    'workshop.triliteral_desc': 'Abi prielaidos pažymėtos diagramoje',
+    'workshop.biliteral_diagram': 'Dviejų raidžių diagrama',
+    'workshop.biliteral_desc': 'Išvada gaunama ignoruojant vidurinį terminą',
+    'workshop.term_colors': 'Terminų spalvos',
+    'workshop.minor_term_x': 'Mažasis terminas (x)',
+    'workshop.major_term_y': 'Didysis terminas (y)',
+    'workshop.middle_term_m': 'Vidurinysis terminas (m)',
+    'workshop.quantifier_all': 'Visi',
+    'workshop.quantifier_no': 'Joks',
+    'workshop.quantifier_some': 'Kai kurie',
+    'workshop.quantifier_some_not': 'Kai kurie ... nėra',
+    'workshop.have_verb': 'turi',
+    'workshop.are_verb': 'yra',
+    'workshop.symbolic': 'Simbolinė',
+    'workshop.set_theory': 'Aibių teorija',
+    'workshop.programming': 'Programavimas',
+    'workshop.sql': 'SQL',
+    'workshop.copy_representations': 'Kopijuoti reprezentacijas',
     // Proposition explorer
     'learn.from_latin': 'Iš lotynų k.:',
     'learn.form_label': 'Forma',
