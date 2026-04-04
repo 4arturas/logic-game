@@ -156,6 +156,8 @@ export type TranslationKey =
   | 'workshop.quantifier_some_not'
   | 'workshop.have_verb'
   | 'workshop.are_verb'
+  | 'workshop.have_not_verb'
+  | 'workshop.are_not_verb'
   | 'workshop.symbolic'
   | 'workshop.set_theory'
   | 'workshop.programming'
@@ -530,6 +532,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.quantifier_some_not': 'Some ... not',
     'workshop.have_verb': 'have',
     'workshop.are_verb': 'are',
+    'workshop.have_not_verb': 'do not have',
+    'workshop.are_not_verb': 'are not',
     'workshop.symbolic': 'Symbolic',
     'workshop.set_theory': 'Set Theory',
     'workshop.programming': 'Programming',
@@ -904,6 +908,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.quantifier_some_not': 'Kai kurie ... nėra',
     'workshop.have_verb': 'turi',
     'workshop.are_verb': 'yra',
+    'workshop.have_not_verb': 'neturi',
+    'workshop.are_not_verb': 'nėra',
     'workshop.symbolic': 'Simbolinė',
     'workshop.set_theory': 'Aibių teorija',
     'workshop.programming': 'Programavimas',

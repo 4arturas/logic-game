@@ -35,7 +35,7 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
     A: t('workshop.quantifier_all'),
     E: t('workshop.quantifier_no'),
     I: t('workshop.quantifier_some'),
-    O: t('workshop.quantifier_some_not'),
+    O: t('workshop.quantifier_some'),
   }
 
   const formatProp = (q: string, s: string, p: string) => {
@@ -44,8 +44,13 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
     const subjectEl = <span style={{ color: subjectColor, fontWeight: 700 }}>{translatedSubject}</span>
     const predicateEl = <span style={{ color: predicateColor, fontWeight: 700 }}>{translatedPredicate}</span>
     const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => p.includes(w)) ? t('workshop.have_verb') : t('workshop.are_verb')
+
     if (q === 'E') return <><span className="text-red-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
-    if (q === 'O') return <><span className="text-amber-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
+    if (q === 'O') {
+      // For O-type: "Some X are not Y" → "Kai kurie X nėra Y" (no extra verb)
+      const negVerb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => p.includes(w)) ? t('workshop.have_not_verb') : t('workshop.are_not_verb')
+      return <><span className="text-amber-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {negVerb} {predicateEl}.</>
+    }
     if (q === 'A') return <><span className="text-[var(--lagoon)] font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
     return <><span className="text-[var(--palm)] font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
   }
