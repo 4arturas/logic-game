@@ -509,13 +509,11 @@ export function validateUserDiagram(
     const correctVal = correct.ddCells[cell];
 
     if (user !== correctVal) {
-      // RELAXED VALIDATION: Accept '-' for any cell that should be empty (0)
-      // or occupied (1) but only inferred - users shouldn't be penalized for
-      // not marking cells they didn't explicitly reason about
-      if (user === '-') {
-        return; // Accept - not marking a cell is never wrong
+      // RELAXED VALIDATION: Accept '-' for cells that should be empty (0)
+      // since leaving a cell blank doesn't contradict it being empty
+      if (user === '-' && correctVal === '0') {
+        return; // Accept - blank is consistent with empty
       }
-      // Only reject if user actively placed wrong marker
       errors.push(`DD${cell}: expected ${correctVal}, got ${user}`);
     }
   });
@@ -525,9 +523,9 @@ export function validateUserDiagram(
     const correctVal = correct.mdCells[cell];
 
     if (user !== correctVal) {
-      // RELAXED VALIDATION: same as above for MD cells
-      if (user === '-') {
-        return; // Accept
+      // RELAXED VALIDATION: Accept '-' for cells that should be empty (0)
+      if (user === '-' && correctVal === '0') {
+        return; // Accept - blank is consistent with empty
       }
       errors.push(`MD${cell}: expected ${correctVal}, got ${user}`);
     }
