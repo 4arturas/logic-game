@@ -126,6 +126,23 @@ export type TranslationKey =
   | 'learn.carroll_3circle'
   | 'learn.note'
   | 'learn.ch4_lesson2_note'
+  // Proposition explorer
+  | 'learn.from_latin'
+  | 'learn.form_label'
+  | 'learn.meaning_label'
+  | 'learn.diagram_explanation_label'
+  | 'learn.prop_a_name'
+  | 'learn.prop_a_meaning'
+  | 'learn.prop_a_meaning_desc'
+  | 'learn.prop_e_name'
+  | 'learn.prop_e_meaning'
+  | 'learn.prop_e_meaning_desc'
+  | 'learn.prop_i_name'
+  | 'learn.prop_i_meaning'
+  | 'learn.prop_i_meaning_desc'
+  | 'learn.prop_o_name'
+  | 'learn.prop_o_meaning'
+  | 'learn.prop_o_meaning_desc'
   // Footer
   | 'footer.copyright'
   // Home page (used by components)
@@ -406,6 +423,23 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.carroll_3circle': 'Carroll (circle in square)',
     'learn.note': 'Note:',
     'learn.ch4_lesson2_note': 'In Carroll\'s Symbolic Logic book, he preferred his square diagram method because it made it easier to systematically mark and read off conclusions. Venn diagrams are more common in modern logic textbooks, but Carroll\'s method is equally valid and often clearer for step-by-step reasoning.',
+    // Proposition explorer
+    'learn.from_latin': 'From Latin:',
+    'learn.form_label': 'Form',
+    'learn.meaning_label': 'Meaning',
+    'learn.diagram_explanation_label': 'Diagram Explanation',
+    'learn.prop_a_name': 'Universal Affirmative',
+    'learn.prop_a_meaning': 'Every member of class x is also a member of class y',
+    'learn.prop_a_meaning_desc': 'The compartment where x exists but y does not (xy\') is empty.',
+    'learn.prop_e_name': 'Universal Negative',
+    'learn.prop_e_meaning': 'No member of class x is also a member of class y',
+    'learn.prop_e_meaning_desc': 'The compartment where both x and y exist (xy) is empty.',
+    'learn.prop_i_name': 'Particular Affirmative',
+    'learn.prop_i_meaning': 'At least one member of class x is also a member of class y',
+    'learn.prop_i_meaning_desc': 'There is at least one thing in the xy compartment.',
+    'learn.prop_o_name': 'Particular Negative',
+    'learn.prop_o_meaning': 'At least one member of class x is not a member of class y',
+    'learn.prop_o_meaning_desc': 'There is at least one thing in the x\'y compartment.',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll Logic Game. Learn logic through interactive diagrams.',
     // Home page (used by components)
@@ -686,6 +720,23 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.carroll_3circle': 'Carroll (apskritimas kvadrate)',
     'learn.note': 'Pastaba:',
     'learn.ch4_lesson2_note': 'Carrollo knygoje „Simbolinė logika" jis pirmenybę teikė savo kvadratiniam diagramos metodui, nes jis leido lengviau sistemingai žymėti ir nuskaityti išvadas. Venų diagramos yra dažnesnės šiuolaikinių logikos vadovėliuose, tačiau Carrollo metodas yra vienodai teisingas ir dažnai aiškesnis žingsnis po žingsnio samprotavimui.',
+    // Proposition explorer
+    'learn.from_latin': 'Iš lotynų k.:',
+    'learn.form_label': 'Forma',
+    'learn.meaning_label': 'Reikšmė',
+    'learn.diagram_explanation_label': 'Diagramos paaiškinimas',
+    'learn.prop_a_name': 'Universalusis teigiamasis',
+    'learn.prop_a_meaning': 'Kiekvienas x klasės narys yra ir y klasės narys',
+    'learn.prop_a_meaning_desc': 'Kompartmentas, kur x egzistuoja, bet y ne (xy\'), yra tuščias.',
+    'learn.prop_e_name': 'Universalusis neigiamasis',
+    'learn.prop_e_meaning': 'Nė vienas x klasės narys nėra y klasės narys',
+    'learn.prop_e_meaning_desc': 'Kompartmentas, kur abu x ir y egzistuoja (xy), yra tuščias.',
+    'learn.prop_i_name': 'Dalinis teigiamasis',
+    'learn.prop_i_meaning': 'Bent vienas x klasės narys yra ir y klasės narys',
+    'learn.prop_i_meaning_desc': 'xy kompartmente yra bent vienas dalykas.',
+    'learn.prop_o_name': 'Dalinis neigiamasis',
+    'learn.prop_o_meaning': 'Bent vienas x klasės narys nėra y klasės narys',
+    'learn.prop_o_meaning_desc': 'x\'y kompartmente yra bent vienas dalykas.',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll logikos žaidimas. Mokykitės logikos per interaktyvias diagramas.',
     // Home page (used by components)

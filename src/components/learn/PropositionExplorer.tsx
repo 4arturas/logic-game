@@ -1,3 +1,5 @@
+import { useTranslation } from '../../i18n/I18nContext'
+
 interface PropositionExplorerProps {
   type: 'A' | 'E' | 'I' | 'O'
   subject?: string
@@ -6,53 +8,54 @@ interface PropositionExplorerProps {
 
 const PROPOSITION_INFO = {
   A: {
-    name: 'Universal Affirmative',
+    nameKey: 'learn.prop_a_name',
     latin: 'AffIrmo',
     symbol: 'A',
     form: 'All x are y',
-    meaning: 'Every member of class x is also a member of class y',
+    meaningKey: 'learn.prop_a_meaning',
     cells: {
       xy: 'occupied' as const,
       "xy'": 'empty' as const,
     },
-    description: 'The compartment where x exists but y does not (xy\') is empty.',
+    descriptionKey: 'learn.prop_a_meaning_desc',
   },
   E: {
-    name: 'Universal Negative',
+    nameKey: 'learn.prop_e_name',
     latin: 'nEgo',
     symbol: 'E',
     form: 'No x are y',
-    meaning: 'No member of class x is also a member of class y',
+    meaningKey: 'learn.prop_e_meaning',
     cells: {
       xy: 'empty' as const,
     },
-    description: 'The compartment where both x and y exist (xy) is empty.',
+    descriptionKey: 'learn.prop_e_meaning_desc',
   },
   I: {
-    name: 'Particular Affirmative',
+    nameKey: 'learn.prop_i_name',
     latin: 'affIrmo',
     symbol: 'I',
     form: 'Some x are y',
-    meaning: 'At least one member of class x is also a member of class y',
+    meaningKey: 'learn.prop_i_meaning',
     cells: {
       xy: 'occupied' as const,
     },
-    description: 'There is at least one thing in the xy compartment.',
+    descriptionKey: 'learn.prop_i_meaning_desc',
   },
   O: {
-    name: 'Particular Negative',
+    nameKey: 'learn.prop_o_name',
     latin: 'negO',
     symbol: 'O',
     form: 'Some x are not y',
-    meaning: 'At least one member of class x is not a member of class y',
+    meaningKey: 'learn.prop_o_meaning',
     cells: {
       "x'y": 'occupied' as const,
     },
-    description: 'There is at least one thing in the x\'y compartment.',
+    descriptionKey: 'learn.prop_o_meaning_desc',
   },
 }
 
 export function PropositionExplorer({ type }: PropositionExplorerProps) {
+  const { t } = useTranslation()
   const info = PROPOSITION_INFO[type]
 
   const renderDiagram = () => {
@@ -159,26 +162,26 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
             {info.symbol}
           </div>
           <div>
-            <div className="font-bold text-[var(--sea-ink)]">{info.name}</div>
-            <div className="text-xs text-[var(--sea-ink-soft)] italic">From Latin: {info.latin}</div>
+            <div className="font-bold text-[var(--sea-ink)]">{t(info.nameKey)}</div>
+            <div className="text-xs text-[var(--sea-ink-soft)] italic">{t('learn.from_latin')} {info.latin}</div>
           </div>
         </div>
 
         <div className="p-3 rounded-lg bg-[var(--foam)] border border-[var(--line)]">
-          <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">Form</div>
+          <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">{t('learn.form_label')}</div>
           <div className="text-base font-bold text-[var(--sea-ink)] italic" style={{ fontFamily: 'var(--font-serif)' }}>
             {info.form}
           </div>
         </div>
 
         <div>
-          <div className="text-xs font-semibold text-[var(--sea-ink-soft)] mb-1">Meaning</div>
-          <div className="text-sm text-[var(--sea-ink)]">{info.meaning}</div>
+          <div className="text-xs font-semibold text-[var(--sea-ink-soft)] mb-1">{t('learn.meaning_label')}</div>
+          <div className="text-sm text-[var(--sea-ink)]">{t(info.meaningKey)}</div>
         </div>
 
         <div>
-          <div className="text-xs font-semibold text-[var(--sea-ink-soft)] mb-1">Diagram Explanation</div>
-          <div className="text-sm text-[var(--sea-ink)]">{info.description}</div>
+          <div className="text-xs font-semibold text-[var(--sea-ink-soft)] mb-1">{t('learn.diagram_explanation_label')}</div>
+          <div className="text-sm text-[var(--sea-ink)]">{t(info.descriptionKey)}</div>
         </div>
       </div>
     </div>
