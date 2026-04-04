@@ -169,6 +169,12 @@ export type TranslationKey =
   | 'workshop.copied'
   | 'workshop.correct'
   | 'workshop.incorrect'
+  | 'workshop.motivation_1'
+  | 'workshop.motivation_2'
+  | 'workshop.motivation_3'
+  | 'workshop.motivation_5'
+  | 'workshop.motivation_7'
+  | 'workshop.motivation_10'
   // Proposition explorer
   | 'learn.from_latin'
   | 'learn.form_label'
@@ -514,6 +520,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.copied': 'Copied!',
     'workshop.correct': 'Correct!',
     'workshop.incorrect': 'Incorrect - check your diagram',
+    'workshop.motivation_1': 'Great start! Keep solving!',
+    'workshop.motivation_2': 'You\'re on a roll! Lightning fast!',
+    'workshop.motivation_3': 'On fire! Logic master in training!',
+    'workshop.motivation_5': 'Incredible! True Logic Master!',
+    'workshop.motivation_7': 'Unstoppable! Launching to the stars!',
+    'workshop.motivation_10': 'LEGENDARY! The Crown of Logic is yours!',
     // Proposition explorer
     'learn.from_latin': 'From Latin:',
     'learn.form_label': 'Form',
@@ -859,6 +871,12 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.copied': 'Nukopijuota!',
     'workshop.correct': 'Teisingai!',
     'workshop.incorrect': 'Neteisingai - patikrinkite diagramą',
+    'workshop.motivation_1': 'Puiki pradžia! Tęsk sprendimus!',
+    'workshop.motivation_2': 'Įsibėgėjai! Žaibiškai greitas!',
+    'workshop.motivation_3': 'Liepsnoji! Logikos meistro mokymas!',
+    'workshop.motivation_5': 'Neįtikėtina! Tikras Logikos Meistras!',
+    'workshop.motivation_7': 'Nesustabdomas! Skrendi į žvaigždes!',
+    'workshop.motivation_10': 'LEGENDARINIS! Logikos Karūna tavo!',
     // Proposition explorer
     'learn.from_latin': 'Iš lotynų k.:',
     'learn.form_label': 'Forma',

@@ -6,8 +6,8 @@ import { createSyllogism, generateDiagram, validateUserDiagram, type Syllogism, 
 import { BiliteralDiagram } from '../components/learn/BiliteralDiagram'
 import { TriliteralDiagram } from '../components/learn/TriliteralDiagram'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
-import { Check, Clipboard, Eraser, Eye, PartyPopper, Sparkles, Trophy, Star } from 'lucide-react'
-import Confetti from '../components/Confetti'
+import { Check, Clipboard, Eraser, Eye, Trophy, Star, Rocket, Zap } from 'lucide-react'
+import Salute from '../components/Salute'
 
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
@@ -82,29 +82,44 @@ function WorkshopPage() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [streak, setStreak] = useState(0)
 
-  // Simple sound effects using Web Audio API
+  // Sound effects using Web Audio API
   const playSuccessSound = useCallback(() => {
     if (typeof window === 'undefined') return
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-      const playNote = (freq: number, time: number, duration: number) => {
+      const playNote = (freq: number, type: OscillatorType, time: number, duration: number, vol = 0.15) => {
         const osc = audioCtx.createOscillator()
         const gain = audioCtx.createGain()
         osc.connect(gain)
         gain.connect(audioCtx.destination)
-        osc.type = 'sine'
-        osc.frequency.value = freq
-        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + time)
+        osc.type = type
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time)
+        // Add slight vibrato for richness
+        const vibrato = audioCtx.createOscillator()
+        const vibratoGain = audioCtx.createGain()
+        vibrato.frequency.value = 5
+        vibratoGain.gain.value = 3
+        vibrato.connect(vibratoGain)
+        vibratoGain.connect(osc.frequency)
+        vibrato.start(audioCtx.currentTime + time)
+        vibrato.stop(audioCtx.currentTime + time + duration)
+        gain.gain.setValueAtTime(0, audioCtx.currentTime + time)
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + time + 0.02)
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime + time + duration * 0.7)
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + time + duration)
         osc.start(audioCtx.currentTime + time)
         osc.stop(audioCtx.currentTime + time + duration)
       }
-      // Triumphant chord
-      playNote(523.25, 0, 0.3)   // C5
-      playNote(659.25, 0.1, 0.3) // E5
-      playNote(783.99, 0.2, 0.4) // G5
-      playNote(1046.50, 0.3, 0.6) // C6
-      playNote(1318.51, 0.4, 0.8) // E6
+      // Fanfare melody - "ta-da!" style
+      playNote(523.25, 'triangle', 0, 0.15)      // C5
+      playNote(659.25, 'triangle', 0.1, 0.15)     // E5
+      playNote(783.99, 'triangle', 0.2, 0.15)     // G5
+      playNote(1046.50, 'square', 0.3, 0.6)       // C6
+      playNote(1318.51, 'sine', 0.3, 0.8)         // E6
+      playNote(1567.98, 'sine', 0.4, 1.0)         // G6
+      // Add sparkle chord underneath
+      playNote(1318.51, 'sine', 0.5, 0.8, 0.08)   // E6
+      playNote(2093.00, 'sine', 0.6, 1.0, 0.06)   // C7
     } catch {}
   }, [])
 
@@ -112,16 +127,20 @@ function WorkshopPage() {
     if (typeof window === 'undefined') return
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-      const osc = audioCtx.createOscillator()
-      const gain = audioCtx.createGain()
-      osc.connect(gain)
-      gain.connect(audioCtx.destination)
-      osc.type = 'sawtooth'
-      osc.frequency.value = 200
-      gain.gain.setValueAtTime(0.05, audioCtx.currentTime)
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3)
-      osc.start()
-      osc.stop(audioCtx.currentTime + 0.3)
+      // Descending sad trombone
+      const notes = [400, 350, 300, 250]
+      notes.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator()
+        const gain = audioCtx.createGain()
+        osc.connect(gain)
+        gain.connect(audioCtx.destination)
+        osc.type = 'sawtooth'
+        osc.frequency.value = freq
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime + i * 0.15)
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + i * 0.15 + 0.3)
+        osc.start(audioCtx.currentTime + i * 0.15)
+        osc.stop(audioCtx.currentTime + i * 0.15 + 0.3)
+      })
     } catch {}
   }, [])
 
@@ -197,12 +216,32 @@ function WorkshopPage() {
       playSuccessSound()
       setShowConfetti(true)
       setStreak(s => s + 1)
-      setTimeout(() => setShowConfetti(false), 5000)
+      setTimeout(() => setShowConfetti(false), 6000)
     } else {
       playErrorSound()
       setStreak(0)
     }
   }, [selectedSyllogism, diagramEncoding, userTriliteral, userBiliteral, playSuccessSound, playErrorSound])
+
+  // Motivational messages based on streak
+  const getMotivationMessage = (): { message: string; emoji: string; color: string; icon: React.ReactNode } => {
+    const messages: Record<number, { message: string; emoji: string; color: string; icon: React.ReactNode }> = {
+      1: { message: t('workshop.motivation_1'), emoji: '🎯', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> },
+      2: { message: t('workshop.motivation_2'), emoji: '⚡', color: 'text-[var(--palm)]', icon: <Zap size={16} /> },
+      3: { message: t('workshop.motivation_3'), emoji: '🔥', color: 'text-amber-600', icon: <Star size={16} /> },
+      5: { message: t('workshop.motivation_5'), emoji: '🏆', color: 'text-purple-600', icon: <Trophy size={16} /> },
+      7: { message: t('workshop.motivation_7'), emoji: '🚀', color: 'text-pink-600', icon: <Rocket size={16} /> },
+      10: { message: t('workshop.motivation_10'), emoji: '👑', color: 'text-yellow-600', icon: <Trophy size={16} /> },
+    }
+
+    const streaks = [10, 7, 5, 3, 2, 1]
+    for (const s of streaks) {
+      if (streak >= s && messages[s]) return messages[s]
+    }
+    return { message: t('workshop.motivation_1'), emoji: '🎯', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> }
+  }
+
+  const motivation = validationResult?.isCorrect ? getMotivationMessage() : null
 
   const handleClear = useCallback(() => {
     setUserTriliteral({})
@@ -473,8 +512,8 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
           </div>
         </div>
 
-        {/* Confetti */}
-        {showConfetti && <Confetti />}
+        {/* Salute */}
+        {showConfetti && <Salute />}
 
         {/* Validation Result */}
         {validationResult && (
@@ -485,25 +524,26 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
           }`}>
             <div className="flex items-center gap-3">
               {validationResult.isCorrect ? (
-                <div className="flex items-center gap-3 flex-wrap">
-                  <Check size={24} className="text-[var(--palm)]" />
-                  <span className="font-bold text-[var(--palm)]">{t('workshop.correct')}</span>
-                  {streak >= 3 && (
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 border border-amber-300">
-                      <Star size={14} className="text-amber-600" />
-                      <span className="text-xs font-bold text-amber-700">Streak: {streak} 🔥</span>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <Check size={28} className="text-[var(--palm)]" />
+                  <span className="font-bold text-[var(--palm)] text-lg">{t('workshop.correct')}</span>
+
+                  {/* Motivational Message - Bright and Prominent */}
+                  {motivation && (
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border-2 ${
+                      streak >= 10 ? 'bg-yellow-100 border-yellow-400 animate-pulse' :
+                      streak >= 7 ? 'bg-pink-100 border-pink-400 animate-pulse' :
+                      streak >= 5 ? 'bg-purple-100 border-purple-400 animate-pulse' :
+                      streak >= 3 ? 'bg-amber-100 border-amber-400' :
+                      'bg-blue-50 border-blue-200'
+                    }`}>
+                      <span className="text-xl">{motivation.emoji}</span>
+                      <span className={`font-black text-sm ${motivation.color}`}>
+                        {motivation.message}
+                      </span>
+                      <span className="text-xl">{motivation.emoji}</span>
                     </div>
                   )}
-                  {streak >= 5 && (
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-purple-100 border border-purple-300">
-                      <Trophy size={14} className="text-purple-600" />
-                      <span className="text-xs font-bold text-purple-700">Logic Master!</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-1">
-                    <Sparkles size={14} className="text-[var(--palm)]" />
-                    <span className="text-xs text-[var(--palm)]">Keep going!</span>
-                  </div>
                 </div>
               ) : (
                 <>
