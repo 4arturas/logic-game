@@ -51,6 +51,12 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
       <p className="text-sm leading-snug" style={{ color: 'var(--sea-ink)' }}>
         {formatProp(quantifier, subject, predicate)}
       </p>
+      <div className="text-xs font-mono" style={{ color: 'var(--sea-ink-soft)' }}>
+        {quantifier === 'A' && <span>∀x (X(x) → Y(x))</span>}
+        {quantifier === 'E' && <span>¬∃x (X(x) ∧ Y(x))</span>}
+        {quantifier === 'I' && <span>∃x (X(x) ∧ Y(x))</span>}
+        {quantifier === 'O' && <span>∃x (X(x) ∧ ¬Y(x))</span>}
+      </div>
       <PropositionLogicSequence prop={prop} syllogism={syllogism} />
     </div>
   )
