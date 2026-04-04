@@ -131,10 +131,11 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
         })}
 
         {/* Labels */}
-        <text x={145} y={30} style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--lagoon)]">x</text>
-        <text x={55} y={30} style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--sea-ink-soft)]">x'</text>
-        <text x={170} y={145} style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--lagoon)]">y</text>
-        <text x={170} y={65} style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--sea-ink-soft)]">y'</text>
+        {/* Labels - Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y' */}
+        <text x={100} y={28} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--lagoon)]">x</text>
+        <text x={100} y={185} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--sea-ink-soft)]">x'</text>
+        <text x={28} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--lagoon)]" transform="rotate(-90 28 100)">y</text>
+        <text x={172} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700 }} className="fill-[var(--sea-ink-soft)]" transform="rotate(90 172 100)">y'</text>
       </svg>
     )
   }
