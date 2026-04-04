@@ -13,11 +13,12 @@ interface BiliteralDiagramProps {
 
 // Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y'
 // Four cells: xy (top-left), xy' (top-right), x'y (bottom-left), x'y' (bottom-right)
+// Cell centers: each cell is 90x90, starting at (10,10)
 const CELL_POSITIONS = {
-  topLeft: { cx: 75, cy: 75, label: "xy" },
-  topRight: { cx: 125, cy: 75, label: "xy'" },
-  bottomLeft: { cx: 75, cy: 125, label: "x'y" },
-  bottomRight: { cx: 125, cy: 125, label: "x'y'" },
+  topLeft: { cx: 55, cy: 55, label: "xy" },      // x=10+45, y=10+45
+  topRight: { cx: 145, cy: 55, label: "xy'" },    // x=100+45, y=10+45
+  bottomLeft: { cx: 55, cy: 145, label: "x'y" },  // x=10+45, y=100+45
+  bottomRight: { cx: 145, cy: 145, label: "x'y'" },// x=100+45, y=100+45
 }
 
 export function BiliteralDiagram({
