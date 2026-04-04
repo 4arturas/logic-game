@@ -11,7 +11,7 @@ const PROPOSITION_INFO = {
     nameKey: 'learn.prop_a_name',
     latin: 'AffIrmo',
     symbol: 'A',
-    form: 'All x are y',
+    formKey: 'learn.prop_a_form',
     symbolic: 'x₁y\'₀',
     symbolicLabel: 'x(1-y) = 0',
     setNotation: 'x ⊆ y',
@@ -27,7 +27,7 @@ const PROPOSITION_INFO = {
     nameKey: 'learn.prop_e_name',
     latin: 'nEgo',
     symbol: 'E',
-    form: 'No x are y',
+    formKey: 'learn.prop_e_form',
     symbolic: 'x₁y₁ = 0',
     symbolicLabel: 'xy = 0',
     setNotation: 'x ∩ y = ∅',
@@ -42,7 +42,7 @@ const PROPOSITION_INFO = {
     nameKey: 'learn.prop_i_name',
     latin: 'affIrmo',
     symbol: 'I',
-    form: 'Some x are y',
+    formKey: 'learn.prop_i_form',
     symbolic: 'x₁y₁ > 0',
     symbolicLabel: 'xy ≠ 0',
     setNotation: 'x ∩ y ≠ ∅',
@@ -57,7 +57,7 @@ const PROPOSITION_INFO = {
     nameKey: 'learn.prop_o_name',
     latin: 'negO',
     symbol: 'O',
-    form: 'Some x are not y',
+    formKey: 'learn.prop_o_form',
     symbolic: 'x₁y\'₁ > 0',
     symbolicLabel: 'x(1-y) ≠ 0',
     setNotation: 'x ⊈ y',
@@ -186,7 +186,7 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
         <div className="p-3 rounded-lg bg-[var(--foam)] border border-[var(--line)]">
           <div className="text-xs font-semibold uppercase text-[var(--sea-ink-soft)] mb-1">{t('learn.form_label')}</div>
           <div className="text-base font-bold text-[var(--sea-ink)] italic" style={{ fontFamily: 'var(--font-serif)' }}>
-            {info.form}
+            {t(info.formKey)}
           </div>
         </div>
 
