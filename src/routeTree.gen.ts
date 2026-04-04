@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SyllogismsRouteImport } from './routes/syllogisms'
 import { Route as PracticeRouteImport } from './routes/practice'
+import { Route as LearnRouteImport } from './routes/learn'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as CampaignRouteImport } from './routes/campaign'
 import { Route as AboutRouteImport } from './routes/about'
@@ -24,6 +25,11 @@ const SyllogismsRoute = SyllogismsRouteImport.update({
 const PracticeRoute = PracticeRouteImport.update({
   id: '/practice',
   path: '/practice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearnRoute = LearnRouteImport.update({
+  id: '/learn',
+  path: '/learn',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GameRoute = GameRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
+  '/learn': typeof LearnRoute
   '/practice': typeof PracticeRoute
   '/syllogisms': typeof SyllogismsRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
+  '/learn': typeof LearnRoute
   '/practice': typeof PracticeRoute
   '/syllogisms': typeof SyllogismsRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
+  '/learn': typeof LearnRoute
   '/practice': typeof PracticeRoute
   '/syllogisms': typeof SyllogismsRoute
 }
@@ -79,16 +88,25 @@ export interface FileRouteTypes {
     | '/about'
     | '/campaign'
     | '/game'
+    | '/learn'
     | '/practice'
     | '/syllogisms'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/campaign' | '/game' | '/practice' | '/syllogisms'
+  to:
+    | '/'
+    | '/about'
+    | '/campaign'
+    | '/game'
+    | '/learn'
+    | '/practice'
+    | '/syllogisms'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/campaign'
     | '/game'
+    | '/learn'
     | '/practice'
     | '/syllogisms'
   fileRoutesById: FileRoutesById
@@ -98,6 +116,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   CampaignRoute: typeof CampaignRoute
   GameRoute: typeof GameRoute
+  LearnRoute: typeof LearnRoute
   PracticeRoute: typeof PracticeRoute
   SyllogismsRoute: typeof SyllogismsRoute
 }
@@ -116,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/practice'
       fullPath: '/practice'
       preLoaderRoute: typeof PracticeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/learn': {
+      id: '/learn'
+      path: '/learn'
+      fullPath: '/learn'
+      preLoaderRoute: typeof LearnRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/game': {
@@ -154,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   CampaignRoute: CampaignRoute,
   GameRoute: GameRoute,
+  LearnRoute: LearnRoute,
   PracticeRoute: PracticeRoute,
   SyllogismsRoute: SyllogismsRoute,
 }

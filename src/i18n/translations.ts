@@ -8,6 +8,7 @@ export type TranslationKey =
   | 'nav.about'
   | 'nav.campaign'
   | 'nav.syllogisms'
+  | 'nav.learn'
   // Footer
   | 'footer.copyright'
   // Home page (used by components)
@@ -170,6 +171,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.about': 'About',
     'nav.campaign': 'Campaign',
     'nav.syllogisms': 'Atlas',
+    'nav.learn': 'Learn',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll Logic Game. Learn logic through interactive diagrams.',
     // Home page (used by components)
@@ -332,6 +334,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.about': 'Apie',
     'nav.campaign': 'Kampanija',
     'nav.syllogisms': 'Atlasas',
+    'nav.learn': 'Mokytis',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll logikos žaidimas. Mokykitės logikos per interaktyvias diagramas.',
     // Home page (used by components)
