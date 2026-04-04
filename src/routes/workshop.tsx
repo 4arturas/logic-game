@@ -158,14 +158,12 @@ function WorkshopPage() {
     }
   }, [selectedFigure, syllogismSet, figureSyllogisms])
 
-  if (!selectedSyllogism) return null
-
-  const diagramEncoding = generateDiagram(selectedSyllogism)
+  const diagramEncoding = selectedSyllogism ? generateDiagram(selectedSyllogism) : null
 
   // Convert diagram encoding to CellState for diagrams
   const triliteralState = useMemo(() => {
     const state: Record<string, 'empty' | 'occupied' | null> = {}
-    if (diagramEncoding.explicitDDCells) {
+    if (diagramEncoding?.explicitDDCells) {
       Object.entries(diagramEncoding.explicitDDCells).forEach(([k, v]) => {
         const num = parseInt(k)
         if (num >= 9 && num <= 16) {
@@ -179,7 +177,7 @@ function WorkshopPage() {
 
   const biliteralState = useMemo(() => {
     const state: Record<string, 'empty' | 'occupied' | null> = {}
-    if (diagramEncoding.explicitMDCells) {
+    if (diagramEncoding?.explicitMDCells) {
       Object.entries(diagramEncoding.explicitMDCells).forEach(([k, v]) => {
         const num = parseInt(k)
         if (num >= 5 && num <= 8) {
@@ -190,6 +188,8 @@ function WorkshopPage() {
     }
     return state
   }, [diagramEncoding])
+
+  if (!selectedSyllogism) return null
 
   return (
     <main className="page-wrap pb-16 pt-8" style={{ background: 'var(--page-bg)' }}>
