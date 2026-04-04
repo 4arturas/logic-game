@@ -124,7 +124,6 @@ export const termTranslations: Record<string, TermTranslations> = {
     'dogs': 'šunys',
     'bitter': 'kartūs',
     'coffee': 'kava',
-    'cats': 'katės',
     'colorful': 'spalvingi',
     'roses': 'rožės',
     'wool': 'vilna',
@@ -135,5 +134,9 @@ export const termTranslations: Record<string, TermTranslations> = {
     'minerals': 'mineralai',
     'lemons': 'citrinos',
     'citrus': 'citrusiniai',
+    // Missing standard terms
+    'birds': 'paukščiai',
+    'have feathers': 'plunksnuoti',
+    'have scales': 'žvynuoti',
   },
 }
