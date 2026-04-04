@@ -162,6 +162,35 @@ function WorkshopPage() {
 
   const diagramEncoding = generateDiagram(selectedSyllogism)
 
+  // Convert diagram encoding to CellState for diagrams
+  const triliteralState = useMemo(() => {
+    const state: Record<string, 'empty' | 'occupied' | null> = {}
+    if (diagramEncoding.explicitDDCells) {
+      Object.entries(diagramEncoding.explicitDDCells).forEach(([k, v]) => {
+        const num = parseInt(k)
+        if (num >= 9 && num <= 16) {
+          const key = `lg_${num}`
+          state[key] = v === '1' ? 'occupied' : v === '0' ? 'empty' : null
+        }
+      })
+    }
+    return state
+  }, [diagramEncoding])
+
+  const biliteralState = useMemo(() => {
+    const state: Record<string, 'empty' | 'occupied' | null> = {}
+    if (diagramEncoding.explicitMDCells) {
+      Object.entries(diagramEncoding.explicitMDCells).forEach(([k, v]) => {
+        const num = parseInt(k)
+        if (num >= 5 && num <= 8) {
+          const key = `c${num}`
+          state[key] = v === '1' ? 'occupied' : v === '0' ? 'empty' : null
+        }
+      })
+    }
+    return state
+  }, [diagramEncoding])
+
   return (
     <main className="page-wrap pb-16 pt-8" style={{ background: 'var(--page-bg)' }}>
       <div className="max-w-7xl mx-auto px-6">
@@ -306,15 +335,7 @@ function WorkshopPage() {
                   xLabel={selectedSyllogism.terms.minorTerm}
                   yLabel={selectedSyllogism.terms.majorTerm}
                   mLabel={selectedSyllogism.terms.middleTerm}
-                  initialState={diagramEncoding.explicitDDCells ? {
-                    ...Object.fromEntries(
-                      Object.entries(diagramEncoding.explicitDDCells || {}).map(([k, v]) => {
-                        const num = parseInt(k)
-                        if (num >= 9 && num <= 16) return [`lg_${num}`, v === '1' ? 'occupied' as const : v === '0' ? 'empty' as const : null]
-                        return [k, v === '1' ? 'occupied' as const : v === '0' ? 'empty' as const : null]
-                      }).filter(([_, v]) => v !== null)
-                    )
-                  } : {}}
+                  initialState={triliteralState as Record<string, 'empty' | 'occupied' | null>}
                   readOnly={true}
                 />
               </div>
@@ -334,15 +355,7 @@ function WorkshopPage() {
                 <BiliteralDiagram
                   xLabel={selectedSyllogism.terms.minorTerm}
                   yLabel={selectedSyllogism.terms.majorTerm}
-                  initialState={diagramEncoding.explicitMDCells ? {
-                    ...Object.fromEntries(
-                      Object.entries(diagramEncoding.explicitMDCells || {}).map(([k, v]) => {
-                        const num = parseInt(k)
-                        if (num >= 5 && num <= 8) return [`c${num}`, v === '1' ? 'occupied' as const : v === '0' ? 'empty' as const : null]
-                        return [k, v === '1' ? 'occupied' as const : v === '0' ? 'empty' as const : null]
-                      }).filter(([_, v]) => v !== null)
-                    )
-                  } : {}}
+                  initialState={biliteralState as Record<string, 'empty' | 'occupied' | null>}
                   readOnly={true}
                 />
               </div>
