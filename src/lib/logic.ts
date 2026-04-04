@@ -509,12 +509,17 @@ export function validateUserDiagram(
     const correctVal = correct.ddCells[cell];
 
     if (user !== correctVal) {
-      // RELAXED VALIDATION: Accept '-' for cells that should be empty (0)
-      // since leaving a cell blank doesn't contradict it being empty
-      if (user === '-' && correctVal === '0') {
-        return; // Accept - blank is consistent with empty
+      // RELAXED VALIDATION:
+      // - Accept '-' (blank) when correct is '0' (empty) - consistent
+      // - Accept '0' (empty) when correct is '-' (unknown) - being more specific
+      // - Reject '1' (occupied) when correct is '0' (empty) - contradiction
+      // - Reject '0' (empty) when correct is '1' (occupied) - contradiction
+      if (user === '1' && correctVal === '0') {
+        errors.push(`DD${cell}: marked occupied but should be empty`);
+      } else if (user === '0' && correctVal === '1') {
+        errors.push(`DD${cell}: marked empty but should be occupied`);
       }
-      errors.push(`DD${cell}: expected ${correctVal}, got ${user}`);
+      // All other mismatches are accepted (blank, or extra empty markings)
     }
   });
 
@@ -523,11 +528,12 @@ export function validateUserDiagram(
     const correctVal = correct.mdCells[cell];
 
     if (user !== correctVal) {
-      // RELAXED VALIDATION: Accept '-' for cells that should be empty (0)
-      if (user === '-' && correctVal === '0') {
-        return; // Accept - blank is consistent with empty
+      // Same relaxed validation for MD cells
+      if (user === '1' && correctVal === '0') {
+        errors.push(`MD${cell}: marked occupied but should be empty`);
+      } else if (user === '0' && correctVal === '1') {
+        errors.push(`MD${cell}: marked empty but should be occupied`);
       }
-      errors.push(`MD${cell}: expected ${correctVal}, got ${user}`);
     }
   });
 
