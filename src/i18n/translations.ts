@@ -9,6 +9,7 @@ export type TranslationKey =
   | 'nav.campaign'
   | 'nav.syllogisms'
   | 'nav.learn'
+  | 'nav.workshop'
   // Learn page
   | 'learn.ch1_title'
   | 'learn.ch1_lesson1_title'
@@ -314,6 +315,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.campaign': 'Campaign',
     'nav.syllogisms': 'Atlas',
     'nav.learn': 'Logic School',
+    'nav.workshop': 'Workshop',
     // Learn page
     'learn.ch1_title': '1. Things and Attributes',
     'learn.ch1_lesson1_title': 'What are Things?',
@@ -619,6 +621,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.campaign': 'Kampanija',
     'nav.syllogisms': 'Atlasas',
     'nav.learn': 'Logikos mokykla',
+    'nav.workshop': 'Dirbtuvė',
     // Learn page
     'learn.ch1_title': '1. Daktai ir savybės',
     'learn.ch1_lesson1_title': 'Kas yra daktai?',

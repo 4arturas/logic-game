@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkshopRouteImport } from './routes/workshop'
 import { Route as SyllogismsRouteImport } from './routes/syllogisms'
 import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as LearnRouteImport } from './routes/learn'
@@ -17,6 +18,11 @@ import { Route as CampaignRouteImport } from './routes/campaign'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WorkshopRoute = WorkshopRouteImport.update({
+  id: '/workshop',
+  path: '/workshop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SyllogismsRoute = SyllogismsRouteImport.update({
   id: '/syllogisms',
   path: '/syllogisms',
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/learn': typeof LearnRoute
   '/practice': typeof PracticeRoute
   '/syllogisms': typeof SyllogismsRoute
+  '/workshop': typeof WorkshopRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/learn': typeof LearnRoute
   '/practice': typeof PracticeRoute
   '/syllogisms': typeof SyllogismsRoute
+  '/workshop': typeof WorkshopRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/learn': typeof LearnRoute
   '/practice': typeof PracticeRoute
   '/syllogisms': typeof SyllogismsRoute
+  '/workshop': typeof WorkshopRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/practice'
     | '/syllogisms'
+    | '/workshop'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/practice'
     | '/syllogisms'
+    | '/workshop'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/learn'
     | '/practice'
     | '/syllogisms'
+    | '/workshop'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,10 +131,18 @@ export interface RootRouteChildren {
   LearnRoute: typeof LearnRoute
   PracticeRoute: typeof PracticeRoute
   SyllogismsRoute: typeof SyllogismsRoute
+  WorkshopRoute: typeof WorkshopRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/workshop': {
+      id: '/workshop'
+      path: '/workshop'
+      fullPath: '/workshop'
+      preLoaderRoute: typeof WorkshopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/syllogisms': {
       id: '/syllogisms'
       path: '/syllogisms'
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   LearnRoute: LearnRoute,
   PracticeRoute: PracticeRoute,
   SyllogismsRoute: SyllogismsRoute,
+  WorkshopRoute: WorkshopRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
