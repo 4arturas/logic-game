@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useTranslation } from '../i18n/I18nContext'
+import { useSettings } from '../contexts/SettingsContext'
 import { createSyllogism, generateDiagram, validateUserDiagram, type Syllogism, type Figure, type CellValue } from '../lib/logic'
 import { BiliteralDiagram } from '../components/learn/BiliteralDiagram'
 import { TriliteralDiagram } from '../components/learn/TriliteralDiagram'
-import { Copy, Check, Clipboard, Eraser, Eye } from 'lucide-react'
+import { Check, Clipboard, Eraser, Eye } from 'lucide-react'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
 
 import standardSyllogisms from '../data/syllogisms_standard.json'
@@ -57,6 +58,7 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
 
 function WorkshopPage() {
   const { t } = useTranslation()
+  const { premiseOrder } = useSettings()
   const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom'>('standard')
   const [selectedFigure, setSelectedFigure] = useState<Figure>(1)
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
@@ -271,37 +273,32 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
                 <span className="text-xs italic text-[var(--sea-ink-soft)]">{selectedSyllogism.mnemonic}</span>
               </div>
 
-              {/* Major Premise */}
-              <div className="mb-3">
-                <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">{t('workshop.major_premise')}</div>
-                <PropositionDetail
-                  quantifier={selectedSyllogism.premises.major.quantifier}
-                  subject={selectedSyllogism.premises.major.subject}
-                  predicate={selectedSyllogism.premises.major.predicate}
-                  termX={selectedSyllogism.terms.minorTerm}
-                  termY={selectedSyllogism.terms.majorTerm}
-                  termM={selectedSyllogism.terms.middleTerm}
-                  t={t}
-                  syllogism={selectedSyllogism}
-                  prop={selectedSyllogism.premises.major}
-                />
-              </div>
-
-              {/* Minor Premise */}
-              <div className="mb-3">
-                <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">{t('workshop.minor_premise')}</div>
-                <PropositionDetail
-                  quantifier={selectedSyllogism.premises.minor.quantifier}
-                  subject={selectedSyllogism.premises.minor.subject}
-                  predicate={selectedSyllogism.premises.minor.predicate}
-                  termX={selectedSyllogism.terms.minorTerm}
-                  termY={selectedSyllogism.terms.majorTerm}
-                  termM={selectedSyllogism.terms.middleTerm}
-                  t={t}
-                  syllogism={selectedSyllogism}
-                  prop={selectedSyllogism.premises.minor}
-                />
-              </div>
+              {/* Premises - order based on premiseOrder setting */}
+              {(premiseOrder === 'major-first'
+                ? [
+                    { label: t('workshop.major_premise'), prop: selectedSyllogism.premises.major },
+                    { label: t('workshop.minor_premise'), prop: selectedSyllogism.premises.minor },
+                  ]
+                : [
+                    { label: t('workshop.minor_premise'), prop: selectedSyllogism.premises.minor },
+                    { label: t('workshop.major_premise'), prop: selectedSyllogism.premises.major },
+                  ]
+              ).map((item, idx) => (
+                <div className="mb-3" key={idx}>
+                  <div className="text-[10px] font-bold uppercase text-[var(--lagoon)] mb-1">{item.label}</div>
+                  <PropositionDetail
+                    quantifier={item.prop.quantifier}
+                    subject={item.prop.subject}
+                    predicate={item.prop.predicate}
+                    termX={selectedSyllogism.terms.minorTerm}
+                    termY={selectedSyllogism.terms.majorTerm}
+                    termM={selectedSyllogism.terms.middleTerm}
+                    t={t}
+                    syllogism={selectedSyllogism}
+                    prop={item.prop}
+                  />
+                </div>
+              ))}
 
               {/* Conclusion */}
               <div>
