@@ -158,7 +158,8 @@ export function BiliteralDiagram({
         <div className="flex items-center gap-1.5">
           <div className="w-4 h-4 rounded-full bg-gray-200 border border-gray-500 relative">
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-3 h-0.5 bg-gray-500 rotate-45" />
+              <div className="w-3 h-0.5 bg-gray-500 rotate-45 absolute" />
+              <div className="w-3 h-0.5 bg-gray-500 -rotate-45 absolute" />
             </div>
           </div>
           <span className="text-[var(--sea-ink-soft)]">None (empty)</span>
