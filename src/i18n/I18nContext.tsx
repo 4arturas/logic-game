@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { translations } from './translations'
+import termsLt from '../data/terms_lt.json'
 
 export type Language = 'en' | 'lt'
 
@@ -8,7 +9,7 @@ type TranslationKey = keyof typeof translations['en']
 interface I18nContextType {
   language: Language
   setLanguage: (lang: Language) => void
-  t: (key: TranslationKey) => string
+  t: (key: TranslationKey | string) => string
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined)
@@ -64,8 +65,18 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const t = useCallback(
-    (key: TranslationKey): string => {
-      return translations[language][key] || key
+    (key: TranslationKey | string): string => {
+      // First check main translations
+      const translationKey = key as TranslationKey
+      if (translationKey in translations[language]) {
+        return translations[language][translationKey]
+      }
+      // For Lithuanian, check term translations
+      if (language === 'lt' && key in termsLt) {
+        return (termsLt as Record<string, string>)[key] || key
+      }
+      // Return key itself if not found (English fallback)
+      return key
     },
     [language]
   )
