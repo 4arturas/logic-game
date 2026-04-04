@@ -94,6 +94,8 @@ export const termTranslations: Record<string, TermTranslations> = {
     'horses': 'arkliai',
     'sweet': 'saldūs',
     'electric cars': 'elektromobiliai',
+    'fast': 'greiti',
+    'quiet': 'tylūs',
     'spiky': 'dygliuoti',
     'cacti': 'kaktusai',
     'glass': 'stiklas',
