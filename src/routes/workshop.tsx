@@ -5,8 +5,9 @@ import { useSettings } from '../contexts/SettingsContext'
 import { createSyllogism, generateDiagram, validateUserDiagram, type Syllogism, type Figure, type CellValue } from '../lib/logic'
 import { BiliteralDiagram } from '../components/learn/BiliteralDiagram'
 import { TriliteralDiagram } from '../components/learn/TriliteralDiagram'
-import { Check, Clipboard, Eraser, Eye } from 'lucide-react'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
+import { Check, Clipboard, Eraser, Eye, PartyPopper, Sparkles, Trophy, Star } from 'lucide-react'
+import Confetti from '../components/Confetti'
 
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
@@ -78,6 +79,51 @@ function WorkshopPage() {
   const [showAnswer, setShowAnswer] = useState(false)
   const [copied, setCopied] = useState(false)
   const [diagramVersion, setDiagramVersion] = useState(0)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [streak, setStreak] = useState(0)
+
+  // Simple sound effects using Web Audio API
+  const playSuccessSound = useCallback(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const playNote = (freq: number, time: number, duration: number) => {
+        const osc = audioCtx.createOscillator()
+        const gain = audioCtx.createGain()
+        osc.connect(gain)
+        gain.connect(audioCtx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime + time)
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + time + duration)
+        osc.start(audioCtx.currentTime + time)
+        osc.stop(audioCtx.currentTime + time + duration)
+      }
+      // Triumphant chord
+      playNote(523.25, 0, 0.3)   // C5
+      playNote(659.25, 0.1, 0.3) // E5
+      playNote(783.99, 0.2, 0.4) // G5
+      playNote(1046.50, 0.3, 0.6) // C6
+      playNote(1318.51, 0.4, 0.8) // E6
+    } catch {}
+  }, [])
+
+  const playErrorSound = useCallback(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const osc = audioCtx.createOscillator()
+      const gain = audioCtx.createGain()
+      osc.connect(gain)
+      gain.connect(audioCtx.destination)
+      osc.type = 'sawtooth'
+      osc.frequency.value = 200
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3)
+      osc.start()
+      osc.stop(audioCtx.currentTime + 0.3)
+    } catch {}
+  }, [])
 
   const syllogisms = useMemo(() => {
     const data = syllogismSet === 'standard' ? standardSyllogisms : customSyllogisms
@@ -146,7 +192,17 @@ function WorkshopPage() {
     const result = validateUserDiagram(userDD, userMD, diagramEncoding)
 
     setValidationResult({ isCorrect: result.isCorrect, errors: result.errors })
-  }, [selectedSyllogism, diagramEncoding, userTriliteral, userBiliteral])
+
+    if (result.isCorrect) {
+      playSuccessSound()
+      setShowConfetti(true)
+      setStreak(s => s + 1)
+      setTimeout(() => setShowConfetti(false), 5000)
+    } else {
+      playErrorSound()
+      setStreak(0)
+    }
+  }, [selectedSyllogism, diagramEncoding, userTriliteral, userBiliteral, playSuccessSound, playErrorSound])
 
   const handleClear = useCallback(() => {
     setUserTriliteral({})
@@ -154,6 +210,7 @@ function WorkshopPage() {
     setValidationResult(null)
     setShowAnswer(false)
     setDiagramVersion(v => v + 1)
+    setStreak(0)
   }, [])
 
   const handleCopySolution = useCallback(() => {
@@ -240,6 +297,14 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
               ))}
             </div>
           </div>
+
+          {/* Streak Indicator */}
+          {streak > 0 && (
+            <div className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-amber-50 border border-amber-200">
+              <Star size={14} className="text-amber-600" />
+              <span className="text-xs font-bold text-amber-700">{streak} in a row 🔥</span>
+            </div>
+          )}
         </div>
 
         {/* Syllogism List */}
@@ -408,6 +473,9 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
           </div>
         </div>
 
+        {/* Confetti */}
+        {showConfetti && <Confetti />}
+
         {/* Validation Result */}
         {validationResult && (
           <div className={`mt-6 p-4 rounded-xl border-2 ${
@@ -417,10 +485,26 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
           }`}>
             <div className="flex items-center gap-3">
               {validationResult.isCorrect ? (
-                <>
+                <div className="flex items-center gap-3 flex-wrap">
                   <Check size={24} className="text-[var(--palm)]" />
                   <span className="font-bold text-[var(--palm)]">{t('workshop.correct')}</span>
-                </>
+                  {streak >= 3 && (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 border border-amber-300">
+                      <Star size={14} className="text-amber-600" />
+                      <span className="text-xs font-bold text-amber-700">Streak: {streak} 🔥</span>
+                    </div>
+                  )}
+                  {streak >= 5 && (
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-purple-100 border border-purple-300">
+                      <Trophy size={14} className="text-purple-600" />
+                      <span className="text-xs font-bold text-purple-700">Logic Master!</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <Sparkles size={14} className="text-[var(--palm)]" />
+                    <span className="text-xs text-[var(--palm)]">Keep going!</span>
+                  </div>
+                </div>
               ) : (
                 <>
                   <span className="text-red-500 font-bold text-lg">✗</span>
