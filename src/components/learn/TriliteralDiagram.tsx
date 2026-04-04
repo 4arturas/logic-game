@@ -155,37 +155,37 @@ export function TriliteralDiagram({
         {showLabels && (
           <>
             {/* X labels - TOP = x, BOTTOM = x' */}
-            <text x={100} y={22} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--lagoon)' }}>
+            <text x={100} y={18} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-x)' }}>
               {xLabel}
             </text>
-            <text x={100} y={188} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
+            <text x={100} y={192} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-x)', opacity: 0.6 }}>
               {xLabel}'
             </text>
 
             {/* Y labels - LEFT = y, RIGHT = y' */}
-            <text x={22} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--lagoon)' }} transform="rotate(-90 22 100)">
+            <text x={18} y={100} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-y)' }} transform="rotate(-90 18 100)">
               {yLabel}
             </text>
-            <text x={178} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }} transform="rotate(90 178 100)">
+            <text x={182} y={100} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-y)', opacity: 0.6 }} transform="rotate(90 182 100)">
               {yLabel}'
             </text>
 
             {/* M labels - m inside circle (center), m' near each corner */}
             {/* Big "m" in the center of the circle */}
-            <text x={100} y={105} textAnchor="middle" className="fill-[var(--palm)]" style={{ fontSize: '18px', fontWeight: 800, opacity: 0.5 }}>
+            <text x={100} y={105} textAnchor="middle" style={{ fontSize: '16px', fontWeight: 800, fill: 'var(--term-m)', opacity: 0.5 }}>
               {mLabel}
             </text>
             {/* m' labels near each corner */}
-            <text x={18} y={18} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+            <text x={16} y={16} style={{ fontSize: '11px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
               m'
             </text>
-            <text x={178} y={18} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+            <text x={180} y={16} style={{ fontSize: '11px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
               m'
             </text>
-            <text x={18} y={190} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+            <text x={16} y={194} style={{ fontSize: '11px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
               m'
             </text>
-            <text x={178} y={190} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+            <text x={180} y={194} style={{ fontSize: '11px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
               m'
             </text>
           </>

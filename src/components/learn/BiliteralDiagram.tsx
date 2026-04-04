@@ -126,18 +126,18 @@ export function BiliteralDiagram({
         {showLabels && (
           <>
             {/* X labels - TOP = x, BOTTOM = x' */}
-            <text x={100} y={28} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 700, fill: 'var(--lagoon)' }}>
+            <text x={100} y={25} textAnchor="middle" style={{ fontSize: '15px', fontWeight: 800, fill: 'var(--term-x)' }}>
               {xLabel}
             </text>
-            <text x={100} y={185} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>
+            <text x={100} y={188} textAnchor="middle" style={{ fontSize: '15px', fontWeight: 800, fill: 'var(--term-x)', opacity: 0.6 }}>
               {xLabel}'
             </text>
 
             {/* Y labels - LEFT = y, RIGHT = y' */}
-            <text x={30} y={100} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 700, fill: 'var(--lagoon)' }} transform="rotate(-90 30 100)">
+            <text x={25} y={100} textAnchor="middle" style={{ fontSize: '15px', fontWeight: 800, fill: 'var(--term-y)' }} transform="rotate(-90 25 100)">
               {yLabel}
             </text>
-            <text x={170} y={100} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }} transform="rotate(90 170 100)">
+            <text x={175} y={100} textAnchor="middle" style={{ fontSize: '15px', fontWeight: 800, fill: 'var(--term-y)', opacity: 0.6 }} transform="rotate(90 175 100)">
               {yLabel}'
             </text>
           </>

@@ -154,10 +154,10 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
         })}
 
         {/* Labels - Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y' */}
-        <text x={100} y={28} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--lagoon)' }}>x</text>
-        <text x={100} y={185} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }}>x'</text>
-        <text x={28} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--lagoon)' }} transform="rotate(-90 28 100)">y</text>
-        <text x={172} y={100} textAnchor="middle" style={{ fontSize: '13px', fontWeight: 700, fill: 'var(--sea-ink-soft)' }} transform="rotate(90 172 100)">y'</text>
+        <text x={100} y={28} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-x)' }}>x</text>
+        <text x={100} y={188} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-x)', opacity: 0.6 }}>x'</text>
+        <text x={25} y={100} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-y)' }} transform="rotate(-90 25 100)">y</text>
+        <text x={175} y={100} textAnchor="middle" style={{ fontSize: '14px', fontWeight: 800, fill: 'var(--term-y)', opacity: 0.6 }} transform="rotate(90 175 100)">y'</text>
       </svg>
     )
   }

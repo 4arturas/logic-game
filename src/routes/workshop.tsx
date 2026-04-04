@@ -52,10 +52,10 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
         {formatProp(quantifier, subject, predicate)}
       </p>
       <div className="text-xs font-mono" style={{ color: 'var(--sea-ink-soft)' }}>
-        {quantifier === 'A' && <span>∀x (X(x) → Y(x))</span>}
-        {quantifier === 'E' && <span>¬∃x (X(x) ∧ Y(x))</span>}
-        {quantifier === 'I' && <span>∃x (X(x) ∧ Y(x))</span>}
-        {quantifier === 'O' && <span>∃x (X(x) ∧ ¬Y(x))</span>}
+        {quantifier === 'A' && <span>∀x (X(x) → Y(x)) — <em>For all x, if x is X then x is Y</em></span>}
+        {quantifier === 'E' && <span>¬∃x (X(x) ∧ Y(x)) — <em>There does not exist an x that is both X and Y</em></span>}
+        {quantifier === 'I' && <span>∃x (X(x) ∧ Y(x)) — <em>There exists an x that is both X and Y</em></span>}
+        {quantifier === 'O' && <span>∃x (X(x) ∧ ¬Y(x)) — <em>There exists an x that is X but not Y</em></span>}
       </div>
       <PropositionLogicSequence prop={prop} syllogism={syllogism} />
     </div>
