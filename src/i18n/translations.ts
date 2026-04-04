@@ -194,6 +194,10 @@ export type TranslationKey =
   | 'workshop.motivation_10a'
   | 'workshop.motivation_10b'
   | 'workshop.motivation_10c'
+  | 'workshop.logic_explain_A'
+  | 'workshop.logic_explain_E'
+  | 'workshop.logic_explain_I'
+  | 'workshop.logic_explain_O'
   // Proposition explorer
   | 'learn.from_latin'
   | 'learn.form_label'
@@ -564,6 +568,10 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.motivation_10a': 'TEN IN A ROW! Absolute Logic Emperor!',
     'workshop.motivation_10b': 'Perfect decathlon! Medal of Logic awarded!',
     'workshop.motivation_10c': 'Supreme Master! Carroll himself would be proud!',
+    'workshop.logic_explain_A': 'For all x, if x is X then x is Y',
+    'workshop.logic_explain_E': 'There does not exist an x that is both X and Y',
+    'workshop.logic_explain_I': 'There exists an x that is both X and Y',
+    'workshop.logic_explain_O': 'There exists an x that is X but not Y',
     // Proposition explorer
     'learn.from_latin': 'From Latin:',
     'learn.form_label': 'Form',
@@ -934,6 +942,10 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.motivation_10a': 'DEŠIMT IŠ EILĖS! Absoliutus Logikos Imperatorius!',
     'workshop.motivation_10b': 'Tobulas dešimtkovis! Logikos medalis įteiktas!',
     'workshop.motivation_10c': 'Aukščiausias Meistras! Pats Carrollas didžiuotųsi!',
+    'workshop.logic_explain_A': 'Visiems x, jei x yra X, tai x yra Y',
+    'workshop.logic_explain_E': 'Neegzistuoja x, kuris būtų ir X, ir Y',
+    'workshop.logic_explain_I': 'Egzistuoja x, kuris yra ir X, ir Y',
+    'workshop.logic_explain_O': 'Egzistuoja x, kuris yra X, bet nėra Y',
     // Proposition explorer
     'learn.from_latin': 'Iš lotynų k.:',
     'learn.form_label': 'Forma',
