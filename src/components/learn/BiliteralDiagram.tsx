@@ -11,11 +11,13 @@ interface BiliteralDiagramProps {
   showLabels?: boolean
 }
 
+// Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y'
+// Four cells: xy (top-left), xy' (top-right), x'y (bottom-left), x'y' (bottom-right)
 const CELL_POSITIONS = {
-  topLeft: { cx: 75, cy: 75, label: "x'y'" },
+  topLeft: { cx: 75, cy: 75, label: "xy" },
   topRight: { cx: 125, cy: 75, label: "xy'" },
   bottomLeft: { cx: 75, cy: 125, label: "x'y" },
-  bottomRight: { cx: 125, cy: 125, label: "xy" },
+  bottomRight: { cx: 125, cy: 125, label: "x'y'" },
 }
 
 export function BiliteralDiagram({
@@ -95,10 +97,10 @@ export function BiliteralDiagram({
         {/* Outer rectangle */}
         <rect x={10} y={10} width={180} height={180} fill="none" stroke="currentColor" strokeWidth={2} className="text-[var(--line)]" />
         
-        {/* Horizontal divider */}
+        {/* Horizontal divider (x top / x' bottom) */}
         <line x1={10} y1={100} x2={190} y2={100} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
         
-        {/* Vertical divider */}
+        {/* Vertical divider (y left / y' right) */}
         <line x1={100} y1={10} x2={100} y2={190} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
 
         {/* Cell backgrounds */}
@@ -120,22 +122,22 @@ export function BiliteralDiagram({
           renderCounter(id, pos.cx, pos.cy)
         )}
 
-        {/* Labels */}
+        {/* Labels - matching Carroll's notation */}
         {showLabels && (
           <>
-            {/* X label */}
-            <text x={145} y={30} className="text-xs font-bold fill-[var(--lagoon)]" style={{ fontSize: '14px', fontWeight: 700 }}>
+            {/* X labels - TOP = x, BOTTOM = x' */}
+            <text x={100} y={28} textAnchor="middle" className="font-bold fill-[var(--lagoon)]" style={{ fontSize: '14px', fontWeight: 700 }}>
               {xLabel}
             </text>
-            <text x={55} y={30} className="text-xs font-bold fill-[var(--sea-ink-soft)]" style={{ fontSize: '14px', fontWeight: 700 }}>
+            <text x={100} y={185} textAnchor="middle" className="font-bold fill-[var(--sea-ink-soft)]" style={{ fontSize: '14px', fontWeight: 700 }}>
               {xLabel}'
             </text>
             
-            {/* Y label */}
-            <text x={170} y={145} className="text-xs font-bold fill-[var(--lagoon)]" style={{ fontSize: '14px', fontWeight: 700 }}>
+            {/* Y labels - LEFT = y, RIGHT = y' */}
+            <text x={30} y={100} textAnchor="middle" className="font-bold fill-[var(--lagoon)]" style={{ fontSize: '14px', fontWeight: 700 }} transform="rotate(-90 30 100)">
               {yLabel}
             </text>
-            <text x={170} y={75} className="text-xs font-bold fill-[var(--sea-ink-soft)]" style={{ fontSize: '14px', fontWeight: 700 }}>
+            <text x={170} y={100} textAnchor="middle" className="font-bold fill-[var(--sea-ink-soft)]" style={{ fontSize: '14px', fontWeight: 700 }} transform="rotate(90 170 100)">
               {yLabel}'
             </text>
           </>

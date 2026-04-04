@@ -58,13 +58,20 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
   const renderDiagram = () => {
     const cellStates: Record<string, 'empty' | 'occupied'> = {}
     
+    // Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y'
+    // xy = top-left, xy' = top-right, x'y = bottom-left, x'y' = bottom-right
+    
     if (type === 'A') {
+      // "All x are y" → xy' (top-right) is empty
       cellStates["xy'"] = 'empty'
     } else if (type === 'E') {
+      // "No x are y" → xy (top-left) is empty
       cellStates.xy = 'empty'
     } else if (type === 'I') {
+      // "Some x are y" → xy (top-left) has counter
       cellStates.xy = 'occupied'
     } else if (type === 'O') {
+      // "Some x are not y" → x'y (bottom-left) has counter
       cellStates["x'y"] = 'occupied'
     }
 
@@ -75,7 +82,7 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
         <line x1={10} y1={100} x2={190} y2={100} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
         <line x1={100} y1={10} x2={100} y2={190} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
 
-        {/* Cell backgrounds */}
+        {/* Cell backgrounds - TOP=x, BOTTOM=x', LEFT=y, RIGHT=y' */}
         <rect x={10} y={10} width={90} height={90} fill="transparent" />
         <rect x={100} y={10} width={90} height={90} fill="transparent" />
         <rect x={10} y={100} width={90} height={90} fill="transparent" />
@@ -86,21 +93,22 @@ export function PropositionExplorer({ type }: PropositionExplorerProps) {
           <rect x={100} y={10} width={90} height={90} fill="#fef3c7" opacity={0.5} />
         )}
         {type === 'E' && (
-          <rect x={100} y={100} width={90} height={90} fill="#fef3c7" opacity={0.5} />
+          <rect x={10} y={10} width={90} height={90} fill="#fef3c7" opacity={0.5} />
         )}
         {type === 'I' && (
-          <rect x={100} y={100} width={90} height={90} fill="#fef3c7" opacity={0.5} />
+          <rect x={10} y={10} width={90} height={90} fill="#fef3c7" opacity={0.5} />
         )}
         {type === 'O' && (
           <rect x={10} y={100} width={90} height={90} fill="#fef3c7" opacity={0.5} />
         )}
 
-        {/* Counters */}
+        {/* Counters - CORRECTED positions */}
         {Object.entries(cellStates).map(([cell, state]) => {
-          let cx = 145, cy = 145 // xy (bottom-right)
-          if (cell === "xy'") { cx = 145; cy = 55 }
-          else if (cell === "x'y") { cx = 55; cy = 145 }
-          else if (cell === "x'y'") { cx = 55; cy = 55 }
+          // Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y'
+          let cx = 55, cy = 55   // xy = top-left
+          if (cell === "xy'") { cx = 145; cy = 55 }    // top-right
+          else if (cell === "x'y") { cx = 55; cy = 145 }  // bottom-left
+          else if (cell === "x'y'") { cx = 145; cy = 145 } // bottom-right
 
           const color = state === 'occupied' ? '#ef4444' : '#6b7280'
           const fillColor = state === 'occupied' ? '#fecaca' : '#e5e7eb'

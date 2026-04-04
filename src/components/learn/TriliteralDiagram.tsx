@@ -12,25 +12,22 @@ interface TriliteralDiagramProps {
   showLabels?: boolean
 }
 
-// Carroll's triliteral diagram: 8 cells
-// Outer square divided by x/y axes, with m as inner circle
-const CELLS = [
-  { id: 1, x: 20, y: 20, w: 80, h: 80, cx: 60, cy: 60, label: "x'y'm'" },
-  { id: 2, x: 100, y: 20, w: 80, h: 80, cx: 140, cy: 60, label: "xym'" },
-  { id: 3, x: 20, y: 100, w: 80, h: 80, cx: 60, cy: 140, label: "x'ym'" },
-  { id: 4, x: 100, y: 100, w: 80, h: 80, cx: 140, cy: 140, label: "xym'" },
-  { id: 5, x: 40, y: 40, w: 60, h: 60, cx: 70, cy: 70, label: "x'y'm" },
-  { id: 6, x: 100, y: 40, w: 60, h: 60, cx: 130, cy: 70, label: "xym" },
-  { id: 7, x: 40, y: 100, w: 60, h: 60, cx: 70, cy: 130, label: "x'ym" },
-  { id: 8, x: 100, y: 100, w: 60, h: 60, cx: 130, cy: 130, label: "xym" },
+// Carroll's notation for triliteral diagram:
+// TOP=x, BOTTOM=x', LEFT=y, RIGHT=y', INSIDE CIRCLE=m, OUTSIDE CIRCLE=m'
+// 8 cells total (4 inside m circle, 4 outside m circle)
+// m counters are inside the circle, m' counters are near the square corners
+const OUTER_CELLS = [
+  { id: '1', x: 15, y: 15, w: 85, h: 85, cx: 25, cy: 25, label: "xym'" },      // top-left, near corner
+  { id: '2', x: 100, y: 15, w: 85, h: 85, cx: 175, cy: 25, label: "xy'm'" },    // top-right, near corner
+  { id: '3', x: 15, y: 100, w: 85, h: 85, cx: 25, cy: 175, label: "x'ym'" },    // bottom-left, near corner
+  { id: '4', x: 100, y: 100, w: 85, h: 85, cx: 175, cy: 175, label: "x'y'm'" }, // bottom-right, near corner
 ]
 
-// Inner cell positions for the m circle
 const INNER_CELLS = [
-  { id: 5, cx: 70, cy: 70 },  // x'y'm (top-left of inner)
-  { id: 6, cx: 130, cy: 70 }, // xym (top-right of inner)
-  { id: 7, cx: 70, cy: 130 }, // x'ym (bottom-left of inner)
-  { id: 8, cx: 130, cy: 130 },// xym (bottom-right of inner)
+  { id: '5', x: 35, y: 35, w: 65, h: 65, cx: 75, cy: 75, label: "xym" },       // top-left, inside circle
+  { id: '6', x: 100, y: 35, w: 65, h: 65, cx: 125, cy: 75, label: "xy'm" },    // top-right, inside circle
+  { id: '7', x: 35, y: 100, w: 65, h: 65, cx: 75, cy: 125, label: "x'ym" },    // bottom-left, inside circle
+  { id: '8', x: 100, y: 100, w: 65, h: 65, cx: 125, cy: 125, label: "x'y'm" }, // bottom-right, inside circle
 ]
 
 export function TriliteralDiagram({
@@ -111,17 +108,17 @@ export function TriliteralDiagram({
         {/* Outer rectangle */}
         <rect x={5} y={5} width={190} height={190} fill="none" stroke="currentColor" strokeWidth={2} className="text-[var(--line)]" />
         
-        {/* Horizontal divider (x axis) */}
+        {/* Horizontal divider (x top / x' bottom) */}
         <line x1={5} y1={100} x2={195} y2={100} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
         
-        {/* Vertical divider (y axis) */}
+        {/* Vertical divider (y left / y' right) */}
         <line x1={100} y1={5} x2={100} y2={195} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
 
         {/* m circle - represents middle term */}
         <circle cx={100} cy={100} r={65} fill="none" stroke="currentColor" strokeWidth={2} strokeDasharray="4 2" className="text-[var(--lagoon)]" />
 
-        {/* Clickable cell areas */}
-        {CELLS.map(cell => (
+        {/* Clickable cell areas - outer cells */}
+        {OUTER_CELLS.map(cell => (
           <rect
             key={cell.id}
             x={cell.x}
@@ -129,52 +126,67 @@ export function TriliteralDiagram({
             width={cell.w}
             height={cell.h}
             fill="transparent"
-            className={!readOnly ? 'cursor-pointer hover:fill-[var(--foam)]' : ''}
-            onClick={() => handleCellClick(cell.id.toString())}
+            className={!readOnly ? 'cursor-pointer' : ''}
+            onClick={() => handleCellClick(cell.id)}
+          />
+        ))}
+
+        {/* Clickable cell areas - inner cells */}
+        {INNER_CELLS.map(cell => (
+          <rect
+            key={cell.id}
+            x={cell.x}
+            y={cell.y}
+            width={cell.w}
+            height={cell.h}
+            fill="transparent"
+            className={!readOnly ? 'cursor-pointer' : ''}
+            onClick={() => handleCellClick(cell.id)}
           />
         ))}
 
         {/* Counters for outer cells (outside m circle) */}
-        {[
-          { id: '1', cx: 45, cy: 45 },  // x'y'm'
-          { id: '2', cx: 155, cy: 45 }, // xym'
-          { id: '3', cx: 45, cy: 155 }, // x'ym'
-          { id: '4', cx: 155, cy: 155 },// xym'
-        ].map(({ id, cx, cy }) => renderCounter(id, cx, cy))}
+        {OUTER_CELLS.map(({ id, cx, cy }) => renderCounter(id, cx, cy))}
 
         {/* Counters for inner cells (inside m circle) */}
-        {[
-          { id: '5', cx: 70, cy: 70 },  // x'y'm
-          { id: '6', cx: 130, cy: 70 }, // xym
-          { id: '7', cx: 70, cy: 130 }, // x'ym
-          { id: '8', cx: 130, cy: 130 },// xym
-        ].map(({ id, cx, cy }) => renderCounter(id, cx, cy))}
+        {INNER_CELLS.map(({ id, cx, cy }) => renderCounter(id, cx, cy))}
 
-        {/* Labels */}
+        {/* Labels - matching Carroll's notation */}
         {showLabels && (
           <>
-            {/* X labels */}
-            <text x={145} y={25} className="fill-[var(--lagoon)]" style={{ fontSize: '13px', fontWeight: 700 }}>
+            {/* X labels - TOP = x, BOTTOM = x' */}
+            <text x={100} y={22} textAnchor="middle" className="fill-[var(--lagoon)]" style={{ fontSize: '13px', fontWeight: 700 }}>
               {xLabel}
             </text>
-            <text x={55} y={25} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <text x={100} y={188} textAnchor="middle" className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '13px', fontWeight: 700 }}>
               {xLabel}'
             </text>
             
-            {/* Y labels */}
-            <text x={175} y={145} className="fill-[var(--lagoon)]" style={{ fontSize: '13px', fontWeight: 700 }}>
+            {/* Y labels - LEFT = y, RIGHT = y' */}
+            <text x={22} y={100} textAnchor="middle" className="fill-[var(--lagoon)]" style={{ fontSize: '13px', fontWeight: 700 }} transform="rotate(-90 22 100)">
               {yLabel}
             </text>
-            <text x={175} y={65} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '13px', fontWeight: 700 }}>
+            <text x={178} y={100} textAnchor="middle" className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '13px', fontWeight: 700 }} transform="rotate(90 178 100)">
               {yLabel}'
             </text>
 
-            {/* M label */}
-            <text x={155} y={95} className="fill-[var(--palm)]" style={{ fontSize: '12px', fontWeight: 700 }}>
+            {/* M labels - m inside circle (center), m' near each corner */}
+            {/* Big "m" in the center of the circle */}
+            <text x={100} y={105} textAnchor="middle" className="fill-[var(--palm)]" style={{ fontSize: '18px', fontWeight: 800, opacity: 0.5 }}>
               {mLabel}
             </text>
-            <text x={155} y={115} className="fill-[var(--palm)]" style={{ fontSize: '12px', fontWeight: 700 }}>
-              {mLabel}'
+            {/* m' labels near each corner */}
+            <text x={18} y={18} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+              m'
+            </text>
+            <text x={178} y={18} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+              m'
+            </text>
+            <text x={18} y={190} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+              m'
+            </text>
+            <text x={178} y={190} className="fill-[var(--sea-ink-soft)]" style={{ fontSize: '11px', fontWeight: 700 }}>
+              m'
             </text>
           </>
         )}
