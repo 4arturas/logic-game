@@ -11,6 +11,7 @@ import Salute from '../components/Salute'
 
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
+import attributeSyllogisms from '../data/syllogisms_attributes.json'
 
 export const Route = createFileRoute('/workshop')({ component: WorkshopPage })
 
@@ -68,7 +69,7 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
 function WorkshopPage() {
   const { t } = useTranslation()
   const { premiseOrder } = useSettings()
-  const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom'>('standard')
+  const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom' | 'attributes'>('standard')
   const [selectedFigure, setSelectedFigure] = useState<Figure>(1)
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
 
@@ -219,7 +220,9 @@ function WorkshopPage() {
   }, [playSuccessSound1, playSuccessSound2, playSuccessSound3, playSuccessSound4])
 
   const syllogisms = useMemo(() => {
-    const data = syllogismSet === 'standard' ? standardSyllogisms : customSyllogisms
+    const data = syllogismSet === 'standard' ? standardSyllogisms
+      : syllogismSet === 'custom' ? customSyllogisms
+      : attributeSyllogisms
     return data.map((d: any) => createSyllogism(d.figure as Figure, d.mood, d.terms))
   }, [syllogismSet])
 
@@ -401,24 +404,15 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
           {/* Dataset Selector */}
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase text-[var(--sea-ink-soft)]">{t('workshop.dataset')}</span>
-            <div className="flex rounded-lg border overflow-hidden" style={{ borderColor: 'var(--line)' }}>
-              <button
-                onClick={() => setSyllogismSet('standard')}
-                className={`px-3 py-1.5 text-xs font-bold cursor-pointer transition-colors ${
-                  syllogismSet === 'standard' ? 'bg-[var(--lagoon)] text-white' : 'bg-[var(--foam)] text-[var(--sea-ink-soft)] hover:bg-[var(--sand)]'
-                }`}
-              >
-                {t('workshop.standard')}
-              </button>
-              <button
-                onClick={() => setSyllogismSet('custom')}
-                className={`px-3 py-1.5 text-xs font-bold cursor-pointer transition-colors ${
-                  syllogismSet === 'custom' ? 'bg-[var(--lagoon)] text-white' : 'bg-[var(--foam)] text-[var(--sea-ink-soft)] hover:bg-[var(--sand)]'
-                }`}
-              >
-                {t('workshop.custom')}
-              </button>
-            </div>
+            <select
+              value={syllogismSet}
+              onChange={(e) => setSyllogismSet(e.target.value as 'standard' | 'custom' | 'attributes')}
+              className="px-3 py-1.5 text-xs font-bold rounded-lg border cursor-pointer bg-[var(--foam)] text-[var(--sea-ink)] border-[var(--line)] focus:border-[var(--lagoon)] focus:ring-0 outline-none"
+            >
+              <option value="standard">{t('workshop.standard')}</option>
+              <option value="custom">{t('workshop.custom')}</option>
+              <option value="attributes">{t('workshop.attributes_set')}</option>
+            </select>
           </div>
 
           {/* Figure Selector */}

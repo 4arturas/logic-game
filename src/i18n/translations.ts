@@ -136,6 +136,7 @@ export type TranslationKey =
   | 'workshop.dataset'
   | 'workshop.standard'
   | 'workshop.custom'
+  | 'workshop.attributes_set'
   | 'workshop.figure'
   | 'workshop.syllogism'
   | 'workshop.major_premise'
@@ -505,6 +506,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.dataset': 'Dataset:',
     'workshop.standard': 'Standard (24)',
     'workshop.custom': 'Custom (24)',
+    'workshop.attributes_set': 'Attributes (24)',
     'workshop.figure': 'Figure:',
     'workshop.syllogism': 'Syllogism',
     'workshop.major_premise': 'Major Premise',
@@ -874,6 +876,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.dataset': 'Duomenų rinkinys:',
     'workshop.standard': 'Standartinis (24)',
     'workshop.custom': 'Pasirinktinis (24)',
+    'workshop.attributes_set': 'Savybės (24)',
     'workshop.figure': 'Figūra:',
     'workshop.syllogism': 'Silogizmas',
     'workshop.major_premise': 'Didžioji prielaida',
