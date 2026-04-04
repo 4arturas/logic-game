@@ -9,6 +9,106 @@ export type TranslationKey =
   | 'nav.campaign'
   | 'nav.syllogisms'
   | 'nav.learn'
+  // Learn page
+  | 'learn.ch1_title'
+  | 'learn.ch1_lesson1_title'
+  | 'learn.ch1_lesson1_p1'
+  | 'learn.ch1_lesson1_p2'
+  | 'learn.ch1_lesson1_quote'
+  | 'learn.ch1_lesson2_title'
+  | 'learn.ch1_lesson2_p1'
+  | 'learn.ch1_lesson2_how'
+  | 'learn.step1_title'
+  | 'learn.step1_desc'
+  | 'learn.step2_title'
+  | 'learn.step2_desc'
+  | 'learn.step3_title'
+  | 'learn.step3_desc'
+  | 'learn.key_insight'
+  | 'learn.ch1_lesson2_insight'
+  | 'learn.ch2_title'
+  | 'learn.ch2_lesson1_title'
+  | 'learn.ch2_lesson1_p1'
+  | 'learn.ch2_lesson2_title'
+  | 'learn.ch2_lesson2_p1'
+  | 'learn.xy_desc'
+  | 'learn.xy_not_y_desc'
+  | 'learn.y_not_x_desc'
+  | 'learn.neither_desc'
+  | 'learn.try_it'
+  | 'learn.biliteral_instructions'
+  | 'learn.representing'
+  | 'learn.prop_a'
+  | 'learn.prop_a_desc'
+  | 'learn.prop_e'
+  | 'learn.prop_e_desc'
+  | 'learn.prop_i'
+  | 'learn.prop_i_desc'
+  | 'learn.prop_o'
+  | 'learn.prop_o_desc'
+  | 'learn.ch3_title'
+  | 'learn.ch3_lesson1_title'
+  | 'learn.ch3_lesson1_p1'
+  | 'learn.ch3_lesson1_example_major'
+  | 'learn.ch3_lesson1_example_minor'
+  | 'learn.ch3_lesson1_example_conclusion'
+  | 'learn.ch3_lesson1_minor_desc'
+  | 'learn.ch3_lesson1_major_desc'
+  | 'learn.ch3_lesson1_middle_desc'
+  | 'learn.ch3_lesson2_title'
+  | 'learn.ch3_lesson2_p1'
+  | 'learn.ch3_lesson2_p2'
+  | 'learn.inside_circle'
+  | 'learn.inside_desc'
+  | 'learn.outside_circle'
+  | 'learn.outside_desc'
+  | 'learn.ch3_lesson2_p3'
+  | 'learn.try_triliteral'
+  | 'learn.triliteral_instructions'
+  | 'learn.how_it_works'
+  | 'learn.ch3_lesson2_how'
+  | 'learn.ch3_lesson3_title'
+  | 'learn.ch3_lesson3_p1'
+  | 'learn.step1_mark'
+  | 'learn.step1_mark_desc'
+  | 'learn.step1_mark_example'
+  | 'learn.step2_transfer'
+  | 'learn.step2_transfer_desc'
+  | 'learn.rule'
+  | 'learn.step2_rule'
+  | 'learn.step3_read'
+  | 'learn.step3_read_desc'
+  | 'learn.if_xy_empty'
+  | 'learn.all_x_are_y'
+  | 'learn.if_xy_empty2'
+  | 'learn.no_x_are_y'
+  | 'learn.if_xy_counter'
+  | 'learn.some_x_are_y'
+  | 'learn.if_x_y_counter'
+  | 'learn.some_x_not_y'
+  | 'learn.examples'
+  | 'learn.things'
+  | 'learn.attributes'
+  | 'learn.cats'
+  | 'learn.books'
+  | 'learn.students'
+  | 'learn.apples'
+  | 'learn.furry'
+  | 'learn.interesting'
+  | 'learn.diligent'
+  | 'learn.red'
+  | 'learn.minor_term_x'
+  | 'learn.major_term_y'
+  | 'learn.middle_term_m'
+  | 'learn.example'
+  | 'learn.major_premise'
+  | 'learn.minor_premise'
+  | 'learn.conclusion'
+  | 'learn.page_title'
+  | 'learn.page_subtitle'
+  | 'learn.interactive_guide'
+  | 'learn.lessons'
+  | 'learn.next'
   // Footer
   | 'footer.copyright'
   // Home page (used by components)
@@ -171,7 +271,107 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.about': 'About',
     'nav.campaign': 'Campaign',
     'nav.syllogisms': 'Atlas',
-    'nav.learn': 'Learn',
+    'nav.learn': 'Logic School',
+    // Learn page
+    'learn.ch1_title': '1. Things and Attributes',
+    'learn.ch1_lesson1_title': 'What are Things?',
+    'learn.ch1_lesson1_p1': 'In Lewis Carroll\'s Symbolic Logic, we begin with the simplest elements: <strong>Things</strong>. A "Thing" can be anything you can think of — animals, people, objects, or even abstract concepts.',
+    'learn.ch1_lesson1_p2': 'Every Thing has <strong>Attributes</strong> — qualities or characteristics that describe it. For example, a "rose" (Thing) might have attributes like "red", "fragrant", or "beautiful".',
+    'learn.ch1_lesson1_quote': '"The Universe of Discourse is the class of Things we are talking about at any one time."',
+    'learn.ch1_lesson2_title': 'Classification',
+    'learn.ch1_lesson2_p1': '<strong>Classification</strong> is the process of dividing Things into groups (called <strong>Classes</strong>) based on their Attributes. When we classify, we create a <strong>Genus</strong> (the larger class) and divide it into <strong>Species</strong> (smaller classes) using a <strong>Differentia</strong> (the distinguishing attribute).',
+    'learn.ch1_lesson2_how': 'How Classification Works',
+    'learn.step1_title': 'Start with a Genus',
+    'learn.step1_desc': 'Example: "Animals"',
+    'learn.step2_title': 'Choose a Differentia',
+    'learn.step2_desc': 'Example: "has fur"',
+    'learn.step3_title': 'Create two Species',
+    'learn.step3_desc': '"Animals with fur" and "Animals without fur"',
+    'learn.key_insight': 'Key Insight:',
+    'learn.ch1_lesson2_insight': 'Every classification creates two complementary classes. If we divide "Animals" by the attribute "has fur", we get both "furry Animals" and "non-furry Animals" — together they make up the entire Universe.',
+    'learn.ch2_title': '2. Propositions',
+    'learn.ch2_lesson1_title': 'What is a Proposition?',
+    'learn.ch2_lesson1_p1': 'A <strong>Proposition</strong> is a statement that asserts a relationship between two classes: the <strong>Subject</strong> and the <strong>Predicate</strong>. Carroll identified four types of propositions, traditionally labeled A, E, I, and O.',
+    'learn.ch2_lesson2_title': 'The Biliteral Diagram',
+    'learn.ch2_lesson2_p1': 'The <strong>Biliteral Diagram</strong> is Carroll\'s method for visualizing propositions about two terms (x and y). It divides a square into four cells representing all possible combinations:',
+    'learn.xy_desc': 'things that are both x and y',
+    'learn.xy_not_y_desc': 'things that are x but not y',
+    'learn.y_not_x_desc': 'things that are y but not x',
+    'learn.neither_desc': 'things that are neither x nor y',
+    'learn.try_it': 'Try it yourself!',
+    'learn.biliteral_instructions': 'Click on cells to place counters. Red counters (●) mean "something exists here". Grey counters with ✕ mean "this cell is empty".',
+    'learn.representing': 'Representing Propositions',
+    'learn.prop_a': 'A: "All x are y"',
+    'learn.prop_a_desc': 'Mark the xy\' cell as empty (nothing is x without being y).',
+    'learn.prop_e': 'E: "No x are y"',
+    'learn.prop_e_desc': 'Mark the xy cell as empty (nothing is both x and y).',
+    'learn.prop_i': 'I: "Some x are y"',
+    'learn.prop_i_desc': 'Place a red counter in the xy cell (something exists there).',
+    'learn.prop_o': 'O: "Some x are not y"',
+    'learn.prop_o_desc': 'Place a red counter in the x\'y cell (something exists there).',
+    'learn.ch3_title': '3. Syllogisms',
+    'learn.ch3_lesson1_title': 'What is a Syllogism?',
+    'learn.ch3_lesson1_p1': 'A <strong>Syllogism</strong> is a form of reasoning where a conclusion is drawn from two given propositions (called <strong>Premises</strong>). The key is that the two premises share a common term — the <strong>Middle Term (m)</strong> — which disappears in the conclusion.',
+    'learn.ch3_lesson1_example_major': 'All mammals have fur.',
+    'learn.ch3_lesson1_example_minor': 'All dogs are mammals.',
+    'learn.ch3_lesson1_example_conclusion': 'Therefore, all dogs have fur.',
+    'learn.ch3_lesson1_minor_desc': 'The subject of the conclusion (dogs)',
+    'learn.ch3_lesson1_major_desc': 'The predicate of the conclusion (have fur)',
+    'learn.ch3_lesson1_middle_desc': 'Appears in both premises but not conclusion (mammals)',
+    'learn.ch3_lesson2_title': 'The Triliteral Diagram',
+    'learn.ch3_lesson2_p1': 'The <strong>Triliteral Diagram</strong> extends the Biliteral Diagram to handle three terms (x, y, m). It adds a circle representing the middle term m, creating 8 cells instead of 4.',
+    'learn.ch3_lesson2_p2': 'The circle divides the square into:',
+    'learn.inside_circle': 'Inside the circle (m)',
+    'learn.inside_desc': 'things that have attribute m',
+    'learn.outside_circle': 'Outside the circle (m\')',
+    'learn.outside_desc': 'things that don\'t have attribute m',
+    'learn.ch3_lesson2_p3': 'Combined with the x and y divisions, this gives us 8 cells to represent all combinations of x, y, and m.',
+    'learn.try_triliteral': 'Try the Triliteral Diagram!',
+    'learn.triliteral_instructions': 'Click cells to place counters. The dashed circle represents the middle term m.',
+    'learn.how_it_works': 'How it works:',
+    'learn.ch3_lesson2_how': 'To solve a syllogism, we mark both premises on the Triliteral Diagram, then "read off" the conclusion by ignoring the m circle and looking only at the x/y relationships that remain.',
+    'learn.ch3_lesson3_title': 'Solving Syllogisms',
+    'learn.ch3_lesson3_p1': 'Carroll\'s method for solving syllogisms involves three steps:',
+    'learn.step1_mark': 'Mark the Premises',
+    'learn.step1_mark_desc': 'Transfer both premises onto the Triliteral Diagram. Universal propositions (A, E) get grey counters (empty). Particular propositions (I, O) get red counters (occupied).',
+    'learn.step1_mark_example': '"All m are y" → Mark m\'y cells as empty\n"All x are m" → Mark xm\' cells as empty',
+    'learn.step2_transfer': 'Transfer to Biliteral',
+    'learn.step2_transfer_desc': 'Copy the information from the Triliteral Diagram to the Biliteral Diagram, ignoring the m circle. If a cell is marked in both m and m\' portions, it\'s definitely marked.',
+    'learn.rule': 'Rule',
+    'learn.step2_rule': 'If any sub-cell is empty, the whole cell is empty.\nIf any sub-cell has a red counter, transfer it.',
+    'learn.step3_read': 'Read the Conclusion',
+    'learn.step3_read_desc': 'Interpret the Biliteral Diagram to get the conclusion in terms of x and y.',
+    'learn.if_xy_empty': "If xy' is empty",
+    'learn.all_x_are_y': '"All x are y"',
+    'learn.if_xy_empty2': 'If xy is empty',
+    'learn.no_x_are_y': '"No x are y"',
+    'learn.if_xy_counter': 'If xy has a counter',
+    'learn.some_x_are_y': '"Some x are y"',
+    'learn.if_x_y_counter': "If x'y has a counter",
+    'learn.some_x_not_y': '"Some x are not y"',
+    'learn.examples': 'Examples',
+    'learn.things': 'Things',
+    'learn.attributes': 'Attributes',
+    'learn.cats': 'Cats',
+    'learn.books': 'Books',
+    'learn.students': 'Students',
+    'learn.apples': 'Apples',
+    'learn.furry': 'furry',
+    'learn.interesting': 'interesting',
+    'learn.diligent': 'diligent',
+    'learn.red': 'red',
+    'learn.minor_term_x': 'Minor Term (x)',
+    'learn.major_term_y': 'Major Term (y)',
+    'learn.middle_term_m': 'Middle Term (m)',
+    'learn.example': 'Example',
+    'learn.major_premise': 'Major Premise',
+    'learn.minor_premise': 'Minor Premise',
+    'learn.conclusion': 'Conclusion',
+    'learn.page_title': 'Learning Symbolic Logic',
+    'learn.page_subtitle': 'Based on Lewis Carroll\'s "Symbolic Logic" — A step-by-step journey from things to syllogisms',
+    'learn.interactive_guide': 'Interactive Guide',
+    'learn.lessons': 'Lessons',
+    'learn.next': 'Next',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll Logic Game. Learn logic through interactive diagrams.',
     // Home page (used by components)
@@ -334,7 +534,107 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'nav.about': 'Apie',
     'nav.campaign': 'Kampanija',
     'nav.syllogisms': 'Atlasas',
-    'nav.learn': 'Mokytis',
+    'nav.learn': 'Logikos mokykla',
+    // Learn page
+    'learn.ch1_title': '1. Dalykai ir savybės',
+    'learn.ch1_lesson1_title': 'Kas yra dalykai?',
+    'learn.ch1_lesson1_p1': 'Lewis Carrollo simbolinėje logikoje pradedame nuo paprasčiausių elementų: <strong>Dalykų</strong>. „Dalykas" gali būti bet kas, apie ką galite pagalvoti — gyvūnai, žmonės, daiktai ar net abstrakčios sąvokos.',
+    'learn.ch1_lesson1_p2': 'Kiekvienas dalykas turi <strong>Savybių</strong> — kokybių ar charakteristikų, kurios jį apibūdina. Pavyzdžiui, „rožė" (dalykas) gali turėti tokių savybių kaip „raudona", „kvepianti" ar „graži".',
+    'learn.ch1_lesson1_quote': '"Diskurso visata yra dalykų klasė, apie kurią kalbame bet kuriuo metu."',
+    'learn.ch1_lesson2_title': 'Klasifikacija',
+    'learn.ch1_lesson2_p1': '<strong>Klasifikacija</strong> – tai procesas, kurio metu dalykai skirstomi į grupes (vadinamas <strong>Klasėmis</strong>) pagal jų savybes. Klasifikuodami sukuriame <strong>Gentį</strong> (didesnę klasę) ir padalijame ją į <strong>Rūšis</strong> (mažesnes klases) naudodami <strong>Skirtumą</strong> (skiriamąją savybę).',
+    'learn.ch1_lesson2_how': 'Kaip veikia klasifikacija',
+    'learn.step1_title': 'Pradėkite nuo genties',
+    'learn.step1_desc': 'Pavyzdys: „Gyvūnai"',
+    'learn.step2_title': 'Pasirinkite skirtumą',
+    'learn.step2_desc': 'Pavyzdys: „turi kailį"',
+    'learn.step3_title': 'Sukurkite dvi rūšis',
+    'learn.step3_desc': '„Gyvūnai su kailiu" ir „Gyvūnai be kailio"',
+    'learn.key_insight': 'Esminė įžvalga:',
+    'learn.ch1_lesson2_insight': 'Kiekviena klasifikacija sukuria dvi papildomas klases. Jei padalijame „Gyvūnus" pagal savybę „turi kailį", gauname tiek „kailinius gyvūnus", tiek „nekailinius gyvūnus" — kartu jie sudaro visą visatą.',
+    'learn.ch2_title': '2. Teiginiai',
+    'learn.ch2_lesson1_title': 'Kas yra teiginys?',
+    'learn.ch2_lesson1_p1': '<strong>Teiginys</strong> yra teiginys, kuris teigia ryšį tarp dviejų klasių: <strong>Veiksnio</strong> ir <strong>Tarinio</strong>. Carrollas išskyrė keturis teiginių tipus, tradiciškai žymimus A, E, I ir O.',
+    'learn.ch2_lesson2_title': 'Dviejų raidžių diagrama',
+    'learn.ch2_lesson2_p1': '<strong>Dviejų raidžių diagrama</strong> – tai Carrollio metodas, skirtas vaizduoti teiginius apie du terminus (x ir y). Ji padalija kvadratą į keturias korteles, vaizduojančias visas galimas kombinacijas:',
+    'learn.xy_desc': 'dalykai, kurie yra ir x, ir y',
+    'learn.xy_not_y_desc': 'dalykai, kurie yra x, bet ne y',
+    'learn.y_not_x_desc': 'dalykai, kurie yra y, bet ne x',
+    'learn.neither_desc': 'dalykai, kurie nėra nei x, nei y',
+    'learn.try_it': 'Išbandykite patys!',
+    'learn.biliteral_instructions': 'Spustelėkite korteles, kad padėtumėte žetonus. Raudoni žetonai (●) reiškia „čia kažkas egzistuoja". Pilki žetonai su ✕ reiškia „ši kortelė tuščia".',
+    'learn.representing': 'Teiginių vaizdavimas',
+    'learn.prop_a': 'A: „Visi x yra y"',
+    'learn.prop_a_desc': 'Pažymėkite xy\' kortelę kaip tuščią (niekas nėra x be y).',
+    'learn.prop_e': 'E: „Joks x nėra y"',
+    'learn.prop_e_desc': 'Pažymėkite xy kortelę kaip tuščią (niekas nėra kartu x ir y).',
+    'learn.prop_i': 'I: „Kai kurie x yra y"',
+    'learn.prop_i_desc': 'Padėkite raudoną žetoną xy kortelėje (ten kažkas egzistuoja).',
+    'learn.prop_o': 'O: „Kai kurie x nėra y"',
+    'learn.prop_o_desc': 'Padėkite raudoną žetoną x\'y kortelėje (ten kažkas egzistuoja).',
+    'learn.ch3_title': '3. Silogizmai',
+    'learn.ch3_lesson1_title': 'Kas yra silogizmas?',
+    'learn.ch3_lesson1_p1': '<strong>Silogizmas</strong> – tai samprotavimo forma, kurioje išvada daroma iš dviejų pateiktų teiginių (vadinamų <strong>Prielaidomis</strong>). Esminis dalykas yra tai, kad abi prielaidos turi bendrą terminą – <strong>Vidurinį terminą (m)</strong> – kuris išvadoje išnyksta.',
+    'learn.ch3_lesson1_example_major': 'Visi žinduoliai turi kailį.',
+    'learn.ch3_lesson1_example_minor': 'Visi šunys yra žinduoliai.',
+    'learn.ch3_lesson1_example_conclusion': 'Todėl visi šunys turi kailį.',
+    'learn.ch3_lesson1_minor_desc': 'Išvados veiksnys (šunys)',
+    'learn.ch3_lesson1_major_desc': 'Išvados tarinis (turi kailį)',
+    'learn.ch3_lesson1_middle_desc': 'Atsiranda abiejose prielaidose, bet ne išvadoje (žinduoliai)',
+    'learn.ch3_lesson2_title': 'Trijų raidžių diagrama',
+    'learn.ch3_lesson2_p1': '<strong>Trijų raidžių diagrama</strong> praplečia dviejų raidžių diagramą, kad apimtų tris terminus (x, y, m). Ji prideda apskritimą, vaizduojantį vidurinį terminą m, sukuriantį 8 korteles vietoj 4.',
+    'learn.ch3_lesson2_p2': 'Apskritimas padalija kvadratą į:',
+    'learn.inside_circle': 'Viduje apskritimo (m)',
+    'learn.inside_desc': 'dalykai, turintys savybę m',
+    'learn.outside_circle': 'Išorėje apskritimo (m\')',
+    'learn.outside_desc': 'dalykai, neturintys savybės m',
+    'learn.ch3_lesson2_p3': 'Kartu su x ir y padalijimais tai suteikia 8 korteles, vaizduojančias visas x, y ir m kombinacijas.',
+    'learn.try_triliteral': 'Išbandykite trijų raidžių diagramą!',
+    'learn.triliteral_instructions': 'Spustelėkite korteles, kad padėtumėte žetonus. Brūkšninis apskritimas vaizduoja vidurinį terminą m.',
+    'learn.how_it_works': 'Kaip tai veikia:',
+    'learn.ch3_lesson2_how': 'Norėdami išspręsti silogizmą, pažymime abi prielaidas trijų raidžių diagramoje, tada „nuskaitome" išvadą ignoruodami m apskritimą ir žiūrėdami tik į x/y ryšius, kurie lieka.',
+    'learn.ch3_lesson3_title': 'Silogizmų sprendimas',
+    'learn.ch3_lesson3_p1': 'Carrollo silogizmų sprendimo metodas susideda iš trijų žingsnių:',
+    'learn.step1_mark': 'Pažymėkite prielaidas',
+    'learn.step1_mark_desc': 'Perkelkite abi prielaidas į trijų raidžių diagramą. Universalūs teiginiai (A, E) gauna pilkus žetonus (tuščia). Daliniai teiginiai (I, O) gauna raudonus žetonus (užimta).',
+    'learn.step1_mark_example': '„Visi m yra y" → Pažymėkite m\'y korteles kaip tuščias\n„Visi x yra m" → Pažymėkite xm\' korteles kaip tuščias',
+    'learn.step2_transfer': 'Perkelkite į dviejų raidžių',
+    'learn.step2_transfer_desc': 'Nukopijuokite informaciją iš trijų raidžių diagramos į dviejų raidžių diagramą, ignoruodami m apskritimą. Jei kortelė pažymėta tiek m, tiek m\' dalyse, ji tikrai pažymėta.',
+    'learn.rule': 'Taisyklė',
+    'learn.step2_rule': 'Jei bet kuri pokortelė yra tuščia, visa kortelė tuščia.\nJei bet kuri pokortelė turi raudoną žetoną, perkelkite jį.',
+    'learn.step3_read': 'Skaitykite išvadą',
+    'learn.step3_read_desc': 'Interpretuokite dviejų raidžių diagramą, kad gautumėte išvadą x ir y terminais.',
+    'learn.if_xy_empty': "Jei xy' tuščia",
+    'learn.all_x_are_y': '„Visi x yra y"',
+    'learn.if_xy_empty2': 'Jei xy tuščia',
+    'learn.no_x_are_y': '„Joks x nėra y"',
+    'learn.if_xy_counter': 'Jei xy turi žetoną',
+    'learn.some_x_are_y': '„Kai kurie x yra y"',
+    'learn.if_x_y_counter': "Jei x'y turi žetoną",
+    'learn.some_x_not_y': '„Kai kurie x nėra y"',
+    'learn.examples': 'Pavyzdžiai',
+    'learn.things': 'Dalykai',
+    'learn.attributes': 'Savybės',
+    'learn.cats': 'Katės',
+    'learn.books': 'Knygos',
+    'learn.students': 'Studentai',
+    'learn.apples': 'Obuoliai',
+    'learn.furry': 'kailinis',
+    'learn.interesting': 'įdomus',
+    'learn.diligent': 'darbštus',
+    'learn.red': 'raudonas',
+    'learn.minor_term_x': 'Mažasis terminas (x)',
+    'learn.major_term_y': 'Didysis terminas (y)',
+    'learn.middle_term_m': 'Vidurinysis terminas (m)',
+    'learn.example': 'Pavyzdys',
+    'learn.major_premise': 'Didžioji prielaida',
+    'learn.minor_premise': 'Mažoji prielaida',
+    'learn.conclusion': 'Išvada',
+    'learn.page_title': 'Mokomasi simbolinės logikos',
+    'learn.page_subtitle': 'Pagal Lewis Carrollo „Simbolinę logiką" – žingsnis po žingsnio kelionė nuo dalykų iki silogizmų',
+    'learn.interactive_guide': 'Interaktyvus vadovas',
+    'learn.lessons': 'Pamokos',
+    'learn.next': 'Toliau',
     // Footer
     'footer.copyright': '© {year} Lewis Carroll logikos žaidimas. Mokykitės logikos per interaktyvias diagramas.',
     // Home page (used by components)
