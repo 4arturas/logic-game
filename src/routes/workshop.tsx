@@ -37,8 +37,10 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
   }
 
   const formatProp = (q: string, s: string, p: string) => {
-    const subjectEl = <span style={{ color: subjectColor, fontWeight: 700 }}>{s}</span>
-    const predicateEl = <span style={{ color: predicateColor, fontWeight: 700 }}>{p}</span>
+    const translatedSubject = t(s)
+    const translatedPredicate = t(p)
+    const subjectEl = <span style={{ color: subjectColor, fontWeight: 700 }}>{translatedSubject}</span>
+    const predicateEl = <span style={{ color: predicateColor, fontWeight: 700 }}>{translatedPredicate}</span>
     const verb = ['fur', 'tail', 'wings', 'hair', 'bloating'].some(w => p.includes(w)) ? t('workshop.have_verb') : t('workshop.are_verb')
     if (q === 'E') return <><span className="text-red-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
     if (q === 'O') return <><span className="text-amber-500 font-bold">{quantifierLabels[q]}</span> {subjectEl} {verb} {predicateEl}.</>
