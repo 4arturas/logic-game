@@ -170,11 +170,29 @@ export type TranslationKey =
   | 'workshop.correct'
   | 'workshop.incorrect'
   | 'workshop.motivation_1'
+  | 'workshop.motivation_1a'
+  | 'workshop.motivation_1b'
+  | 'workshop.motivation_1c'
   | 'workshop.motivation_2'
+  | 'workshop.motivation_2a'
+  | 'workshop.motivation_2b'
+  | 'workshop.motivation_2c'
   | 'workshop.motivation_3'
+  | 'workshop.motivation_3a'
+  | 'workshop.motivation_3b'
+  | 'workshop.motivation_3c'
   | 'workshop.motivation_5'
+  | 'workshop.motivation_5a'
+  | 'workshop.motivation_5b'
+  | 'workshop.motivation_5c'
   | 'workshop.motivation_7'
+  | 'workshop.motivation_7a'
+  | 'workshop.motivation_7b'
+  | 'workshop.motivation_7c'
   | 'workshop.motivation_10'
+  | 'workshop.motivation_10a'
+  | 'workshop.motivation_10b'
+  | 'workshop.motivation_10c'
   // Proposition explorer
   | 'learn.from_latin'
   | 'learn.form_label'
@@ -521,11 +539,29 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.correct': 'Correct!',
     'workshop.incorrect': 'Incorrect - check your diagram',
     'workshop.motivation_1': 'Great start! Keep solving!',
+    'workshop.motivation_1a': 'Great start! Keep solving!',
+    'workshop.motivation_1b': 'First victory! The logic awakens!',
+    'workshop.motivation_1c': 'You got it! Power up!',
     'workshop.motivation_2': 'You\'re on a roll! Lightning fast!',
+    'workshop.motivation_2a': 'Two in a row! You\'re heating up!',
+    'workshop.motivation_2b': 'Double win! Momentum building!',
+    'workshop.motivation_2c': 'Rocket launch! Nothing can stop you!',
     'workshop.motivation_3': 'On fire! Logic master in training!',
+    'workshop.motivation_3a': 'Three for three! Unstoppable!',
+    'workshop.motivation_3b': 'Triple threat! The syllogisms tremble!',
+    'workshop.motivation_3c': 'Hat trick! Logic mastery approaching!',
     'workshop.motivation_5': 'Incredible! True Logic Master!',
+    'workshop.motivation_5a': 'Five straight! You\'re a logic legend!',
+    'workshop.motivation_5b': 'High five! The diagrams bow to you!',
+    'workshop.motivation_5c': 'Diamond mind! Nothing escapes you!',
     'workshop.motivation_7': 'Unstoppable! Launching to the stars!',
+    'workshop.motivation_7a': 'Seven strong! Cosmic logician!',
+    'workshop.motivation_7b': 'Star-bound! The syllogisms surrender!',
+    'workshop.motivation_7c': 'Supernova! Your logic illuminates all!',
     'workshop.motivation_10': 'LEGENDARY! The Crown of Logic is yours!',
+    'workshop.motivation_10a': 'TEN IN A ROW! Absolute Logic Emperor!',
+    'workshop.motivation_10b': 'Perfect decathlon! Medal of Logic awarded!',
+    'workshop.motivation_10c': 'Supreme Master! Carroll himself would be proud!',
     // Proposition explorer
     'learn.from_latin': 'From Latin:',
     'learn.form_label': 'Form',
@@ -872,11 +908,29 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'workshop.correct': 'Teisingai!',
     'workshop.incorrect': 'Neteisingai - patikrinkite diagramą',
     'workshop.motivation_1': 'Puiki pradžia! Tęsk sprendimus!',
+    'workshop.motivation_1a': 'Puiki pradžia! Tęsk sprendimus!',
+    'workshop.motivation_1b': 'Pirma pergalė! Logika bunda!',
+    'workshop.motivation_1c': 'Pavyko! Įsijunk!',
     'workshop.motivation_2': 'Įsibėgėjai! Žaibiškai greitas!',
+    'workshop.motivation_2a': 'Du iš eilės! Įsiliuoji!',
+    'workshop.motivation_2b': 'Dviguba pergalė! Impulsas auga!',
+    'workshop.motivation_2c': 'Raketos startas! Nieko nesustabdys!',
     'workshop.motivation_3': 'Liepsnoji! Logikos meistro mokymas!',
+    'workshop.motivation_3a': 'Trys iš trijų! Nesustabdomas!',
+    'workshop.motivation_3b': 'Trijų grasinimų! Silogizmai dreba!',
+    'workshop.motivation_3c': 'Hat-trick! Logikos meistriškumas artėja!',
     'workshop.motivation_5': 'Neįtikėtina! Tikras Logikos Meistras!',
+    'workshop.motivation_5a': 'Penki iš eilės! Logikos legenda!',
+    'workshop.motivation_5b': 'Aukštas penketukas! Diagramos lenkiasi!',
+    'workshop.motivation_5c': 'Deimantinis protas! Niekas nepabėga!',
     'workshop.motivation_7': 'Nesustabdomas! Skrendi į žvaigždes!',
+    'workshop.motivation_7a': 'Septyni iš eilės! Kosminis logikas!',
+    'workshop.motivation_7b': 'Žvaigždėse! Silogizmai pasiduoda!',
+    'workshop.motivation_7c': 'Supernova! Tavo logika apšviečia viską!',
     'workshop.motivation_10': 'LEGENDARINIS! Logikos Karūna tavo!',
+    'workshop.motivation_10a': 'DEŠIMT IŠ EILĖS! Absoliutus Logikos Imperatorius!',
+    'workshop.motivation_10b': 'Tobulas dešimtkovis! Logikos medalis įteiktas!',
+    'workshop.motivation_10c': 'Aukščiausias Meistras! Pats Carrollas didžiuotųsi!',
     // Proposition explorer
     'learn.from_latin': 'Iš lotynų k.:',
     'learn.form_label': 'Forma',

@@ -82,44 +82,115 @@ function WorkshopPage() {
   const [showConfetti, setShowConfetti] = useState(false)
   const [streak, setStreak] = useState(0)
 
-  // Sound effects using Web Audio API
-  const playSuccessSound = useCallback(() => {
+  // Sound effects using Web Audio API - multiple variations
+  const playSuccessSound1 = useCallback(() => {
+    // Fanfare melody
     if (typeof window === 'undefined') return
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
       const playNote = (freq: number, type: OscillatorType, time: number, duration: number, vol = 0.15) => {
         const osc = audioCtx.createOscillator()
         const gain = audioCtx.createGain()
-        osc.connect(gain)
-        gain.connect(audioCtx.destination)
+        osc.connect(gain); gain.connect(audioCtx.destination)
         osc.type = type
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time)
-        // Add slight vibrato for richness
-        const vibrato = audioCtx.createOscillator()
-        const vibratoGain = audioCtx.createGain()
-        vibrato.frequency.value = 5
-        vibratoGain.gain.value = 3
-        vibrato.connect(vibratoGain)
-        vibratoGain.connect(osc.frequency)
-        vibrato.start(audioCtx.currentTime + time)
-        vibrato.stop(audioCtx.currentTime + time + duration)
+        const vib = audioCtx.createOscillator()
+        const vibGain = audioCtx.createGain()
+        vib.frequency.value = 5; vibGain.gain.value = 3
+        vib.connect(vibGain); vibGain.connect(osc.frequency)
+        vib.start(audioCtx.currentTime + time); vib.stop(audioCtx.currentTime + time + duration)
         gain.gain.setValueAtTime(0, audioCtx.currentTime + time)
         gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + time + 0.02)
         gain.gain.setValueAtTime(vol, audioCtx.currentTime + time + duration * 0.7)
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + time + duration)
-        osc.start(audioCtx.currentTime + time)
-        osc.stop(audioCtx.currentTime + time + duration)
+        osc.start(audioCtx.currentTime + time); osc.stop(audioCtx.currentTime + time + duration)
       }
-      // Fanfare melody - "ta-da!" style
-      playNote(523.25, 'triangle', 0, 0.15)      // C5
-      playNote(659.25, 'triangle', 0.1, 0.15)     // E5
-      playNote(783.99, 'triangle', 0.2, 0.15)     // G5
-      playNote(1046.50, 'square', 0.3, 0.6)       // C6
-      playNote(1318.51, 'sine', 0.3, 0.8)         // E6
-      playNote(1567.98, 'sine', 0.4, 1.0)         // G6
-      // Add sparkle chord underneath
-      playNote(1318.51, 'sine', 0.5, 0.8, 0.08)   // E6
-      playNote(2093.00, 'sine', 0.6, 1.0, 0.06)   // C7
+      playNote(523.25, 'triangle', 0, 0.15)
+      playNote(659.25, 'triangle', 0.1, 0.15)
+      playNote(783.99, 'triangle', 0.2, 0.15)
+      playNote(1046.50, 'square', 0.3, 0.6)
+      playNote(1318.51, 'sine', 0.3, 0.8)
+      playNote(1567.98, 'sine', 0.4, 1.0)
+      playNote(1318.51, 'sine', 0.5, 0.8, 0.08)
+      playNote(2093.00, 'sine', 0.6, 1.0, 0.06)
+    } catch {}
+  }, [])
+
+  const playSuccessSound2 = useCallback(() => {
+    // Ascending chime cascade
+    if (typeof window === 'undefined') return
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const playNote = (freq: number, type: OscillatorType, time: number, duration: number, vol = 0.12) => {
+        const osc = audioCtx.createOscillator()
+        const gain = audioCtx.createGain()
+        osc.connect(gain); gain.connect(audioCtx.destination)
+        osc.type = type
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time)
+        gain.gain.setValueAtTime(0, audioCtx.currentTime + time)
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + time + 0.03)
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + time + duration)
+        osc.start(audioCtx.currentTime + time); osc.stop(audioCtx.currentTime + time + duration)
+      }
+      const notes = [392, 440, 494, 523, 587, 659, 784, 880, 1047, 1175, 1319]
+      notes.forEach((freq, i) => {
+        playNote(freq, 'sine', i * 0.06, 0.5, 0.1)
+        playNote(freq * 2, 'sine', i * 0.06, 0.3, 0.05)
+      })
+    } catch {}
+  }, [])
+
+  const playSuccessSound3 = useCallback(() => {
+    // Victory arpeggio with bells
+    if (typeof window === 'undefined') return
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const playNote = (freq: number, type: OscillatorType, time: number, duration: number, vol = 0.12) => {
+        const osc = audioCtx.createOscillator()
+        const gain = audioCtx.createGain()
+        osc.connect(gain); gain.connect(audioCtx.destination)
+        osc.type = type
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time)
+        gain.gain.setValueAtTime(0, audioCtx.currentTime + time)
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + time + 0.01)
+        gain.gain.setValueAtTime(vol, audioCtx.currentTime + time + duration * 0.5)
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + time + duration)
+        osc.start(audioCtx.currentTime + time); osc.stop(audioCtx.currentTime + time + duration)
+      }
+      // Bell-like tones
+      playNote(523.25, 'sine', 0, 0.8)
+      playNote(659.25, 'sine', 0.15, 0.8)
+      playNote(783.99, 'sine', 0.3, 0.8)
+      playNote(1046.50, 'triangle', 0.45, 1.0)
+      playNote(1318.51, 'sine', 0.6, 1.2)
+      // Harmonic shimmer
+      playNote(1567.98, 'sine', 0.75, 1.5, 0.06)
+      playNote(2093.00, 'sine', 0.9, 1.8, 0.04)
+    } catch {}
+  }, [])
+
+  const playSuccessSound4 = useCallback(() => {
+    // Upbeat jingle
+    if (typeof window === 'undefined') return
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
+      const playNote = (freq: number, type: OscillatorType, time: number, duration: number, vol = 0.15) => {
+        const osc = audioCtx.createOscillator()
+        const gain = audioCtx.createGain()
+        osc.connect(gain); gain.connect(audioCtx.destination)
+        osc.type = type
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime + time)
+        gain.gain.setValueAtTime(0, audioCtx.currentTime + time)
+        gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + time + 0.02)
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + time + duration)
+        osc.start(audioCtx.currentTime + time); osc.stop(audioCtx.currentTime + time + duration)
+      }
+      // Happy melody
+      const melody = [523, 587, 659, 784, 659, 784, 880, 1047]
+      melody.forEach((freq, i) => {
+        playNote(freq, 'triangle', i * 0.12, 0.25)
+        playNote(freq * 1.5, 'sine', i * 0.12, 0.15, 0.06)
+      })
     } catch {}
   }, [])
 
@@ -127,13 +198,11 @@ function WorkshopPage() {
     if (typeof window === 'undefined') return
     try {
       const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)()
-      // Descending sad trombone
       const notes = [400, 350, 300, 250]
       notes.forEach((freq, i) => {
         const osc = audioCtx.createOscillator()
         const gain = audioCtx.createGain()
-        osc.connect(gain)
-        gain.connect(audioCtx.destination)
+        osc.connect(gain); gain.connect(audioCtx.destination)
         osc.type = 'sawtooth'
         osc.frequency.value = freq
         gain.gain.setValueAtTime(0.06, audioCtx.currentTime + i * 0.15)
@@ -143,6 +212,11 @@ function WorkshopPage() {
       })
     } catch {}
   }, [])
+
+  const randomSuccessSound = useCallback(() => {
+    const sounds = [playSuccessSound1, playSuccessSound2, playSuccessSound3, playSuccessSound4]
+    sounds[Math.floor(Math.random() * sounds.length)]()
+  }, [playSuccessSound1, playSuccessSound2, playSuccessSound3, playSuccessSound4])
 
   const syllogisms = useMemo(() => {
     const data = syllogismSet === 'standard' ? standardSyllogisms : customSyllogisms
@@ -213,7 +287,7 @@ function WorkshopPage() {
     setValidationResult({ isCorrect: result.isCorrect, errors: result.errors })
 
     if (result.isCorrect) {
-      playSuccessSound()
+      randomSuccessSound()
       setShowConfetti(true)
       setStreak(s => s + 1)
       setTimeout(() => setShowConfetti(false), 6000)
@@ -221,24 +295,52 @@ function WorkshopPage() {
       playErrorSound()
       setStreak(0)
     }
-  }, [selectedSyllogism, diagramEncoding, userTriliteral, userBiliteral, playSuccessSound, playErrorSound])
+  }, [selectedSyllogism, diagramEncoding, userTriliteral, userBiliteral, randomSuccessSound, playErrorSound])
 
-  // Motivational messages based on streak
+  // Motivational messages based on streak - randomly selected from pools
   const getMotivationMessage = (): { message: string; emoji: string; color: string; icon: React.ReactNode } => {
-    const messages: Record<number, { message: string; emoji: string; color: string; icon: React.ReactNode }> = {
-      1: { message: t('workshop.motivation_1'), emoji: '🎯', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> },
-      2: { message: t('workshop.motivation_2'), emoji: '⚡', color: 'text-[var(--palm)]', icon: <Zap size={16} /> },
-      3: { message: t('workshop.motivation_3'), emoji: '🔥', color: 'text-amber-600', icon: <Star size={16} /> },
-      5: { message: t('workshop.motivation_5'), emoji: '🏆', color: 'text-purple-600', icon: <Trophy size={16} /> },
-      7: { message: t('workshop.motivation_7'), emoji: '🚀', color: 'text-pink-600', icon: <Rocket size={16} /> },
-      10: { message: t('workshop.motivation_10'), emoji: '👑', color: 'text-yellow-600', icon: <Trophy size={16} /> },
+    const messagePools: Record<number, { message: string; emoji: string; color: string; icon: React.ReactNode }[]> = {
+      1: [
+        { message: t('workshop.motivation_1a'), emoji: '🎯', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> },
+        { message: t('workshop.motivation_1b'), emoji: '✨', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> },
+        { message: t('workshop.motivation_1c'), emoji: '💪', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> },
+      ],
+      2: [
+        { message: t('workshop.motivation_2a'), emoji: '⚡', color: 'text-[var(--palm)]', icon: <Zap size={16} /> },
+        { message: t('workshop.motivation_2b'), emoji: '🌟', color: 'text-[var(--palm)]', icon: <Zap size={16} /> },
+        { message: t('workshop.motivation_2c'), emoji: '🚀', color: 'text-[var(--palm)]', icon: <Zap size={16} /> },
+      ],
+      3: [
+        { message: t('workshop.motivation_3a'), emoji: '🔥', color: 'text-amber-600', icon: <Star size={16} /> },
+        { message: t('workshop.motivation_3b'), emoji: '💥', color: 'text-amber-600', icon: <Star size={16} /> },
+        { message: t('workshop.motivation_3c'), emoji: '🏆', color: 'text-amber-600', icon: <Star size={16} /> },
+      ],
+      5: [
+        { message: t('workshop.motivation_5a'), emoji: '👑', color: 'text-purple-600', icon: <Trophy size={16} /> },
+        { message: t('workshop.motivation_5b'), emoji: '🎉', color: 'text-purple-600', icon: <Trophy size={16} /> },
+        { message: t('workshop.motivation_5c'), emoji: '💎', color: 'text-purple-600', icon: <Trophy size={16} /> },
+      ],
+      7: [
+        { message: t('workshop.motivation_7a'), emoji: '🚀', color: 'text-pink-600', icon: <Rocket size={16} /> },
+        { message: t('workshop.motivation_7b'), emoji: '🌠', color: 'text-pink-600', icon: <Rocket size={16} /> },
+        { message: t('workshop.motivation_7c'), emoji: '⭐', color: 'text-pink-600', icon: <Rocket size={16} /> },
+      ],
+      10: [
+        { message: t('workshop.motivation_10a'), emoji: '👑', color: 'text-yellow-600', icon: <Trophy size={16} /> },
+        { message: t('workshop.motivation_10b'), emoji: '🏅', color: 'text-yellow-600', icon: <Trophy size={16} /> },
+        { message: t('workshop.motivation_10c'), emoji: '🎖️', color: 'text-yellow-600', icon: <Trophy size={16} /> },
+      ],
     }
 
-    const streaks = [10, 7, 5, 3, 2, 1]
-    for (const s of streaks) {
-      if (streak >= s && messages[s]) return messages[s]
+    const streakLevels = [10, 7, 5, 3, 2, 1]
+    for (const level of streakLevels) {
+      if (streak >= level && messagePools[level]) {
+        const pool = messagePools[level]
+        return pool[Math.floor(Math.random() * pool.length)]
+      }
     }
-    return { message: t('workshop.motivation_1'), emoji: '🎯', color: 'text-[var(--lagoon)]', icon: <Star size={16} /> }
+    const pool = messagePools[1]
+    return pool[Math.floor(Math.random() * pool.length)]
   }
 
   const motivation = validationResult?.isCorrect ? getMotivationMessage() : null
