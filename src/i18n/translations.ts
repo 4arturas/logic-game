@@ -588,7 +588,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'learn.ch1_lesson2_insight': 'Kiekviena klasifikacija sukuria dvi papildomas klases. Jei padalijame „Gyvūnus" pagal savybę „turi kailį", gauname tiek „kailinius gyvūnus", tiek „nekailinius gyvūnus" — kartu jie sudaro visą visatą.',
     'learn.ch2_title': '2. Teiginiai',
     'learn.ch2_lesson1_title': 'Kas yra teiginys?',
-    'learn.ch2_lesson1_p1': '<strong>Teiginys</strong> – tai tvirtinimas, kuris nusako ryšį tarp dviejų klasių: <strong>Veiksnio</strong> ir <strong>Tarinio</strong>. Carrollas išskyrė keturis teiginių tipus, tradiciškai žymimus A, E, I ir O.',
+    'learn.ch2_lesson1_p1': '<strong>Teiginys</strong> – tai tvirtinimas, kuris teigia ryšį tarp dviejų klasių: <strong>Veiksnio</strong> ir <strong>Tarinio</strong>. Carrollas išskyrė keturis teiginių tipus, tradiciškai žymimus A, E, I ir O.',
     'learn.ch2_lesson2_title': 'Dviejų raidžių diagrama',
     'learn.ch2_lesson2_p1': '<strong>Dviejų raidžių diagrama</strong> – tai Carrollio metodas, skirtas vaizduoti teiginius apie du terminus (x ir y). Ji padalija kvadratą į keturias korteles, vaizduojančias visas galimas kombinacijas:',
     'learn.xy_desc': 'daktai, kurie yra ir x, ir y (viršuje-kairėje)',
