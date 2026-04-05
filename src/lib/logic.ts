@@ -520,7 +520,11 @@ export function validateUserDiagram(
       } else if (user === '0' && correctVal === '1') {
         errors.push(`DD${cell}: marked empty but should be occupied`);
       } else if (user === '-' && correctVal === '1') {
-        errors.push(`DD${cell}: missing red counter (should be occupied)`);
+        // Relaxed logic: If this '1' was inferred via existential import 
+        // (i.e. not in explicitDDCells), it's optional.
+        if (correct.explicitDDCells[cell] === '1') {
+          errors.push(`DD${cell}: missing red counter (should be occupied)`);
+        }
       }
     }
   });
@@ -535,7 +539,10 @@ export function validateUserDiagram(
       } else if (user === '0' && correctVal === '1') {
         errors.push(`MD${cell}: marked empty but should be occupied`);
       } else if (user === '-' && correctVal === '1') {
-        errors.push(`MD${cell}: missing red counter (should be occupied)`);
+        // Relaxed logic: Optional if inferred
+        if (correct.explicitMDCells[cell] === '1') {
+          errors.push(`MD${cell}: missing red counter (should be occupied)`);
+        }
       }
     }
   });
