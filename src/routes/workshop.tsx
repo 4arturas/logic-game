@@ -407,26 +407,39 @@ function WorkshopPage() {
   }, [])
 
   const handleCopySolution = useCallback(() => {
-    if (!diagramEncoding || !selectedSyllogism) return
+    if (!selectedSyllogism) return
 
-    const ddCells = diagramEncoding.ddCells
-    const mdCells = diagramEncoding.mdCells
-
-    const formatCell = (cells: Record<number, CellValue>, ids: number[]) => {
-      return ids.map(id => `${id}-${cells[id]}`).join(',')
+    // Use USER's diagram state, not the correct answer
+    const getStateCode = (state: Record<string, 'empty' | 'occupied' | null>, cellIds: number[], prefix: string) => {
+      return cellIds.map(id => {
+        const key = prefix === 'lg' ? `${prefix}_${id}` : `${prefix}${id}`
+        const val = state[key] === 'occupied' ? '1' : state[key] === 'empty' ? '0' : '-'
+        return `${id}-${val}`
+      }).join(',')
     }
+
+    const ddCode = getStateCode(userTriliteral, [9, 10, 11, 12, 13, 14, 15, 16], 'lg')
+    const mdCode = getStateCode(userBiliteral, [5, 6, 7, 8], 'c')
 
     // Helper to format a proposition with translated terms
     const formatProp = (q: string, subject: string, predicate: string) => {
       const qLabel = q === 'A' ? 'Visi' : q === 'E' ? 'Nė vienas' : q === 'I' ? 'Kai kurie' : 'Kai kurie ... nėra'
       const negParticle = q === 'O' ? 'ne ' : ''
-      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating', 'wheels', 'fins', 'engines', 'keys', 'strings', 'petals', 'thorns', 'scales', 'feathers', 'shells'].some(w => predicate.includes(w)) ? 'turi' : 'yra'
+      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating', 'wheels', 'fins', 'engines', 'keys', 'strings', 'petals', 'thorns', 'scales', 'feathers', 'shells', 'thorns', 'screens'].some(w => predicate.includes(w)) ? 'turi' : 'yra'
       return `${qLabel} ${t(subject)} ${verb} ${negParticle}${t(predicate)}.`
     }
 
+    // Use premise order setting
+    const firstPremise = premiseOrder === 'minor-first'
+      ? selectedSyllogism.premises.minor
+      : selectedSyllogism.premises.major
+    const secondPremise = premiseOrder === 'minor-first'
+      ? selectedSyllogism.premises.major
+      : selectedSyllogism.premises.minor
+
     const text = `${t('home.copy_prefix')}
-${formatProp(selectedSyllogism.premises.major.quantifier, selectedSyllogism.premises.major.subject, selectedSyllogism.premises.major.predicate)}
-${formatProp(selectedSyllogism.premises.minor.quantifier, selectedSyllogism.premises.minor.subject, selectedSyllogism.premises.minor.predicate)}
+${formatProp(firstPremise.quantifier, firstPremise.subject, firstPremise.predicate)}
+${formatProp(secondPremise.quantifier, secondPremise.subject, secondPremise.predicate)}
 ∴ ${formatProp(selectedSyllogism.conclusion.quantifier, selectedSyllogism.conclusion.subject, selectedSyllogism.conclusion.predicate)}
 
 ${t('home.terms_label')}
@@ -435,13 +448,13 @@ y: ${t(selectedSyllogism.terms.majorTerm)}
 m: ${t(selectedSyllogism.terms.middleTerm)}
 
 ${t('home.solution_label')}
-DD=${formatCell(ddCells, [9, 10, 11, 12, 13, 14, 15, 16])}
-MD=${formatCell(mdCells, [5, 6, 7, 8])}`
+DD=${ddCode}
+MD=${mdCode}`
 
     navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
-  }, [diagramEncoding, selectedSyllogism, t])
+  }, [selectedSyllogism, userTriliteral, userBiliteral, t, premiseOrder])
 
   if (!selectedSyllogism) return null
 
