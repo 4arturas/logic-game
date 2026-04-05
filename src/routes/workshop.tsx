@@ -12,6 +12,7 @@ import Salute from '../components/Salute'
 import standardSyllogisms from '../data/syllogisms_standard.json'
 import customSyllogisms from '../data/syllogisms_custom.json'
 import attributeSyllogisms from '../data/syllogisms_attributes.json'
+import positiveSyllogisms from '../data/syllogisms_positive.json'
 
 export const Route = createFileRoute('/workshop')({ component: WorkshopPage })
 
@@ -74,7 +75,7 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
 function WorkshopPage() {
   const { t } = useTranslation()
   const { premiseOrder } = useSettings()
-  const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom' | 'attributes'>('standard')
+  const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom' | 'attributes' | 'positive'>('standard')
   const [selectedFigure, setSelectedFigure] = useState<Figure>(1)
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
 
@@ -227,7 +228,8 @@ function WorkshopPage() {
   const syllogisms = useMemo(() => {
     const data = syllogismSet === 'standard' ? standardSyllogisms
       : syllogismSet === 'custom' ? customSyllogisms
-      : attributeSyllogisms
+      : syllogismSet === 'attributes' ? attributeSyllogisms
+      : positiveSyllogisms
     return data.map((d: any) => createSyllogism(d.figure as Figure, d.mood, d.terms))
   }, [syllogismSet])
 
@@ -411,12 +413,13 @@ MD=${formatCell(mdCells, [5, 6, 7, 8])}`
             <span className="text-xs font-bold uppercase text-[var(--sea-ink-soft)]">{t('workshop.dataset')}</span>
             <select
               value={syllogismSet}
-              onChange={(e) => setSyllogismSet(e.target.value as 'standard' | 'custom' | 'attributes')}
+              onChange={(e) => setSyllogismSet(e.target.value as 'standard' | 'custom' | 'attributes' | 'positive')}
               className="px-3 py-1.5 text-xs font-bold rounded-lg border cursor-pointer bg-[var(--foam)] text-[var(--sea-ink)] border-[var(--line)] focus:border-[var(--lagoon)] focus:ring-0 outline-none"
             >
               <option value="standard">{t('workshop.standard')}</option>
               <option value="custom">{t('workshop.custom')}</option>
               <option value="attributes">{t('workshop.attributes_set')}</option>
+              <option value="positive">{t('workshop.positive_set')}</option>
             </select>
           </div>
 
