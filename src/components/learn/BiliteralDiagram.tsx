@@ -15,12 +15,13 @@ interface BiliteralDiagramProps {
 // Carroll's notation: TOP=x, BOTTOM=x', LEFT=y, RIGHT=y'
 // Four cells: xy (top-left), xy' (top-right), x'y (bottom-left), x'y' (bottom-right)
 // Cell centers: each cell is 90x90, starting at (10,10)
-const CELL_POSITIONS = {
-  topLeft: { cx: 55, cy: 55, label: "xy" },      // x=10+45, y=10+45
-  topRight: { cx: 145, cy: 55, label: "xy'" },    // x=100+45, y=10+45
-  bottomLeft: { cx: 55, cy: 145, label: "x'y" },  // x=10+45, y=100+45
-  bottomRight: { cx: 145, cy: 145, label: "x'y'" },// x=100+45, y=100+45
-}
+// Using MD cell IDs: 5=xy, 6=xy', 7=x'y, 8=x'y'
+const CELL_POSITIONS = [
+  { key: 'topLeft', id: 'c5', cx: 55, cy: 55, label: "xy", x: 10, y: 10 },
+  { key: 'topRight', id: 'c6', cx: 145, cy: 55, label: "xy'", x: 100, y: 10 },
+  { key: 'bottomLeft', id: 'c7', cx: 55, cy: 145, label: "x'y", x: 10, y: 100 },
+  { key: 'bottomRight', id: 'c8', cx: 145, cy: 145, label: "x'y'", x: 100, y: 100 },
+] as const
 
 export function BiliteralDiagram({
   xLabel = "x",
@@ -107,22 +108,22 @@ export function BiliteralDiagram({
         <line x1={100} y1={10} x2={100} y2={190} stroke="currentColor" strokeWidth={1.5} className="text-[var(--line)]" />
 
         {/* Cell backgrounds */}
-        {Object.entries(CELL_POSITIONS).map(([id, pos]) => (
+        {CELL_POSITIONS.map(cell => (
           <rect
-            key={id}
-            x={id.includes('Left') ? 10 : 100}
-            y={id.includes('top') ? 10 : 100}
+            key={cell.key}
+            x={cell.x}
+            y={cell.y}
             width={90}
             height={90}
             fill="transparent"
             className={!readOnly ? 'cursor-pointer hover:fill-[var(--foam)]' : ''}
-            onClick={() => handleCellClick(id)}
+            onClick={() => handleCellClick(cell.id)}
           />
         ))}
 
         {/* Counters */}
-        {Object.entries(CELL_POSITIONS).map(([id, pos]) => 
-          renderCounter(id, pos.cx, pos.cy)
+        {CELL_POSITIONS.map(cell =>
+          renderCounter(cell.id, cell.cx, cell.cy)
         )}
 
         {/* Labels - matching Carroll's notation */}

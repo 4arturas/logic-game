@@ -16,19 +16,19 @@ interface TriliteralDiagramProps {
 // Carroll's notation for triliteral diagram:
 // TOP=x, BOTTOM=x', LEFT=y, RIGHT=y', INSIDE CIRCLE=m, OUTSIDE CIRCLE=m'
 // 8 cells total (4 inside m circle, 4 outside m circle)
-// m counters are inside the circle, m' counters are near the square corners
+// Using DD cell IDs: 9=xym', 10=xy'm', 11=xym, 12=xy'm, 13=x'ym, 14=x'y'm, 15=x'ym', 16=x'y'm'
 const OUTER_CELLS = [
-  { id: '1', x: 15, y: 15, w: 85, h: 85, cx: 25, cy: 25, label: "xym'" },      // top-left, near corner
-  { id: '2', x: 100, y: 15, w: 85, h: 85, cx: 175, cy: 25, label: "xy'm'" },    // top-right, near corner
-  { id: '3', x: 15, y: 100, w: 85, h: 85, cx: 25, cy: 175, label: "x'ym'" },    // bottom-left, near corner
-  { id: '4', x: 100, y: 100, w: 85, h: 85, cx: 175, cy: 175, label: "x'y'm'" }, // bottom-right, near corner
+  { id: 'lg_9', x: 15, y: 15, w: 85, h: 85, cx: 25, cy: 25, label: "xym'" },      // top-left, m'
+  { id: 'lg_10', x: 100, y: 15, w: 85, h: 85, cx: 175, cy: 25, label: "xy'm'" },    // top-right, m'
+  { id: 'lg_15', x: 15, y: 100, w: 85, h: 85, cx: 25, cy: 175, label: "x'ym'" },    // bottom-left, m'
+  { id: 'lg_16', x: 100, y: 100, w: 85, h: 85, cx: 175, cy: 175, label: "x'y'm'" }, // bottom-right, m'
 ]
 
 const INNER_CELLS = [
-  { id: '5', x: 35, y: 35, w: 65, h: 65, cx: 75, cy: 75, label: "xym" },       // top-left, inside circle
-  { id: '6', x: 100, y: 35, w: 65, h: 65, cx: 125, cy: 75, label: "xy'm" },    // top-right, inside circle
-  { id: '7', x: 35, y: 100, w: 65, h: 65, cx: 75, cy: 125, label: "x'ym" },    // bottom-left, inside circle
-  { id: '8', x: 100, y: 100, w: 65, h: 65, cx: 125, cy: 125, label: "x'y'm" }, // bottom-right, inside circle
+  { id: 'lg_11', x: 35, y: 35, w: 65, h: 65, cx: 75, cy: 75, label: "xym" },       // top-left, m
+  { id: 'lg_12', x: 100, y: 35, w: 65, h: 65, cx: 125, cy: 75, label: "xy'm" },    // top-right, m
+  { id: 'lg_13', x: 35, y: 100, w: 65, h: 65, cx: 75, cy: 125, label: "x'ym" },    // bottom-left, m
+  { id: 'lg_14', x: 100, y: 100, w: 65, h: 65, cx: 125, cy: 125, label: "x'y'm" }, // bottom-right, m
 ]
 
 export function TriliteralDiagram({
