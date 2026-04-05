@@ -14,6 +14,22 @@ import customSyllogisms from '../data/syllogisms_custom.json'
 import attributeSyllogisms from '../data/syllogisms_attributes.json'
 import positiveSyllogisms from '../data/syllogisms_positive.json'
 
+const WORKSHOP_STORAGE_KEY = 'workshop-last-selection'
+
+function loadWorkshopSelection(): { syllogismSet?: string; selectedFigure?: number; selectedSyllogismId?: string } {
+  try {
+    const stored = localStorage.getItem(WORKSHOP_STORAGE_KEY)
+    if (stored) return JSON.parse(stored)
+  } catch {}
+  return {}
+}
+
+function saveWorkshopSelection(data: { syllogismSet: string; selectedFigure: number; selectedSyllogismId: string }) {
+  try {
+    localStorage.setItem(WORKSHOP_STORAGE_KEY, JSON.stringify(data))
+  } catch {}
+}
+
 export const Route = createFileRoute('/workshop')({ component: WorkshopPage })
 
 const FIGURE_LABELS: Record<number, string> = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' }
@@ -75,8 +91,13 @@ function PropositionDetail({ quantifier, subject, predicate, termX, termY, termM
 function WorkshopPage() {
   const { t } = useTranslation()
   const { premiseOrder } = useSettings()
-  const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom' | 'attributes' | 'positive'>('standard')
-  const [selectedFigure, setSelectedFigure] = useState<Figure>(1)
+  const savedSelection = useMemo(() => loadWorkshopSelection(), [])
+  const [syllogismSet, setSyllogismSet] = useState<'standard' | 'custom' | 'attributes' | 'positive'>(
+    (savedSelection.syllogismSet as any) || 'standard'
+  )
+  const [selectedFigure, setSelectedFigure] = useState<Figure>(
+    (savedSelection.selectedFigure as Figure) || 1
+  )
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
 
   // User's diagram states
@@ -237,16 +258,37 @@ function WorkshopPage() {
     syllogisms.filter(s => s.figure === selectedFigure),
   [syllogisms, selectedFigure])
 
-  // Auto-select first syllogism when figure/set changes
+  // Auto-select syllogism when figure/set changes, restore saved if possible
   useEffect(() => {
     if (figureSyllogisms.length > 0) {
-      setSelectedSyllogism(figureSyllogisms[0])
+      // Try to find the previously selected syllogism
+      let syllogismToSelect: Syllogism | null = null
+      if (savedSelection.selectedSyllogismId) {
+        syllogismToSelect = figureSyllogisms.find(s => s.id === savedSelection.selectedSyllogismId) || null
+      }
+      // Fall back to first syllogism
+      if (!syllogismToSelect) {
+        syllogismToSelect = figureSyllogisms[0]
+      }
+
+      setSelectedSyllogism(syllogismToSelect)
       setUserTriliteral({})
       setUserBiliteral({})
       setValidationResult(null)
       setShowAnswer(false)
     }
   }, [selectedFigure, syllogismSet, figureSyllogisms])
+
+  // Save selection when syllogism changes
+  useEffect(() => {
+    if (selectedSyllogism) {
+      saveWorkshopSelection({
+        syllogismSet,
+        selectedFigure,
+        selectedSyllogismId: selectedSyllogism.id,
+      })
+    }
+  }, [selectedSyllogism, syllogismSet, selectedFigure])
 
   const diagramEncoding = selectedSyllogism ? generateDiagram(selectedSyllogism) : null
 
