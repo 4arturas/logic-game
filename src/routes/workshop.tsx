@@ -416,12 +416,25 @@ function WorkshopPage() {
       return ids.map(id => `${id}-${cells[id]}`).join(',')
     }
 
-    const text = `${t('workshop.syllogism')}: ${selectedSyllogism.mood}-${selectedSyllogism.figure} (${selectedSyllogism.mnemonic})
+    // Helper to format a proposition with translated terms
+    const formatProp = (q: string, subject: string, predicate: string) => {
+      const qLabel = q === 'A' ? 'Visi' : q === 'E' ? 'Nė vienas' : q === 'I' ? 'Kai kurie' : 'Kai kurie ... nėra'
+      const negParticle = q === 'O' ? 'ne ' : ''
+      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating', 'wheels', 'fins', 'engines', 'keys', 'strings', 'petals', 'thorns', 'scales', 'feathers', 'shells'].some(w => predicate.includes(w)) ? 'turi' : 'yra'
+      return `${qLabel} ${t(subject)} ${verb} ${negParticle}${t(predicate)}.`
+    }
 
-${t('workshop.major_premise')}: ${selectedSyllogism.premises.major.quantifier} ${selectedSyllogism.premises.major.subject} ${selectedSyllogism.premises.major.predicate}
-${t('workshop.minor_premise')}: ${selectedSyllogism.premises.minor.quantifier} ${selectedSyllogism.premises.minor.subject} ${selectedSyllogism.premises.minor.predicate}
-${t('workshop.conclusion')}: ${selectedSyllogism.conclusion.quantifier} ${selectedSyllogism.conclusion.subject} ${selectedSyllogism.conclusion.predicate}
+    const text = `${t('home.copy_prefix')}
+${formatProp(selectedSyllogism.premises.major.quantifier, selectedSyllogism.premises.major.subject, selectedSyllogism.premises.major.predicate)}
+${formatProp(selectedSyllogism.premises.minor.quantifier, selectedSyllogism.premises.minor.subject, selectedSyllogism.premises.minor.predicate)}
+∴ ${formatProp(selectedSyllogism.conclusion.quantifier, selectedSyllogism.conclusion.subject, selectedSyllogism.conclusion.predicate)}
 
+${t('home.terms_label')}
+x: ${t(selectedSyllogism.terms.minorTerm)}
+y: ${t(selectedSyllogism.terms.majorTerm)}
+m: ${t(selectedSyllogism.terms.middleTerm)}
+
+${t('home.solution_label')}
 DD=${formatCell(ddCells, [9, 10, 11, 12, 13, 14, 15, 16])}
 MD=${formatCell(mdCells, [5, 6, 7, 8])}`
 
