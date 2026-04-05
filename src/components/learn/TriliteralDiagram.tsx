@@ -153,6 +153,16 @@ export function TriliteralDiagram({
         {/* Counters for inner cells (inside m circle) */}
         {INNER_CELLS.map(({ id, cx, cy }) => renderCounter(id, cx, cy))}
 
+        {/* Cell number labels - small, in the corner of each cell */}
+        <g style={{ fontSize: '8px', fontWeight: 700, fill: 'var(--sea-ink-soft)', opacity: 0.4 }}>
+          {OUTER_CELLS.map(({ id, x, y }) => (
+            <text key={id} x={x + 3} y={y + 9} textAnchor="start">{id.replace('lg_', '')}</text>
+          ))}
+          {INNER_CELLS.map(({ id, x, y }) => (
+            <text key={id} x={x + 3} y={y + 9} textAnchor="start">{id.replace('lg_', '')}</text>
+          ))}
+        </g>
+
         {/* Labels - matching Carroll's notation */}
         {showLabels && (
           <>
