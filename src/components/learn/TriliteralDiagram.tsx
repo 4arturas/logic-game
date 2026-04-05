@@ -153,14 +153,18 @@ export function TriliteralDiagram({
         {/* Counters for inner cells (inside m circle) */}
         {INNER_CELLS.map(({ id, cx, cy }) => renderCounter(id, cx, cy))}
 
-        {/* Cell number labels - small, in the corner of each cell */}
-        <g style={{ fontSize: '8px', fontWeight: 700, fill: 'var(--sea-ink-soft)', opacity: 0.4 }}>
-          {OUTER_CELLS.map(({ id, x, y }) => (
-            <text key={id} x={x + 3} y={y + 9} textAnchor="start">{id.replace('lg_', '')}</text>
-          ))}
-          {INNER_CELLS.map(({ id, x, y }) => (
-            <text key={id} x={x + 3} y={y + 9} textAnchor="start">{id.replace('lg_', '')}</text>
-          ))}
+        {/* Cell number labels - near circle border at 45° angles */}
+        <g style={{ fontSize: '9px', fontWeight: 700, fill: 'var(--sea-ink-soft)', opacity: 0.5 }}>
+          {/* Outer cells (m') - just outside circle border */}
+          <text x={49} y={52} textAnchor="middle">9</text>
+          <text x={151} y={52} textAnchor="middle">10</text>
+          <text x={49} y={154} textAnchor="middle">15</text>
+          <text x={151} y={154} textAnchor="middle">16</text>
+          {/* Inner cells (m) - just inside circle border */}
+          <text x={59} y={62} textAnchor="middle">11</text>
+          <text x={141} y={62} textAnchor="middle">12</text>
+          <text x={59} y={144} textAnchor="middle">13</text>
+          <text x={141} y={144} textAnchor="middle">14</text>
         </g>
 
         {/* Labels - matching Carroll's notation */}

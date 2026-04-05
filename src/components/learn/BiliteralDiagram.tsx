@@ -126,11 +126,12 @@ export function BiliteralDiagram({
           renderCounter(cell.id, cell.cx, cell.cy)
         )}
 
-        {/* Cell number labels - small, in the corner of each cell */}
-        <g style={{ fontSize: '8px', fontWeight: 700, fill: 'var(--sea-ink-soft)', opacity: 0.4 }}>
-          {CELL_POSITIONS.map(cell => (
-            <text key={cell.id} x={cell.x + 3} y={cell.y + 9} textAnchor="start">{cell.id.replace('c', '')}</text>
-          ))}
+        {/* Cell number labels - at far corners of each cell */}
+        <g style={{ fontSize: '9px', fontWeight: 700, fill: 'var(--sea-ink-soft)', opacity: 0.5 }}>
+          <text x={12} y={18} textAnchor="start">5</text>
+          <text x={188} y={18} textAnchor="end">6</text>
+          <text x={12} y={194} textAnchor="start">7</text>
+          <text x={188} y={194} textAnchor="end">8</text>
         </g>
 
         {/* Labels - matching Carroll's notation */}
