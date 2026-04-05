@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import ThemeToggle from './ThemeToggle'
 import LanguageToggle from './LanguageToggle'
 import PremiseOrderToggle from './PremiseOrderToggle'
+import AudioToggle from './AudioToggle'
 import { useTranslation } from '../i18n/I18nContext'
 
 /** Venn-diagram logo mark — two overlapping circles, filled accent */
@@ -107,6 +108,7 @@ export default function Header() {
 
         {/* ── RIGHT: Toggles ── */}
         <div className="flex flex-shrink-0 items-center gap-1.5">
+          <AudioToggle />
           <ThemeToggle />
           <PremiseOrderToggle />
           <LanguageToggle />

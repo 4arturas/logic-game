@@ -11,6 +11,7 @@ import {
 import { Gamification, type GameState, MAX_HEARTS } from '../lib/gamification'
 import { AudioEngine } from '../lib/audio'
 import Confetti from '../components/Confetti'
+import MotivatingText from '../components/MotivatingText'
 import { HelpModal } from '../components/HelpModal'
 import { CopyCode } from '../components/CopyCode'
 import { PropositionLogicSequence } from '../components/PropositionLogicSequence'
@@ -56,9 +57,14 @@ function CampaignHUD({ gameState, t, xpRequired, progressPct }: any) {
           </div>
         </div>
         <div className="text-center">
-          <div className="text-[9px] font-black uppercase text-[var(--sea-ink-soft)] mb-1">Momentum</div>
-          <div className="flex items-center justify-center gap-1.5 font-mono font-bold text-sm text-[var(--sea-ink)]">
-            <Activity size={14} className="text-[var(--lagoon)]" />
+          <div className="text-[9px] font-black uppercase text-[var(--sea-ink-soft)] mb-1 relative inline-flex items-center justify-center">
+             Momentum
+             {gameState.streak > 2 && (
+               <span className="absolute -top-1 -right-3 text-[14px]">🔥</span>
+             )}
+          </div>
+          <div className={`flex items-center justify-center gap-1.5 font-mono font-bold text-sm ${gameState.streak > 2 ? 'text-[#FFD166] drop-shadow-[0_0_8px_rgba(255,209,102,0.6)] scale-110 transition-transform' : 'text-[var(--sea-ink)]'}`}>
+            <Activity size={14} className={gameState.streak > 2 ? "text-[#FFD166]" : "text-[var(--lagoon)]"} />
             {gameState.streak}x
           </div>
         </div>
@@ -140,6 +146,8 @@ function CampaignRoute() {
   const [levelUpModal, setLevelUpModal] = useState(false)
   const [showHelp, setShowHelp] = useState(false)
   const [startTime, setStartTime] = useState<number>(0)
+  const [successTrigger, setSuccessTrigger] = useState(0)
+  const [shakeScreen, setShakeScreen] = useState(false)
 
   // Initialize
   useEffect(() => {
@@ -220,6 +228,7 @@ function CampaignRoute() {
       setGameState(newState); Gamification.save(newState)
       
       setShowConfetti(true)
+      setSuccessTrigger(prev => prev + 1)
       setTimeout(() => setShowConfetti(false), 5000)
 
       if (leveledUp) {
@@ -229,6 +238,9 @@ function CampaignRoute() {
       }
     } else {
       AudioEngine.playError()
+      setShakeScreen(true)
+      setTimeout(() => setShakeScreen(false), 500)
+      
       let nextHearts = gameState.hearts - 1
       const newState = { ...gameState, streak: 0, hearts: nextHearts }
       if (nextHearts <= 0) newState.hearts = MAX_HEARTS
@@ -243,8 +255,9 @@ function CampaignRoute() {
   const progressPct = Math.min(100, Math.max(0, ((gameState.xp - xpPrev) / (xpRequired - xpPrev)) * 100)) || 0
 
   return (
-    <main className="page-wrap px-4 pb-20 pt-8 min-h-screen">
+    <main className={`page-wrap px-4 pb-20 pt-8 min-h-screen ${shakeScreen ? 'animate-shake' : ''}`}>
       {showConfetti && <Confetti />}
+      <MotivatingText triggerId={successTrigger} />
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} onApplyRule={(cells) => setLargeState(p => { const n={...p}; cells.forEach(c => n[`lg_${c}`]='grey'); return n })} />}
       
       {/* HUD Overview */}

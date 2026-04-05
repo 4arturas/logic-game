@@ -29,19 +29,21 @@ export default function Confetti() {
     canvas.height = height;
 
     let particles: Particle[] = [];
-    const numParticles = 150;
+    const numParticles = 120;
 
     for (let i = 0; i < numParticles; i++) {
+      const angle = (Math.random() * Math.PI / 2) + Math.PI / 4; // Cone upwards
+      const speed = Math.random() * 18 + 12; // explosive burst speed
       particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height - height, // Start above screen
-        r: Math.random() * 4 + 2, // Radius
-        dx: Math.random() * 2 - 1,
-        dy: Math.random() * 3 + 2,
+        x: width / 2 + (Math.random() * 40 - 20), // slight horizontal spread at start
+        y: height - 20, 
+        r: Math.random() * 5 + 3,
+        dx: Math.cos(angle) * speed * (Math.random() < 0.5 ? 1 : -1), // shoot left and right
+        dy: -Math.sin(angle) * speed, // shoot up
         color: colors[Math.floor(Math.random() * colors.length)],
         tilt: Math.floor(Math.random() * 10) - 10,
         tiltAngle: 0,
-        tiltAngleInc: (Math.random() * 0.07) + 0.05,
+        tiltAngleInc: (Math.random() * 0.1) + 0.05,
       });
     }
 
@@ -53,8 +55,10 @@ export default function Confetti() {
 
       particles.forEach((p, idx) => {
         p.tiltAngle += p.tiltAngleInc;
-        p.y += (Math.cos(p.tiltAngle) + p.dy + p.r / 2) / 2;
-        p.x += Math.sin(p.tiltAngle);
+        p.dy += 0.3; // Gravity
+        p.dx *= 0.99; // Air resistance
+        p.x += p.dx + Math.sin(p.tiltAngle) * 1.5;
+        p.y += p.dy;
         p.tilt = Math.sin(p.tiltAngle) * 15;
 
         // Draw particle
@@ -65,14 +69,9 @@ export default function Confetti() {
         ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
         ctx.stroke();
 
-        // If particle drops below screen or moves side, respawn
-        if (p.x > width + 20 || p.x < -20 || p.y > height) {
-          particles[idx] = {
-            ...p,
-            x: Math.random() * width,
-            y: -20,
-            tilt: Math.floor(Math.random() * 10) - 10,
-          };
+        // If particle drops way below screen, stop processing it
+        if (p.y > height + 50) {
+          particles[idx] = { ...p, dx: 0, dy: 0, y: height + 100 };
         }
       });
     };
