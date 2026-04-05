@@ -423,10 +423,24 @@ function WorkshopPage() {
 
     // Helper to format a proposition with translated terms
     const formatProp = (q: string, subject: string, predicate: string) => {
-      const qLabel = q === 'A' ? 'Visi' : q === 'E' ? 'Nė vienas' : q === 'I' ? 'Kai kurie' : 'Kai kurie ... nėra'
-      const negParticle = q === 'O' ? 'ne ' : ''
-      const verb = ['fur', 'tail', 'wings', 'hair', 'bloating', 'wheels', 'fins', 'engines', 'keys', 'strings', 'petals', 'thorns', 'scales', 'feathers', 'shells', 'thorns', 'screens'].some(w => predicate.includes(w)) ? 'turi' : 'yra'
-      return `${qLabel} ${t(subject)} ${verb} ${negParticle}${t(predicate)}.`
+      const subj = t(subject)
+      const pred = t(predicate)
+      const hasVerb = ['fur', 'tail', 'wings', 'hair', 'bloating', 'wheels', 'fins', 'engines', 'keys', 'strings', 'petals', 'thorns', 'scales', 'feathers', 'shells', 'screens', 'pages'].some(w => predicate.includes(w))
+
+      if (q === 'A') {
+        // All X are Y / All X have Y
+        return `Visi ${subj} ${hasVerb ? 'turi' : 'yra'} ${pred}.`
+      }
+      if (q === 'E') {
+        // No X are Y / No X have Y
+        return `Nė vienas ${subj} nėra ${pred}.`
+      }
+      if (q === 'I') {
+        // Some X are Y / Some X have Y
+        return `Kai kurie ${subj} ${hasVerb ? 'turi' : 'yra'} ${pred}.`
+      }
+      // O-type: Some X are not Y / Some X do not have Y
+      return `Kai kurie ${subj} nėra ${pred}.`
     }
 
     // Use premise order setting
