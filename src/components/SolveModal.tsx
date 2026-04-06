@@ -102,14 +102,14 @@ function LargeZigZagPattern({ syllogism, t }: { syllogism: Syllogism, t: any }) 
 
         {/* Relation Signs */}
         <g transform="translate(200, 40)">
-           <rect x="-30" y="-12" width="60" height="24" rx="4" fill="var(--surface)" />
-           <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="14" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+           <rect x={rel1.showEmpty ? "-70" : "-35"} y="-26" width={rel1.showEmpty ? "140" : "70"} height="52" rx="12" fill="var(--surface)" />
+           <text x="0" y="2" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
              {getRelationString(rel1)}
            </text>
         </g>
         <g transform="translate(200, 120)">
-           <rect x="-30" y="-12" width="60" height="24" rx="4" fill="var(--surface)" />
-           <text x="0" y="1" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="14" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+           <rect x={rel2.showEmpty ? "-70" : "-35"} y="-26" width={rel2.showEmpty ? "140" : "70"} height="52" rx="12" fill="var(--surface)" />
+           <text x="0" y="2" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
              {getRelationString(rel2)}
            </text>
         </g>
