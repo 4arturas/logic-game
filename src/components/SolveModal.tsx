@@ -91,34 +91,36 @@ function LargeZigZagPattern({ syllogism, t }: { syllogism: Syllogism, t: any }) 
         <div className="absolute top-2 left-3 flex gap-2">
            <span className="text-[10px] font-bold text-[var(--sea-ink-soft)] uppercase tracking-widest">{t('atlas.figure')} {figure}</span>
         </div>
-      <svg width="100%" height="160" viewBox="0 0 400 160" className="overflow-visible" style={{ maxWidth: '400px' }}>
+      <svg width="100%" height="160" viewBox="0 0 460 160" className="overflow-visible" style={{ maxWidth: '460px' }}>
         {/* Dash lines connecting terms in the same proposition */}
         <line x1="100" y1="40" x2="300" y2="40" stroke={lineColor} strokeWidth="2" strokeDasharray="4 4" opacity="0.3" />
         <line x1="100" y1="120" x2="300" y2="120" stroke={lineColor} strokeWidth="2" strokeDasharray="4 4" opacity="0.3" />
 
         {/* Relation Signs */}
         <g transform="translate(200, 40)">
-           <rect x="-40" y={rel1.showEmpty ? "-36" : "-26"} width="80" height={rel1.showEmpty ? "64" : "52"} rx="12" fill="var(--surface)" />
-           <text x="0" y={rel1.showEmpty ? "-10" : "2"} textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+           <rect x="-35" y="-26" width="70" height="52" rx="12" fill="var(--surface)" />
+           <text x="0" y="2" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
              {rel1.rel}
            </text>
-           {rel1.showEmpty && (
-             <text x="0" y="16" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink-soft)" fontSize="16" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
-               {String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}
-             </text>
-           )}
         </g>
         <g transform="translate(200, 120)">
-           <rect x="-40" y={rel2.showEmpty ? "-36" : "-26"} width="80" height={rel2.showEmpty ? "64" : "52"} rx="12" fill="var(--surface)" />
-           <text x="0" y={rel2.showEmpty ? "-10" : "2"} textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+           <rect x="-35" y="-26" width="70" height="52" rx="12" fill="var(--surface)" />
+           <text x="0" y="2" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
              {rel2.rel}
            </text>
-           {rel2.showEmpty && (
-             <text x="0" y="16" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink-soft)" fontSize="16" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
-               {String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}
-             </text>
-           )}
         </g>
+
+        {/* Empty set notations placed explicitly after the right nodes */}
+        {rel1.showEmpty && (
+           <text x="395" y="42" textAnchor="start" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="22" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif' className="whitespace-nowrap">
+             {String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}
+           </text>
+        )}
+        {rel2.showEmpty && (
+           <text x="395" y="122" textAnchor="start" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="22" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif' className="whitespace-nowrap">
+             {String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}
+           </text>
+        )}
 
         {/* ZigZag M-Line */}
         <line x1={nodes[mTopIdx].xPos} y1="40" x2={nodes[mBottomIdx].xPos} y2="120" stroke={mColor} strokeWidth="5" strokeLinecap="round" style={{ mixBlendMode: 'multiply' }} opacity="0.8" />
