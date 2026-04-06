@@ -1,5 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useState, useMemo, useEffect } from 'react'
+import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
+import { useState, useMemo } from 'react'
 import { useTranslation } from '../i18n/I18nContext'
 import {
   type Syllogism,
@@ -9,37 +9,33 @@ import {
 import { SolveModal } from '../components/SolveModal'
 import { BookOpen, Search, ArrowRight, CheckCircle2 } from 'lucide-react'
 
+type AtlasSearchParams = {
+  mood?: string
+}
+
 export const Route = createFileRoute('/syllogisms')({
   component: SyllogismsPage,
+  validateSearch: (search: Record<string, unknown>): AtlasSearchParams => {
+    return {
+      mood: typeof search.mood === 'string' ? search.mood : undefined,
+    }
+  },
 })
-
-const LAST_SELECTED_KEY = 'atlas-last-selected'
-
-function getLastSelectedId(): string | null {
-  try {
-    return localStorage.getItem(LAST_SELECTED_KEY)
-  } catch {
-    return null
-  }
-}
-
-function setLastSelectedId(id: string) {
-  try {
-    localStorage.setItem(LAST_SELECTED_KEY, id)
-  } catch {
-    // localStorage not available
-  }
-}
 
 function SyllogismsPage() {
   const { t } = useTranslation()
+  const search = useSearch({ from: '/syllogisms' })
+  const navigate = useNavigate()
   const [selectedSyllogism, setSelectedSyllogism] = useState<Syllogism | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [lastSelectedId, setLastSelectedId] = useState<string | null>(null)
 
-  useEffect(() => {
-    setLastSelectedId(getLastSelectedId())
-  }, [])
+  // Find the syllogism matching the URL search param
+  const selectedFromUrl = useMemo(() => {
+    if (!search.mood) return null
+    return SYLLOGISM_EXAMPLES.find(s => s.id === search.mood) || null
+  }, [search.mood])
+
+  const lastSelectedId = selectedFromUrl?.id || null
 
   const groupedSyllogisms = useMemo(() => {
     const res: Record<Figure, Syllogism[]> = { 1: [], 2: [], 3: [], 4: [] }
@@ -126,7 +122,11 @@ function SyllogismsPage() {
                           key={s.id}
                           onClick={() => {
                             setSelectedSyllogism(s)
-                            setLastSelectedId(s.id)
+                            // Update URL with selected mood
+                            navigate({
+                              search: (prev: Record<string, unknown>) => ({ ...prev, mood: s.id }),
+                              replace: true,
+                            })
                           }}
                           className={`group cursor-pointer transition-colors ${
                             isSelected
