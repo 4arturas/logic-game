@@ -10,19 +10,32 @@ const MOTIVATIONS = [
   "Masterful!"
 ];
 
+const INCORRECT_MOTIVATIONS = [
+  "Don't give up!",
+  "Almost there!",
+  "Keep analyzing!",
+  "Logic takes practice!",
+  "You can do this!",
+  "Try a different approach!"
+];
+
 interface MotivatingTextProps {
   triggerId: number;
+  type?: 'correct' | 'incorrect';
 }
 
-export default function MotivatingText({ triggerId }: MotivatingTextProps) {
+export default function MotivatingText({ triggerId, type = 'correct' }: MotivatingTextProps) {
   const [text, setText] = useState('');
   const [visible, setVisible] = useState(false);
+  const [currentType, setCurrentType] = useState(type);
 
   useEffect(() => {
     if (triggerId === 0) return; // Don't trigger on initial load
 
-    const randomText = MOTIVATIONS[Math.floor(Math.random() * MOTIVATIONS.length)];
+    const bank = type === 'correct' ? MOTIVATIONS : INCORRECT_MOTIVATIONS;
+    const randomText = bank[Math.floor(Math.random() * bank.length)];
     setText(randomText);
+    setCurrentType(type);
     setVisible(true);
 
     const timer = setTimeout(() => {
@@ -30,17 +43,21 @@ export default function MotivatingText({ triggerId }: MotivatingTextProps) {
     }, 2500);
 
     return () => clearTimeout(timer);
-  }, [triggerId]);
+  }, [triggerId, type]);
 
   if (!visible) return null;
+
+  const textColor = currentType === 'correct' ? '#FFD166' : 'white';
+  const shadowColor = currentType === 'correct' ? 'var(--sea-ink)' : 'var(--lagoon)';
 
   return (
     <div className="fixed inset-0 pointer-events-none flex items-center justify-center z-[150]">
       <div 
-        className="font-black italic uppercase text-5xl tracking-widest text-[#FFD166] drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] fade-up-animation"
+        className="font-black italic uppercase text-5xl tracking-widest drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] fade-up-animation"
         style={{
-          WebkitTextStroke: '2px var(--sea-ink)',
-          textShadow: '3px 3px 0 var(--sea-ink)',
+          color: textColor,
+          WebkitTextStroke: `2px ${shadowColor}`,
+          textShadow: `3px 3px 0 ${shadowColor}`,
           animation: 'floatUpAndFade 2.5s ease-out forwards'
         }}
       >

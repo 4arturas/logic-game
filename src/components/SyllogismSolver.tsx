@@ -11,6 +11,9 @@ import { SmallDiagram } from './SmallDiagram'
 import { CopyCode } from './CopyCode'
 import { HelpModal } from './HelpModal'
 import { useSettings } from '../contexts/SettingsContext'
+import confetti from 'canvas-confetti'
+import { AudioEngine } from '../lib/audio'
+import MotivatingText from './MotivatingText'
 
 interface SyllogismSolverProps {
   syllogism: Syllogism
@@ -36,6 +39,7 @@ export function SyllogismSolver({
   const [validationResult, setValidationResult] = useState<{ isCorrect: boolean; errors: string[] } | null>(null)
   const [showHelp, setShowHelp] = useState(false)
   const [showAnswer, setShowAnswer] = useState(false)
+  const [motivationState, setMotivationState] = useState<{ triggerId: number, type: 'correct' | 'incorrect' }>({ triggerId: 0, type: 'correct' })
 
   const correctEncoding = useMemo(() => generateDiagram(syllogism), [syllogism])
 
@@ -80,7 +84,44 @@ export function SyllogismSolver({
     const { dd, md } = getStatusCodes()
     const result = validateUserDiagram(`DD=${dd}`, `MD=${md}`, correctEncoding)
     setValidationResult(result)
-    if (result.isCorrect && onCorrect) onCorrect()
+
+    setMotivationState(prev => ({
+      triggerId: prev.triggerId + 1,
+      type: result.isCorrect ? 'correct' : 'incorrect'
+    }))
+
+    if (result.isCorrect) {
+      AudioEngine.playCorrect()
+
+      const duration = 2000;
+      const end = Date.now() + duration;
+
+      const frame = () => {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#FFD166', '#06D6A0', '#118AB2']
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#FFD166', '#EF476F', '#118AB2']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      };
+      frame();
+
+      if (onCorrect) onCorrect()
+    } else {
+      AudioEngine.playError()
+    }
   }
 
   const handleClear = () => {
@@ -214,6 +255,7 @@ export function SyllogismSolver({
       </div>
 
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} onApplyRule={handleApplyRule} />}
+      <MotivatingText triggerId={motivationState.triggerId} type={motivationState.type} />
     </div>
   )
 }

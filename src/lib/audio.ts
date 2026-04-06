@@ -19,7 +19,7 @@ export class AudioEngine {
     this.enabled = enabled;
   }
 
-  static playTone(freq: number, type: OscillatorType, duration: number, vol = 0.1) {
+  static playTone(freq: number, type: OscillatorType, duration: number, vol = 0.2) {
     if (!this.enabled) return;
     this.init();
     if (!this.ctx) return;
@@ -31,18 +31,24 @@ export class AudioEngine {
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
 
-    osc.type = type;
-    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+    const now = this.ctx.currentTime;
     
-    gain.gain.setValueAtTime(0, this.ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(vol, this.ctx.currentTime + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, now);
+    
+    gain.gain.setValueAtTime(0, now);
+    // quick attack
+    gain.gain.linearRampToValueAtTime(vol, now + 0.02);
+    // sustain
+    gain.gain.setValueAtTime(vol, now + Math.max(0.02, duration - 0.05));
+    // quick release
+    gain.gain.linearRampToValueAtTime(0, now + duration);
 
     osc.connect(gain);
     gain.connect(this.ctx.destination);
 
-    osc.start();
-    osc.stop(this.ctx.currentTime + duration);
+    osc.start(now);
+    osc.stop(now + duration + 0.1); // Add a tiny buffer before stopping to ensure release finishes
   }
 
   static playCorrect() {
