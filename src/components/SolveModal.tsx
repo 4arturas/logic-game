@@ -86,10 +86,6 @@ function LargeZigZagPattern({ syllogism, t }: { syllogism: Syllogism, t: any }) 
   const mTopIdx = row1Types[0] === 'M' ? 0 : 1;
   const mBottomIdx = row2Types[0] === 'M' ? 2 : 3;
 
-  const getRelationString = (rel: {rel: string, showEmpty: boolean}) => {
-    return rel.rel + (rel.showEmpty ? ` ${String.fromCharCode(0x2260)} ${String.fromCharCode(0x2205)}` : '');
-  };
-
   return (
     <div className="mt-6 bg-[var(--surface)] border-2 border-[var(--line)] rounded-xl flex flex-col items-center px-2 py-6 shadow-sm relative overflow-hidden">
         <div className="absolute top-2 left-3 flex gap-2">
@@ -102,16 +98,26 @@ function LargeZigZagPattern({ syllogism, t }: { syllogism: Syllogism, t: any }) 
 
         {/* Relation Signs */}
         <g transform="translate(200, 40)">
-           <rect x={rel1.showEmpty ? "-70" : "-35"} y="-26" width={rel1.showEmpty ? "140" : "70"} height="52" rx="12" fill="var(--surface)" />
-           <text x="0" y="2" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
-             {getRelationString(rel1)}
+           <rect x="-40" y={rel1.showEmpty ? "-36" : "-26"} width="80" height={rel1.showEmpty ? "64" : "52"} rx="12" fill="var(--surface)" />
+           <text x="0" y={rel1.showEmpty ? "-10" : "2"} textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+             {rel1.rel}
            </text>
+           {rel1.showEmpty && (
+             <text x="0" y="16" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink-soft)" fontSize="16" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+               {String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}
+             </text>
+           )}
         </g>
         <g transform="translate(200, 120)">
-           <rect x={rel2.showEmpty ? "-70" : "-35"} y="-26" width={rel2.showEmpty ? "140" : "70"} height="52" rx="12" fill="var(--surface)" />
-           <text x="0" y="2" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
-             {getRelationString(rel2)}
+           <rect x="-40" y={rel2.showEmpty ? "-36" : "-26"} width="80" height={rel2.showEmpty ? "64" : "52"} rx="12" fill="var(--surface)" />
+           <text x="0" y={rel2.showEmpty ? "-10" : "2"} textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink)" fontSize="28" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+             {rel2.rel}
            </text>
+           {rel2.showEmpty && (
+             <text x="0" y="16" textAnchor="middle" dominantBaseline="middle" fill="var(--sea-ink-soft)" fontSize="16" fontWeight="bold" fontFamily='"Segoe UI Symbol", "DejaVu Sans", "Arial Unicode MS", "Times New Roman", serif'>
+               {String.fromCharCode(0x2260)} {String.fromCharCode(0x2205)}
+             </text>
+           )}
         </g>
 
         {/* ZigZag M-Line */}
