@@ -216,20 +216,37 @@ export function SyllogismSolver({
             {validationResult && (
               <div className="mt-4 p-4 rounded border-l-4 transition-all animate-in fade-in slide-in-from-top-2"
                 style={{ 
-                  background: validationResult.isCorrect ? 'var(--hero-a)' : 'var(--sand)',
-                  borderColor: validationResult.isCorrect ? 'var(--palm)' : 'var(--lagoon-deep)'
+                  background: validationResult.isCorrect ? 'var(--hero-a)' : 'rgba(220,38,38,0.08)',
+                  borderColor: validationResult.isCorrect ? 'var(--palm)' : '#dc2626'
                 }}
               >
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl">{validationResult.isCorrect ? '✓' : '!'}</span>
-                  <span className="font-bold uppercase text-xs" style={{ color: validationResult.isCorrect ? 'var(--palm)' : 'var(--lagoon-deep)' }}>
+                  <span className="text-lg font-black" style={{ color: validationResult.isCorrect ? 'var(--palm)' : '#dc2626' }}>
+                    {validationResult.isCorrect ? '✓' : '✗'}
+                  </span>
+                  <span className="font-bold uppercase text-xs" style={{ color: validationResult.isCorrect ? 'var(--palm)' : '#dc2626' }}>
                     {validationResult.isCorrect ? t('quiz.correct') : t('quiz.not_correct')}
                   </span>
                 </div>
+                {!validationResult.isCorrect && validationResult.errors.length > 0 && (
+                  <ul className="mb-2 space-y-0.5">
+                    {validationResult.errors.slice(0, 3).map((err, i) => (
+                      <li key={i} className="text-[10px] font-mono" style={{ color: '#dc2626' }}>
+                        · {err}
+                      </li>
+                    ))}
+                    {validationResult.errors.length > 3 && (
+                      <li className="text-[10px] font-mono opacity-60" style={{ color: '#dc2626' }}>
+                        · …and {validationResult.errors.length - 3} more
+                      </li>
+                    )}
+                  </ul>
+                )}
                 {!validationResult.isCorrect && (
                   <button 
                     onClick={() => setShowAnswer(!showAnswer)}
                     className="text-[10px] font-bold underline opacity-70 hover:opacity-100"
+                    style={{ color: '#dc2626' }}
                   >
                     {showAnswer ? 'Hide Answer' : t('quiz.show_answer')}
                   </button>

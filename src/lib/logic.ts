@@ -513,7 +513,8 @@ export function validateUserDiagram(
       // - Reject '1' when correct is '0' (marked occupied but should be empty)
       // - Reject '0' when correct is '1' (marked empty but should be occupied)
       // - Reject '-' when correct is '1' (blank when red counter required)
-      // - Accept '-' when correct is '0' (blank consistent with empty)
+      // - Reject '-' when correct is '0' AND cell was explicitly emptied by a premise
+      // - Accept '-' when correct is '0' but only via inference (not explicit premise result)
       // - Accept '0' when correct is '-' (extra empty marking)
       if (user === '1' && correctVal === '0') {
         errors.push(`DD${cell}: marked occupied but should be empty`);
@@ -524,6 +525,12 @@ export function validateUserDiagram(
         // (i.e. not in explicitDDCells), it's optional.
         if (correct.explicitDDCells[cell] === '1') {
           errors.push(`DD${cell}: missing red counter (should be occupied)`);
+        }
+      } else if (user === '-' && correctVal === '0') {
+        // Require the user to explicitly mark cells that were emptied by a premise.
+        // Only skip if this cell is 0 purely due to inference (not from a direct premise).
+        if (correct.explicitDDCells[cell] === '0') {
+          errors.push(`DD${cell}: missing grey counter (should be marked empty)`);
         }
       }
     }
@@ -542,6 +549,11 @@ export function validateUserDiagram(
         // Relaxed logic: Optional if inferred
         if (correct.explicitMDCells[cell] === '1') {
           errors.push(`MD${cell}: missing red counter (should be occupied)`);
+        }
+      } else if (user === '-' && correctVal === '0') {
+        // Require explicit marking of cells derived from premises in MD too.
+        if (correct.explicitMDCells[cell] === '0') {
+          errors.push(`MD${cell}: missing grey counter (should be marked empty)`);
         }
       }
     }
