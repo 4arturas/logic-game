@@ -64,6 +64,17 @@ export class AudioEngine {
     setTimeout(() => this.playTone(250, 'sawtooth', 0.3, 0.05), 100);
   }
 
+  static playHoverNode() {
+    // Very soft glass-like ping
+    this.playTone(1200, 'sine', 0.05, 0.03);
+  }
+
+  static playSelectNode() {
+    // Deep harmonic confirm
+    this.playTone(440, 'triangle', 0.1, 0.15);
+    setTimeout(() => this.playTone(659.25, 'triangle', 0.3, 0.15), 100);
+  }
+
   static playLevelUp() {
     // Triumphant arpeggio
     this.playTone(523.25, 'square', 0.2, 0.05); // C5

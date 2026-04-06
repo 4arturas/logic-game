@@ -15,6 +15,7 @@ import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as LearnRouteImport } from './routes/learn'
 import { Route as GameRouteImport } from './routes/game'
 import { Route as CampaignRouteImport } from './routes/campaign'
+import { Route as Atlas3dRouteImport } from './routes/atlas3d'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -48,6 +49,11 @@ const CampaignRoute = CampaignRouteImport.update({
   path: '/campaign',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Atlas3dRoute = Atlas3dRouteImport.update({
+  id: '/atlas3d',
+  path: '/atlas3d',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -62,6 +68,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/atlas3d': typeof Atlas3dRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/atlas3d': typeof Atlas3dRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/atlas3d': typeof Atlas3dRoute
   '/campaign': typeof CampaignRoute
   '/game': typeof GameRoute
   '/learn': typeof LearnRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/atlas3d'
     | '/campaign'
     | '/game'
     | '/learn'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/atlas3d'
     | '/campaign'
     | '/game'
     | '/learn'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/atlas3d'
     | '/campaign'
     | '/game'
     | '/learn'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  Atlas3dRoute: typeof Atlas3dRoute
   CampaignRoute: typeof CampaignRoute
   GameRoute: typeof GameRoute
   LearnRoute: typeof LearnRoute
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CampaignRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/atlas3d': {
+      id: '/atlas3d'
+      path: '/atlas3d'
+      fullPath: '/atlas3d'
+      preLoaderRoute: typeof Atlas3dRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  Atlas3dRoute: Atlas3dRoute,
   CampaignRoute: CampaignRoute,
   GameRoute: GameRoute,
   LearnRoute: LearnRoute,

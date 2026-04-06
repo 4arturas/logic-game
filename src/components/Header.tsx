@@ -90,6 +90,14 @@ export default function Header() {
           </Link>
           <span className="text-[var(--line)] select-none">·</span>
           <Link
+            to="/atlas3d"
+            className="nav-link px-3 py-1.5 rounded bg-gradient-to-r from-[var(--lagoon)] to-[var(--palm)] bg-clip-text text-transparent opacity-80 hover:opacity-100 font-bold"
+            activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded opacity-100' }}
+          >
+            3D Atlas
+          </Link>
+          <span className="text-[var(--line)] select-none">·</span>
+          <Link
             to="/learn"
             className="nav-link px-3 py-1.5 rounded"
             activeProps={{ className: 'nav-link is-active px-3 py-1.5 rounded' }}
