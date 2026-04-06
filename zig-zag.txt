@@ -1,0 +1,42 @@
+Figure 1 (The Direct Slide)
+This is the most common "flow." The Middle Term starts as the Subject and "slides" down to the Predicate.
+
+Plaintext
+M ——— P
+  \
+S ——— M
+---------
+S ——— P
+Figure 2 (The Right Wall)
+Here, the Middle Terms are both Predicates. The flow "hits a wall" on the right side.
+
+Plaintext
+P ——— M
+      |
+S ——— M
+---------
+S ——— P
+Figure 3 (The Left Wall)
+In this figure, the Middle Terms are both Subjects. The connection is a vertical line on the left.
+
+Plaintext
+M ——— P
+|
+M ——— S
+---------
+S ——— P
+Figure 4 (The Zig-Zag / Reverse)
+This is the "Zig-Zag" you likely recall. It moves from the Predicate of the first line to the Subject of the second.
+
+Plaintext
+P ——— M
+    /
+M ——— S
+---------
+S ——— P
+Quick Guide to the Terms
+M (Middle Term): The connector that disappears in the conclusion.
+
+S (Subject/Minor Term): The subject of the conclusion.
+
+P (Predicate/Major Term): The predicate of the conclusion.
