@@ -70,36 +70,6 @@ window.LogicGame = window.LogicGame || {};
     );
   }
 
-  function LTIcon() {
-    return h('svg', { width: '24', height: '18', viewBox: '0 0 24 18' },
-      h('rect', { width: '100%', height: '100%', fill: '#C60C30' }),
-      h('rect', { x: '0', y: '6', width: '24', height: '6', fill: '#FFB915' }),
-      h('rect', { x: '0', y: '0', width: '24', height: '6', fill: '#FFB915' })
-    );
-  }
-
-  function GBIcon() {
-    return h('svg', { width: '24', height: '18', viewBox: '0 0 24 18' },
-      h('rect', { width: '100%', height: '100%', fill: '#012169' }),
-      h('path', {
-        d: 'M0 0 L24 18 M24 0 L0 18',
-        stroke: '#FFFFFF', strokeWidth: '3'
-      }),
-      h('path', {
-        d: 'M0 0 L24 18 M24 0 L0 18',
-        stroke: '#C60C30', strokeWidth: '1.5'
-      }),
-      h('path', {
-        d: 'M12 0 L12 18 M0 9 L24 9',
-        stroke: '#FFFFFF', strokeWidth: '4'
-      }),
-      h('path', {
-        d: 'M12 0 L12 18 M0 9 L24 9',
-        stroke: '#C60C30', strokeWidth: '2'
-      })
-    );
-  }
-
   function LanguageToggle() {
     var i18n = useContext(I18nContext);
     var isLT = i18n.lang === 'lt';
@@ -112,7 +82,15 @@ window.LogicGame = window.LogicGame || {};
         lineHeight: 1, transition: 'background 120ms',
         overflow: 'hidden'
       }
-    }, isLT ? h(LTIcon, null) : h(GBIcon, null));
+    },
+      h('img', {
+        alt: isLT ? 'Lithuania' : 'United States',
+        src: isLT
+          ? 'https://purecatamphetamine.github.io/country-flag-icons/3x2/LT.svg'
+          : 'https://purecatamphetamine.github.io/country-flag-icons/3x2/US.svg',
+        style: { width: '24px', height: '18px', display: 'block' }
+      })
+    );
   }
 
   function PremiseOrderToggle() {
@@ -137,6 +115,7 @@ window.LogicGame = window.LogicGame || {};
   }
 
   function Header(props) {
+    var onShowHelp = props.onShowHelp;
     var i18n = useContext(I18nContext);
     var t = i18n.t;
 
@@ -164,6 +143,17 @@ window.LogicGame = window.LogicGame || {};
           }, 'Atlas')
         ),
         h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 } },
+          onShowHelp ? h('button', {
+            onClick: onShowHelp,
+            title: 'Help',
+            style: {
+              width: '30px', height: '30px', borderRadius: '50%',
+              background: 'var(--chip-bg)', border: '1px solid var(--chip-line)',
+              color: 'var(--sea-ink)', cursor: 'pointer', fontSize: '14px',
+              fontWeight: 900, display: 'flex', alignItems: 'center',
+              justifyContent: 'center', padding: 0, lineHeight: 1
+            }
+          }, '?') : null,
           h(ThemeToggle, null),
           h(PremiseOrderToggle, null),
           h(LanguageToggle, null)

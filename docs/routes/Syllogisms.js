@@ -142,15 +142,15 @@ window.LogicGame = window.LogicGame || {};
         h('div', { style: { display: 'flex', gap: '40px', marginTop: '16px' } },
           h('div', { style: { textAlign: 'center' } },
             h('div', { style: { fontSize: '24px', fontWeight: 700, color: 'var(--lagoon)' } }, '24'),
-            h('div', { style: { fontSize: '9px', fontWeight: 700, color: 'var(--sea-ink-soft)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, 'Total Valid')
+            h('div', { style: { fontSize: '9px', fontWeight: 700, color: 'var(--sea-ink-soft)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, t('atlas.footer.total_valid'))
           ),
           h('div', { style: { textAlign: 'center' } },
             h('div', { style: { fontSize: '24px', fontWeight: 700, color: 'var(--palm)' } }, '4'),
-            h('div', { style: { fontSize: '9px', fontWeight: 700, color: 'var(--sea-ink-soft)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, 'Logical Figures')
+            h('div', { style: { fontSize: '9px', fontWeight: 700, color: 'var(--sea-ink-soft)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, t('atlas.footer.logical_figures'))
           ),
           h('div', { style: { textAlign: 'center' } },
             h('div', { style: { fontSize: '24px', fontWeight: 700, color: 'var(--sea-ink)' } }, '6'),
-            h('div', { style: { fontSize: '9px', fontWeight: 700, color: 'var(--sea-ink-soft)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, 'Moods / Figure')
+            h('div', { style: { fontSize: '9px', fontWeight: 700, color: 'var(--sea-ink-soft)', textTransform: 'uppercase', letterSpacing: '0.1em' } }, t('atlas.footer.moods_per_figure'))
           )
         )
       )

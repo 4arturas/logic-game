@@ -64,7 +64,9 @@
     LogicGame.Logic.initExamples(LogicGame.SyllogismsStandard);
 
     (function() {
+      var React = window.React;
       var h = React.createElement;
+      var useState = React.useState;
       var createRoot = ReactDOM.createRoot;
 
       try {
@@ -77,19 +79,33 @@
         }
       } catch(e) {}
 
-      var root = createRoot(document.getElementById('app'));
-      root.render(
-        h(LogicGame.I18nProvider, null,
-          h(LogicGame.SettingsProvider, null,
-            h('div', null,
-              h(LogicGame.Header),
-              h('main', { style: { minHeight: 'calc(100vh - 200px)', paddingTop: '24px', paddingBottom: '48px' } },
-                h(LogicGame.SyllogismsPage)
+      function AppWithHelp() {
+        var _help = useState(false);
+        var showHelp = _help[0];
+        var setShowHelp = _help[1];
+
+        return [
+          h(LogicGame.I18nProvider, { key: 'i18n' },
+            h(LogicGame.SettingsProvider, null,
+              h('div', null,
+                h(LogicGame.Header, { onShowHelp: function() { setShowHelp(true); } }),
+                h('main', { style: { minHeight: 'calc(100vh - 200px)', paddingTop: '24px', paddingBottom: '48px' } },
+                  h(LogicGame.SyllogismsPage)
+                ),
+                h(LogicGame.Footer)
               ),
-              h(LogicGame.Footer)
+              showHelp ? h(LogicGame.HelpModal, {
+                key: 'help-modal',
+                onClose: function() { setShowHelp(false); }
+              }) : null
             )
           )
-        )
+        ];
+      }
+
+      var root = createRoot(document.getElementById('app'));
+      root.render(
+        h(AppWithHelp, null)
       );
     })();
   </script>
