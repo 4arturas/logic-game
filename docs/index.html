@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carroll Logic - Syllogism Atlas</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Ant Design CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/antd@4.24.16/dist/antd.min.css" />
+
+  <script src="https://unpkg.com/@babel/standalone@7.25.9/babel.min.js"></script>
+  <script type="module">
+    import React from "https://esm.sh/react@19?dev";
+    import { createRoot } from "https://esm.sh/react-dom@19/client?dev";
+    globalThis.React = React;
+    globalThis.ReactDOM = { createRoot };
+  </script>
+
+  <style>
+    .ant-btn { border-radius: 4px; font-size: 11px; }
+    .ant-select { font-size: 12px; }
+    .ant-modal-content { background: var(--surface); color: var(--sea-ink); }
+    .ant-collapse { background: var(--surface); border-color: var(--line); }
+    .ant-collapse-header { color: var(--sea-ink) !important; }
+    .ant-select-dropdown { background: var(--surface); }
+    .ant-select-item { color: var(--sea-ink); }
+    .ant-select-item-option-active { background: var(--foam); }
+    .ant-message { z-index: 10000; }
+    @media (max-width: 640px) { .logo-text { display: none; } }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- ─── DATA ─── -->
+  <script type="text/babel" src="data/syllogisms_standard.js"></script>
+  <script type="text/babel" src="data/syllogism_answers.js"></script>
+
+  <!-- ─── LIB ─── -->
+  <script type="text/babel" src="lib/logic.js"></script>
+
+  <!-- ─── I18N / CONTEXTS ─── -->
+  <script type="text/babel" src="i18n/translations.js"></script>
+  <script type="text/babel" src="i18n/terms.js"></script>
+  <script type="text/babel" src="contexts/I18nContext.js"></script>
+  <script type="text/babel" src="contexts/SettingsContext.js"></script>
+
+  <!-- ─── COMPONENTS ─── -->
+  <script type="text/babel" src="components/LargeDiagram.js"></script>
+  <script type="text/babel" src="components/SmallDiagram.js"></script>
+  <script type="text/babel" src="components/CopyCode.js"></script>
+  <script type="text/babel" src="components/HelpModal.js"></script>
+  <script type="text/babel" src="components/PropositionLogicSequence.js"></script>
+  <script type="text/babel" src="components/SyllogismCard.js"></script>
+  <script type="text/babel" src="components/SyllogismSolver.js"></script>
+  <script type="text/babel" src="components/Header.js"></script>
+  <script type="text/babel" src="components/Footer.js"></script>
+
+  <!-- ─── ROUTES ─── -->
+  <script type="text/babel" src="routes/Syllogisms.js"></script>
+
+  <script type="text/babel">
+    LogicGame.Logic.initExamples(LogicGame.SyllogismsStandard);
+
+    (function() {
+      var h = React.createElement;
+      var createRoot = ReactDOM.createRoot;
+
+      try {
+        var s = localStorage.getItem('logic_game_settings');
+        if (s) {
+          var settings = JSON.parse(s);
+          if (settings.theme && settings.theme !== 'default') {
+            document.documentElement.setAttribute('data-theme', settings.theme);
+          }
+        }
+      } catch(e) {}
+
+      var root = createRoot(document.getElementById('app'));
+      root.render(
+        h(LogicGame.I18nProvider, null,
+          h(LogicGame.SettingsProvider, null,
+            h('div', null,
+              h(LogicGame.Header),
+              h('main', { style: { minHeight: 'calc(100vh - 200px)', paddingTop: '24px', paddingBottom: '48px' } },
+                h(LogicGame.SyllogismsPage)
+              ),
+              h(LogicGame.Footer)
+            )
+          )
+        )
+      );
+    })();
+  </script>
+</body>
+</html>
