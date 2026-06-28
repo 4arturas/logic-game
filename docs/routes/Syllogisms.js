@@ -4,6 +4,7 @@ window.LogicGame = window.LogicGame || {};
   var React = window.React;
   var h = React.createElement;
   var useState = React.useState;
+  var useEffect = React.useEffect;
   var useMemo = React.useMemo;
   var useContext = React.useContext;
 
@@ -23,6 +24,40 @@ window.LogicGame = window.LogicGame || {};
     var _answerKey = useState(0);
     var answerKey = _answerKey[0];
     var setAnswerKey = _answerKey[1];
+
+    // URL history sync
+    useEffect(function() {
+      var params = new URLSearchParams(window.location.search);
+      var sylId = params.get('syl');
+      if (sylId) {
+        var syl = LogicGame.SyllogismExamples.find(function(s) { return s.id === sylId; });
+        if (syl) setSelectedSyllogism(syl);
+      }
+      function onPop() {
+        var p = new URLSearchParams(window.location.search);
+        var id = p.get('syl');
+        if (id) {
+          var found = LogicGame.SyllogismExamples.find(function(s) { return s.id === id; });
+          if (found) { setSelectedSyllogism(found); return; }
+        }
+        setSelectedSyllogism(null);
+      }
+      window.addEventListener('popstate', onPop);
+      return function() { window.removeEventListener('popstate', onPop); };
+    }, []);
+
+    // Push URL state on selection
+    useEffect(function() {
+      if (selectedSyllogism) {
+        var url = new URL(window.location);
+        url.searchParams.set('syl', selectedSyllogism.id);
+        window.history.pushState({ syl: selectedSyllogism.id }, '', url);
+      } else {
+        var u = new URL(window.location);
+        u.searchParams.delete('syl');
+        window.history.pushState({ syl: null }, '', u);
+      }
+    }, [selectedSyllogism]);
 
     var syllogisms = useMemo(function() {
       return LogicGame.SyllogismExamples || [];
