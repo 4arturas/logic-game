@@ -35,8 +35,8 @@ function SmallDiagram(props) {
         <rect x="5" y="5" width="240" height="240" fill="none" stroke="black" strokeWidth="2" />
         <line x1="5" y1="125" x2="245" y2="125" stroke="black" strokeWidth="1.5" />
         <line x1="125" y1="5" x2="125" y2="245" stroke="black" strokeWidth="1.5" />
-        <text x="8" y="31" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">5</text>
-        <text x="242" y="31" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">6</text>
+        <text x="8" y="30" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">5</text>
+        <text x="242" y="30" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">6</text>
         <text x="8" y="243" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">7</text>
         <text x="242" y="243" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">8</text>
         <text x="125" y="55" textAnchor="middle" fill="var(--term-x)" fontSize="28" fontWeight="bold" fontFamily="serif" fontStyle="italic">{t(minorTerm)}</text>
