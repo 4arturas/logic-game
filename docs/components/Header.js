@@ -116,8 +116,15 @@ window.LogicGame = window.LogicGame || {};
 
   function Header(props) {
     var onShowHelp = props.onShowHelp;
+    var onNavigate = props.onNavigate;
+    var currentPage = props.currentPage || 'atlas';
     var i18n = useContext(I18nContext);
     var t = i18n.t;
+
+    var navItems = [
+      { id: 'atlas', label: 'Atlas' },
+      { id: 'learn', label: 'Learn' },
+    ];
 
     return h('header', {
       style: {
@@ -134,13 +141,22 @@ window.LogicGame = window.LogicGame || {};
             h('span', { style: { color: 'var(--lagoon)' } }, 'Logic')
           )
         ),
-        h('div', { style: { display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 } },
-          h('span', {
-            style: {
-              fontFamily: 'var(--font-mono)', fontSize: '12px', padding: '6px 8px',
-              fontWeight: 700, color: 'var(--sea-ink)'
-            }
-          }, 'Atlas')
+        h('div', { style: { display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 0 } },
+          navItems.map(function(item) {
+            var isActive = currentPage === item.id;
+            return h('button', {
+              key: item.id,
+              onClick: function() { if (onNavigate) onNavigate(item.id); },
+              style: {
+                fontFamily: 'var(--font-mono)', fontSize: '12px', padding: '6px 12px',
+                fontWeight: isActive ? 800 : 600, color: isActive ? 'var(--lagoon)' : 'var(--sea-ink)',
+                background: isActive ? 'rgba(0,0,0,0.04)' : 'transparent',
+                border: 'none', borderRadius: '6px', cursor: 'pointer',
+                textTransform: 'uppercase', letterSpacing: '0.08em',
+                transition: 'all 120ms'
+              }
+            }, item.label);
+          })
         ),
         h('div', { style: { display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 } },
           onShowHelp ? h('button', {

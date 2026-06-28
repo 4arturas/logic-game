@@ -59,6 +59,7 @@
 
   <!-- ─── ROUTES ─── -->
   <script type="text/babel" src="routes/Syllogisms.js"></script>
+  <script type="text/babel" src="routes/Learn.js"></script>
 
   <script type="text/babel">
     LogicGame.Logic.initExamples(LogicGame.SyllogismsStandard);
@@ -83,14 +84,19 @@
         var _help = useState(false);
         var showHelp = _help[0];
         var setShowHelp = _help[1];
+        var _page = useState('atlas');
+        var currentPage = _page[0];
+        var setPage = _page[1];
+
+        function onNavigate(page) { setPage(page); }
 
         return [
           h(LogicGame.I18nProvider, { key: 'i18n' },
             h(LogicGame.SettingsProvider, null,
               h('div', null,
-                h(LogicGame.Header, { onShowHelp: function() { setShowHelp(true); } }),
+                h(LogicGame.Header, { onShowHelp: function() { setShowHelp(true); }, onNavigate: onNavigate, currentPage: currentPage }),
                 h('main', { style: { minHeight: 'calc(100vh - 200px)', paddingTop: '24px', paddingBottom: '48px' } },
-                  h(LogicGame.SyllogismsPage)
+                  currentPage === 'atlas' ? h(LogicGame.SyllogismsPage, { key: 'atlas' }) : h(LogicGame.LearnPage, { key: 'learn' })
                 ),
                 h(LogicGame.Footer)
               ),
