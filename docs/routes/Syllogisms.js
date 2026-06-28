@@ -18,46 +18,33 @@ window.LogicGame = window.LogicGame || {};
     var _search = useState('');
     var search = _search[0];
     var setSearch = _search[1];
-    var _selectedSyllogism = useState(null);
-    var selectedSyllogism = _selectedSyllogism[0];
-    var setSelectedSyllogism = _selectedSyllogism[1];
     var _answerKey = useState(0);
     var answerKey = _answerKey[0];
     var setAnswerKey = _answerKey[1];
 
-    // URL history sync
-    useEffect(function() {
-      var params = new URLSearchParams(window.location.search);
-      var sylId = params.get('syl');
-      if (sylId) {
-        var syl = LogicGame.SyllogismExamples.find(function(s) { return s.id === sylId; });
-        if (syl) setSelectedSyllogism(syl);
-      }
-      function onPop() {
-        var p = new URLSearchParams(window.location.search);
-        var id = p.get('syl');
-        if (id) {
-          var found = LogicGame.SyllogismExamples.find(function(s) { return s.id === id; });
-          if (found) { setSelectedSyllogism(found); return; }
-        }
-        setSelectedSyllogism(null);
-      }
-      window.addEventListener('popstate', onPop);
-      return function() { window.removeEventListener('popstate', onPop); };
-    }, []);
+    var STORAGE_KEY = 'logic_game_selected_syllogism';
 
-    // Push URL state on selection
-    useEffect(function() {
-      if (selectedSyllogism) {
-        var url = new URL(window.location);
-        url.searchParams.set('syl', selectedSyllogism.id);
-        window.history.pushState({ syl: selectedSyllogism.id }, '', url);
-      } else {
-        var u = new URL(window.location);
-        u.searchParams.delete('syl');
-        window.history.pushState({ syl: null }, '', u);
-      }
-    }, [selectedSyllogism]);
+    function restoreSelection() {
+      try {
+        var saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          var found = LogicGame.SyllogismExamples.find(function(s) { return s.id === saved; });
+          if (found) return found;
+        }
+      } catch(e) {}
+      return null;
+    }
+
+    var _selectedSyllogism = useState(restoreSelection);
+    var selectedSyllogism = _selectedSyllogism[0];
+    var setSelectedSyllogism = _selectedSyllogism[1];
+
+    function persistSelection(syl) {
+      try {
+        if (syl) localStorage.setItem(STORAGE_KEY, syl.id);
+        else localStorage.removeItem(STORAGE_KEY);
+      } catch(e) {}
+    }
 
     var syllogisms = useMemo(function() {
       return LogicGame.SyllogismExamples || [];
@@ -77,11 +64,13 @@ window.LogicGame = window.LogicGame || {};
 
     function handleSyllogismClick(syl) {
       setSelectedSyllogism(syl);
+      persistSelection(syl);
       setAnswerKey(function(k) { return k + 1; });
     }
 
     function handleBack() {
       setSelectedSyllogism(null);
+      persistSelection(null);
     }
 
     var FIGURE_LABELS = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' };
@@ -144,21 +133,24 @@ window.LogicGame = window.LogicGame || {};
                 ),
                 h('tbody', { style: {} },
                   items.length > 0 ? items.map(function(syl) {
+                    var isSelected = selectedSyllogism && selectedSyllogism.id === syl.id;
                     return h('tr', {
                       key: syl.id,
                       onClick: function() { handleSyllogismClick(syl); },
-                      style: { cursor: 'pointer', borderBottom: '1px solid var(--line)', transition: 'background 160ms ease' },
-                      onMouseEnter: function(e) { e.currentTarget.style.background = 'var(--foam)'; },
-                      onMouseLeave: function(e) { e.currentTarget.style.background = 'transparent'; }
+                      style: { cursor: 'pointer', borderBottom: '1px solid var(--line)', transition: 'background 160ms ease', background: isSelected ? 'var(--foam)' : 'transparent' },
+                      onMouseEnter: function(e) { if (!isSelected) e.currentTarget.style.background = 'var(--sand)'; },
+                      onMouseLeave: function(e) { e.currentTarget.style.background = isSelected ? 'var(--foam)' : 'transparent'; }
                     },
                       h('td', { style: { padding: '10px 12px' } },
-                        h('span', { style: { display: 'inline-block', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: 700, background: 'var(--foam)', border: '1px solid var(--line)', color: 'var(--lagoon)' } }, syl.mood)
+                        h('span', { style: { display: 'inline-block', padding: '2px 8px', borderRadius: '4px', fontSize: '11px', fontFamily: 'var(--font-mono)', fontWeight: 700, background: isSelected ? 'var(--lagoon)' : 'var(--foam)', border: '1px solid var(--line)', color: isSelected ? 'white' : 'var(--lagoon)' } }, syl.mood)
                       ),
                       h('td', { style: { padding: '10px 12px' } },
-                        h('span', { style: { fontSize: '13px', fontStyle: 'italic', fontFamily: 'var(--font-serif)', color: 'var(--sea-ink)' } }, syl.mnemonic || syl.name)
+                        h('span', { style: { fontSize: '13px', fontStyle: 'italic', fontFamily: 'var(--font-serif)', color: isSelected ? 'var(--lagoon)' : 'var(--sea-ink)', fontWeight: isSelected ? 700 : 400 } }, syl.mnemonic || syl.name)
                       ),
                       h('td', { style: { padding: '10px 12px', textAlign: 'right' } },
-                        h('span', { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '4px', border: '1px solid transparent', color: 'var(--sea-ink-soft)', fontSize: '13px' } }, '\u2192')
+                        isSelected
+                          ? h('span', { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '4px', background: 'var(--lagoon)', color: 'white', fontSize: '11px', fontWeight: 700 } }, '\u2713')
+                          : h('span', { style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '4px', border: '1px solid transparent', color: 'var(--sea-ink-soft)', fontSize: '13px' } }, '\u2192')
                       )
                     );
                   }) : h('tr', null,
