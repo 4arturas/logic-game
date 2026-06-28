@@ -282,6 +282,15 @@ function SyllogismSolver(props) {
           <SyllogismCard syllogism={syllogism} t={t} premiseOrder={premiseOrder} />
           <LargeZigZagPattern />
           <FolZigZagPattern />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center', padding: '8px', background: 'var(--sand)', borderRadius: '8px', border: '1px solid var(--line)', fontSize: '10px', color: 'var(--sea-ink-soft)' }}>
+            <span style={{ fontWeight: 700 }}>FOL key:</span>
+            <span>            <span><span style={{ fontWeight: 700, color: 'var(--lagoon)' }}>{'\u2200'}</span>x = for all x</span>
+            <span><span style={{ fontWeight: 700, color: 'var(--lagoon)' }}>{'\u2203'}</span>x = there exists x</span>
+            <span><span style={{ fontWeight: 700, color: 'var(--term-x)' }}>{'\u00AC\u2203'}</span>x = there does not exist x</span>
+            <span><span style={{ fontWeight: 700, color: 'var(--term-x)' }}>{'\u00AC'}</span> = not</span>
+            <span><span style={{ fontWeight: 700, color: 'var(--palm)' }}>{'\u2192'}</span> = implies</span>
+            <span><span style={{ fontWeight: 700, color: 'var(--palm)' }}>{'\u2227'}</span> = and</span>
+          </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div style={{ textAlign: 'center', marginBottom: '8px' }}>
