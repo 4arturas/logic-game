@@ -282,15 +282,26 @@ function SyllogismSolver(props) {
           <SyllogismCard syllogism={syllogism} t={t} premiseOrder={premiseOrder} />
           <LargeZigZagPattern />
           <FolZigZagPattern />
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', justifyContent: 'center', padding: '8px', background: 'var(--sand)', borderRadius: '8px', border: '1px solid var(--line)', fontSize: '12px', color: 'var(--sea-ink-soft)' }}>
-            <span style={{ fontWeight: 700 }}>FOL key:</span>
-            <span><span style={{ fontWeight: 700, color: 'var(--lagoon)' }}>{'\u2200'}</span>x = for all x</span>
-            <span><span style={{ fontWeight: 700, color: 'var(--lagoon)' }}>{'\u2203'}</span>x = there exists x</span>
-            <span><span style={{ fontWeight: 700, color: 'var(--term-x)' }}>{'\u00AC\u2203'}</span>x = there does not exist x</span>
-            <span><span style={{ fontWeight: 700, color: 'var(--term-x)' }}>{'\u00AC'}</span> = not</span>
-            <span><span style={{ fontWeight: 700, color: 'var(--palm)' }}>{'\u2192'}</span> = implies</span>
-            <span><span style={{ fontWeight: 700, color: 'var(--palm)' }}>{'\u2227'}</span> = and</span>
-          </div>
+          {(function() {
+            var rev = premiseOrder === 'reversed';
+            var prem1 = rev ? syllogism.premises.minor : syllogism.premises.major;
+            var prem2 = rev ? syllogism.premises.major : syllogism.premises.minor;
+            function folText(p) {
+              var q = p.quantifier;
+              var pref = q === 'E' ? '\u00AC\u2203x ' : q === 'I' || q === 'O' ? '\u2203x ' : '\u2200x ';
+              var rel = q === 'E' || q === 'I' || q === 'O' ? '\u2227' : '\u2192';
+              var right = (q === 'O' ? '\u00AC' : '') + t(p.predicate) + '(x)';
+              var left = t(p.subject) + '(x)';
+              return pref + '(' + left + ' ' + rel + ' ' + right + ')';
+            }
+            return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 14px', background: 'var(--foam)', borderRadius: '8px', border: '1px solid var(--line)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ fontWeight: 700, color: 'var(--lagoon)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>FOL notation</div>
+                <div><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 1: </span>{folText(prem1)}</div>
+                <div><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 2: </span>{folText(prem2)}</div>
+              </div>
+            );
+          })()}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <div style={{ textAlign: 'center', marginBottom: '8px' }}>
