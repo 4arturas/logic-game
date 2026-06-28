@@ -43,10 +43,10 @@ function LargeDiagram(props) {
         <rect x="105" y="105" width="190" height="190" fill="none" stroke="black" strokeWidth="1.5" />
         <line x1="10" y1="200" x2="390" y2="200" stroke="black" strokeWidth="1.5" />
         <line x1="200" y1="10" x2="200" y2="390" stroke="black" strokeWidth="1.5" />
-        <text x="13" y="38" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">9</text>
-        <text x="387" y="38" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">10</text>
-        <text x="108" y="138" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">11</text>
-        <text x="292" y="138" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">12</text>
+        <text x="13" y="36" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">9</text>
+        <text x="387" y="36" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">10</text>
+        <text x="108" y="136" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">11</text>
+        <text x="292" y="136" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">12</text>
         <text x="108" y="292" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">13</text>
         <text x="292" y="292" textAnchor="end" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">14</text>
         <text x="13" y="387" fill="var(--sea-ink-soft)" fontSize="26" fontWeight="bold">15</text>
