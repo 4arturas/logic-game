@@ -39,6 +39,10 @@ window.LogicGame = window.LogicGame || {};
     var selectedSyllogism = _selectedSyllogism[0];
     var setSelectedSyllogism = _selectedSyllogism[1];
 
+    var _showSolver = useState(false);
+    var showSolver = _showSolver[0];
+    var setShowSolver = _showSolver[1];
+
     function persistSelection(syl) {
       try {
         if (syl) localStorage.setItem(STORAGE_KEY, syl.id);
@@ -65,17 +69,17 @@ window.LogicGame = window.LogicGame || {};
     function handleSyllogismClick(syl) {
       setSelectedSyllogism(syl);
       persistSelection(syl);
+      setShowSolver(true);
       setAnswerKey(function(k) { return k + 1; });
     }
 
     function handleBack() {
-      setSelectedSyllogism(null);
-      persistSelection(null);
+      setShowSolver(false);
     }
 
     var FIGURE_LABELS = { 1: 'I', 2: 'II', 3: 'III', 4: 'IV' };
 
-    if (selectedSyllogism) {
+    if (showSolver && selectedSyllogism) {
       return h('div', { style: { maxWidth: '1600px', margin: '0 auto', padding: '16px' } },
         h('button', {
           onClick: handleBack,
