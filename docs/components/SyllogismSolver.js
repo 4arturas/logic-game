@@ -297,10 +297,10 @@ function SyllogismSolver(props) {
             function plainText(p) {
               var q = p.quantifier;
               var s = t(p.subject), pr = t(p.predicate);
-              if (q === 'A') return '\u2200x: if x is ' + s + ' then x is ' + pr;
-              if (q === 'E') return '\u00AC\u2203x: x is ' + s + ' \u2227 x is ' + pr;
-              if (q === 'I') return '\u2203x: x is ' + s + ' \u2227 x is ' + pr;
-              return '\u2203x: x is ' + s + ' \u2227 x is not ' + pr;
+              if (q === 'A') return 'For every x: if x is ' + s + ' then x is ' + pr;
+              if (q === 'E') return 'There is no x such that x is ' + s + ' and x is ' + pr;
+              if (q === 'I') return 'There exists x such that x is ' + s + ' and x is ' + pr;
+              return 'There exists x such that x is ' + s + ' and x is not ' + pr;
             }
             return (
               <>
