@@ -294,12 +294,27 @@ function SyllogismSolver(props) {
               var left = t(p.subject) + '(x)';
               return pref + '(' + left + ' ' + rel + ' ' + right + ')';
             }
+            function plainText(p) {
+              var q = p.quantifier;
+              var s = t(p.subject), pr = t(p.predicate);
+              if (q === 'A') return '\u2200x: if x is ' + s + ' then x is ' + pr;
+              if (q === 'E') return '\u00AC\u2203x: x is ' + s + ' \u2227 x is ' + pr;
+              if (q === 'I') return '\u2203x: x is ' + s + ' \u2227 x is ' + pr;
+              return '\u2203x: x is ' + s + ' \u2227 x is not ' + pr;
+            }
             return (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 14px', background: 'var(--foam)', borderRadius: '8px', border: '1px solid var(--line)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
-                <div style={{ fontWeight: 700, color: 'var(--lagoon)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>FOL notation</div>
-                <div><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 1: </span>{folText(prem1)}</div>
-                <div><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 2: </span>{folText(prem2)}</div>
-              </div>
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 14px', background: 'var(--foam)', borderRadius: '8px', border: '1px solid var(--line)', fontSize: '12px', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--lagoon)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>FOL notation</div>
+                  <div><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 1: </span>{folText(prem1)}</div>
+                  <div><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 2: </span>{folText(prem2)}</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', padding: '10px 14px', background: 'var(--surface)', borderRadius: '8px', border: '1px solid var(--line)', fontSize: '12px' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--palm)', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Plain language</div>
+                  <div style={{ lineHeight: 1.7 }}><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 1: </span>{plainText(prem1)}</div>
+                  <div style={{ lineHeight: 1.7 }}><span style={{ color: 'var(--sea-ink-soft)', fontSize: '10px' }}>Premise 2: </span>{plainText(prem2)}</div>
+                </div>
+              </>
             );
           })()}
         </div>
